@@ -1,5 +1,6 @@
 module JsonLego
 (
+  run,
   -- * Value
   Value,
   object,
@@ -13,6 +14,13 @@ import JsonLego.Prelude
 import PtrPoker (Poker)
 import qualified JsonLego.Allocation as Allocation
 import qualified JsonLego.Poker as Poker
+import qualified PtrPoker as Poker
+import qualified Data.NumberLength as NumberLength
+
+
+run :: Value -> ByteString
+run =
+  error "TODO"
 
 
 -- * Value
@@ -24,14 +32,19 @@ data Value =
     valuePoker :: Poker
     }
 
-object :: Object -> Value
-object (Object {..}) =
-  Value allocation poker
-  where
-    allocation =
-      Allocation.object objectRows objectAllocation
-    poker =
-      Poker.object objectRowPokers
+boolean :: Bool -> Value
+boolean =
+  \ case
+    True ->
+      Value 4 Poker.true
+    False ->
+      Value 5 Poker.false
+
+intNumber :: Int -> Value
+intNumber a =
+  Value
+    (NumberLength.signedNumberLength a)
+    (Poker.asciiDecInt a)
 
 array :: Array -> Value
 array (Array {..}) =
@@ -41,6 +54,15 @@ array (Array {..}) =
       Allocation.array arrayElements arrayAllocation
     poker =
       Poker.array arrayElementPokers
+
+object :: Object -> Value
+object (Object {..}) =
+  Value allocation poker
+  where
+    allocation =
+      Allocation.object objectRows objectAllocation
+    poker =
+      Poker.object objectRowPokers
 
 
 -- * Array
@@ -97,3 +119,17 @@ row keyText (Value {..}) =
       valueAllocation
     rowPokers =
       pure (Poker.objectRow keyText valuePoker)
+
+rows :: [(Text, Value)] -> Object
+rows list =
+  Object amount allocation rowPokers
+  where
+    amount = 
+      length list
+    allocation =
+      foldl' (\ a (keyText, Value {..}) -> a + Allocation.stringBody keyText + valueAllocation)
+        0 list
+    rowPokers =
+      list
+        & fmap (\ (keyText, Value {..}) -> Poker.objectRow keyText valuePoker)
+        & fromList

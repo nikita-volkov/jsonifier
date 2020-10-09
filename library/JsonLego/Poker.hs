@@ -4,7 +4,13 @@ where
 import JsonLego.Prelude
 import PtrPoker
 import qualified Acc
+import qualified CharQq as Q
 
+
+{-# NOINLINE null #-}
+null :: Poker
+null =
+  byteString "null"
 
 boolean :: Bool -> Poker
 boolean =
@@ -20,6 +26,14 @@ false :: Poker
 false =
   byteString "false"
 
+intNumber :: Int -> Poker
+intNumber =
+  asciiDecInt
+
+stringLiteral :: Text -> Poker
+stringLiteral =
+  error "TODO"
+
 {-|
 > "key":value
 -}
@@ -27,39 +41,58 @@ objectRow :: Text -> Poker -> Poker
 objectRow keyText valuePoker =
   stringLiteral keyText <> colon <> valuePoker
 
-stringLiteral :: Text -> Poker
-stringLiteral =
-  error "TODO"
-
 array :: Acc Poker -> Poker
-array =
-  error "TODO"
+array acc =
+  case Acc.uncons acc of
+    Just (h, t) ->
+      openingSquareBracket <> h <> foldMap (comma <>) t <> closingSquareBracket
+    Nothing ->
+      emptyArray
+
+object :: Acc Poker -> Poker
+object acc =
+  case Acc.uncons acc of
+    Just (h, t) ->
+      openingCurlyBracket <> h <> foldMap (comma <>) t <> closingCurlyBracket
+    Nothing ->
+      emptyObject
+
+{-# NOINLINE emptyArray #-}
+emptyArray :: Poker
+emptyArray =
+  byteString "[]"
 
 {-# NOINLINE emptyObject #-}
 emptyObject :: Poker
 emptyObject =
   byteString "{}"
 
-object :: Acc Poker -> Poker
-object acc =
-  case Acc.uncons acc of
-    Just (h, t) ->
-      openingCurlyBracket <> h <> foldMap (colon <>) t <> closingCurlyBracket
-    Nothing ->
-      emptyObject
+{-# NOINLINE openingSquareBracket #-}
+openingSquareBracket :: Poker
+openingSquareBracket =
+  word8 [Q.ord|[|]
 
+{-# NOINLINE closingSquareBracket #-}
+closingSquareBracket :: Poker
+closingSquareBracket =
+  word8 [Q.ord|]|]
+
+{-# NOINLINE openingCurlyBracket #-}
 openingCurlyBracket :: Poker
 openingCurlyBracket =
-  error "TODO"
+  word8 [Q.ord|{|]
 
+{-# NOINLINE closingCurlyBracket #-}
 closingCurlyBracket :: Poker
 closingCurlyBracket =
-  error "TODO"
+  word8 [Q.ord|}|]
 
+{-# NOINLINE colon #-}
 colon :: Poker
 colon =
-  error "TODO"
+  word8 [Q.ord|:|]
 
+{-# NOINLINE comma #-}
 comma :: Poker
 comma =
-  error "TODO"
+  word8 [Q.ord|,|]

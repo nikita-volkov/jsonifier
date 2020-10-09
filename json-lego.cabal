@@ -30,5 +30,7 @@ library
     acc >=0.1.2 && <0.2,
     base >=4.9 && <5,
     bytestring >=0.10.10 && <0.11,
+    char-qq >=0.1.1.1 && <0.2,
+    number-length >=0.2.1.0 && <0.3,
     ptr-poker >=0.1 && <0.2,
     text >=1 && <2
