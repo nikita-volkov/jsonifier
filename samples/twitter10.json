@@ -1,0 +1,196 @@
+{
+  "results": [
+    {
+      "from_user_id_str": "3646730",
+      "profile_image_url": "http://a3.twimg.com/profile_images/404973767/avatar_normal.jpg",
+      "created_at": "Wed, 26 Jan 2011 04:35:07 +0000",
+      "from_user": "nicolaslara",
+      "id_str": "30121530767708160",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": 18616016,
+      "text": "@josej30 Python y Clojure. Obviamente son diferentes, y cada uno tiene sus ventajas y desventajas. De Haskell faltaría pattern matching",
+      "id": 30121530767708160,
+      "from_user_id": 3646730,
+      "to_user": "josej30",
+      "geo": null,
+      "iso_language_code": "es",
+      "to_user_id_str": "18616016",
+      "source": "&lt;a href=&quot;http://twitter.com/&quot; rel=&quot;nofollow&quot;&gt;Twitter for iPhone&lt;/a&gt;"
+    },
+    {
+      "from_user_id_str": "207858021",
+      "profile_image_url": "http://a3.twimg.com/sticky/default_profile_images/default_profile_2_normal.png",
+      "created_at": "Wed, 26 Jan 2011 04:30:38 +0000",
+      "from_user": "pboudarga",
+      "id_str": "30120402839666689",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": null,
+      "text": "I'm at Rolla Sushi Grill (27737 Bouquet Canyon Road, #106, Btw Haskell Canyon and Rosedell Drive, Saugus) http://4sq.com/gqqdhs",
+      "id": 30120402839666689,
+      "from_user_id": 207858021,
+      "geo": null,
+      "iso_language_code": "en",
+      "to_user_id_str": null,
+      "source": "&lt;a href=&quot;http://foursquare.com&quot; rel=&quot;nofollow&quot;&gt;foursquare&lt;/a&gt;"
+    },
+    {
+      "from_user_id_str": "69988683",
+      "profile_image_url": "http://a0.twimg.com/profile_images/1211955817/avatar_7888_normal.gif",
+      "created_at": "Wed, 26 Jan 2011 04:25:23 +0000",
+      "from_user": "YNK33",
+      "id_str": "30119083059978240",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": null,
+      "text": "hsndfile 0.5.0: Free and open source Haskell bindings for libsndfile http://bit.ly/gHaBWG Mac Os",
+      "id": 30119083059978240,
+      "from_user_id": 69988683,
+      "geo": null,
+      "iso_language_code": "en",
+      "to_user_id_str": null,
+      "source": "&lt;a href=&quot;http://twitterfeed.com&quot; rel=&quot;nofollow&quot;&gt;twitterfeed&lt;/a&gt;"
+    },
+    {
+      "from_user_id_str": "81492",
+      "profile_image_url": "http://a1.twimg.com/profile_images/423894208/Picture_7_normal.jpg",
+      "created_at": "Wed, 26 Jan 2011 04:24:28 +0000",
+      "from_user": "satzz",
+      "id_str": "30118851488251904",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": null,
+      "text": "Emacsのモード表示が今(Ruby Controller Outputz RoR Flymake REl hs)となっててよくわからないんだけど最後のRElとかhsって何だろう…haskellとか2年以上書いてないけど…",
+      "id": 30118851488251904,
+      "from_user_id": 81492,
+      "geo": null,
+      "iso_language_code": "ja",
+      "to_user_id_str": null,
+      "source": "&lt;a href=&quot;http://www.hootsuite.com&quot; rel=&quot;nofollow&quot;&gt;HootSuite&lt;/a&gt;"
+    },
+    {
+      "from_user_id_str": "9518356",
+      "profile_image_url": "http://a2.twimg.com/profile_images/119165723/ocaml-icon_normal.png",
+      "created_at": "Wed, 26 Jan 2011 04:19:19 +0000",
+      "from_user": "planet_ocaml",
+      "id_str": "30117557788741632",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": null,
+      "text": "I so miss #haskell type classes in #ocaml - i want to do something like refinement. Also why does ocaml not have... http://bit.ly/geYRwt",
+      "id": 30117557788741632,
+      "from_user_id": 9518356,
+      "geo": null,
+      "iso_language_code": "en",
+      "to_user_id_str": null,
+      "source": "&lt;a href=&quot;http://twitterfeed.com&quot; rel=&quot;nofollow&quot;&gt;twitterfeed&lt;/a&gt;"
+    },
+    {
+      "from_user_id_str": "218059",
+      "profile_image_url": "http://a1.twimg.com/profile_images/1053837723/twitter-icon9_normal.jpg",
+      "created_at": "Wed, 26 Jan 2011 04:16:32 +0000",
+      "from_user": "aprikip",
+      "id_str": "30116854940835840",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": null,
+      "text": "yatex-modeやhaskell-modeのことですね、わかります。",
+      "id": 30116854940835840,
+      "from_user_id": 218059,
+      "geo": null,
+      "iso_language_code": "ja",
+      "to_user_id_str": null,
+      "source": "&lt;a href=&quot;http://sites.google.com/site/yorufukurou/&quot; rel=&quot;nofollow&quot;&gt;YoruFukurou&lt;/a&gt;"
+    },
+    {
+      "from_user_id_str": "216363",
+      "profile_image_url": "http://a1.twimg.com/profile_images/72454310/Tim-Avatar_normal.png",
+      "created_at": "Wed, 26 Jan 2011 04:15:30 +0000",
+      "from_user": "dysinger",
+      "id_str": "30116594684264448",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": null,
+      "text": "Haskell in Hawaii tonight for me... #fun",
+      "id": 30116594684264448,
+      "from_user_id": 216363,
+      "geo": null,
+      "iso_language_code": "en",
+      "to_user_id_str": null,
+      "source": "&lt;a href=&quot;http://www.nambu.com/&quot; rel=&quot;nofollow&quot;&gt;Nambu&lt;/a&gt;"
+    },
+    {
+      "from_user_id_str": "1774820",
+      "profile_image_url": "http://a2.twimg.com/profile_images/61169291/dan_desert_thumb_normal.jpg",
+      "created_at": "Wed, 26 Jan 2011 04:13:36 +0000",
+      "from_user": "DanMil",
+      "id_str": "30116117682851840",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": 1594784,
+      "text": "@ojrac @chewedwire @tomheon Haskell isn't a language, it's a belief system.  A seductive one...",
+      "id": 30116117682851840,
+      "from_user_id": 1774820,
+      "to_user": "ojrac",
+      "geo": null,
+      "iso_language_code": "en",
+      "to_user_id_str": "1594784",
+      "source": "&lt;a href=&quot;http://twitter.com/&quot;&gt;web&lt;/a&gt;"
+    },
+    {
+      "from_user_id_str": "659256",
+      "profile_image_url": "http://a0.twimg.com/profile_images/746976711/angular-final_normal.jpg",
+      "created_at": "Wed, 26 Jan 2011 04:11:06 +0000",
+      "from_user": "djspiewak",
+      "id_str": "30115488931520512",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": null,
+      "text": "One of the very nice things about Haskell as opposed to SML is the reduced proliferation of identifiers (e.g. andb, orb, etc). #typeclasses",
+      "id": 30115488931520512,
+      "from_user_id": 659256,
+      "geo": null,
+      "iso_language_code": "en",
+      "to_user_id_str": null,
+      "source": "&lt;a href=&quot;http://itunes.apple.com/us/app/twitter/id409789998?mt=12&quot; rel=&quot;nofollow&quot;&gt;Twitter for Mac&lt;/a&gt;"
+    },
+    {
+      "from_user_id_str": "144546280",
+      "profile_image_url": "http://a1.twimg.com/a/1295051201/images/default_profile_1_normal.png",
+      "created_at": "Wed, 26 Jan 2011 04:06:12 +0000",
+      "from_user": "listwarenet",
+      "id_str": "30114255890026496",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": null,
+      "text": "http://www.listware.net/201101/haskell-cafe/84752-re-haskell-cafe-gpl-license-of-h-matrix-and-prelude-numeric.html Re: Haskell-c",
+      "id": 30114255890026496,
+      "from_user_id": 144546280,
+      "geo": null,
+      "iso_language_code": "no",
+      "to_user_id_str": null,
+      "source": "&lt;a href=&quot;http://1e10.org/cloud/&quot; rel=&quot;nofollow&quot;&gt;1e10&lt;/a&gt;"
+    }
+  ],
+  "max_id": 30121530767708160,
+  "since_id": 0,
+  "refresh_url": "?since_id=30121530767708160&q=haskell",
+  "next_page": "?page=2&max_id=30121530767708160&rpp=100&q=haskell",
+  "results_per_page": 100,
+  "page": 1,
+  "completed_in": 1.195569,
+  "since_id_str": "0",
+  "max_id_str": "30121530767708160",
+  "query": "haskell"
+}
