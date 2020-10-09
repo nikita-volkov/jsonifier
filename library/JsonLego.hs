@@ -90,12 +90,10 @@ scientificNumber a =
 string :: Text -> Value
 string text =
   let
-    bodyByteString =
-      ByteString.jsonStringBody text
     allocation =
-      2 + ByteString.length bodyByteString
+      2 + Allocation.stringBody text
     poker =
-      Poker.string bodyByteString
+      Poker.string text
     in Value allocation poker
 
 {-# INLINE array #-}
@@ -197,13 +195,11 @@ row keyText (Value {..}) =
   where
     amount = 
       1
-    keyByteString =
-      ByteString.jsonStringBody keyText
     allocation =
-      ByteString.length keyByteString +
+      Allocation.stringBody keyText +
       valueAllocation
     rowPokers =
-      pure (Poker.objectRow keyByteString valuePoker)
+      pure (Poker.objectRow keyText valuePoker)
 
 {-# INLINE rows #-}
 rows :: [(Text, Value)] -> Object
@@ -212,13 +208,10 @@ rows list =
   where
     amount = 
       length list
-    listWithPreparedKeys =
-      list &
-        fmap (first ByteString.jsonStringBody)
     allocation =
-      foldl' (\ a (key, Value {..}) -> a + ByteString.length key + valueAllocation)
-        0 listWithPreparedKeys
+      foldl' (\ a (key, Value {..}) -> a + Allocation.stringBody key + valueAllocation)
+        0 list
     rowPokers =
-      listWithPreparedKeys
+      list
         & fmap (\ (key, Value {..}) -> Poker.objectRow key valuePoker)
         & fromList
