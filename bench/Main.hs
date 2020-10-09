@@ -18,7 +18,7 @@ main =
     input <- load "samples/twitter100.json"
     defaultMain [
       bgroup "strict" [
-        bench "json-lego" (nf (JsonLego.value . Main.JsonLego.result) input)
+        bench "json-lego" (nf (JsonLego.value . Main.JsonLego.resultValue) input)
         ,
         bench "aeson" (nf (Data.ByteString.Lazy.toStrict . Data.Aeson.encode) input)
         ,
@@ -26,7 +26,7 @@ main =
         ]
       ,
       bgroup "lazy" [
-        bench "json-lego" (nf (Data.ByteString.Lazy.fromStrict . JsonLego.value . Main.JsonLego.result) input)
+        bench "json-lego" (nf (Data.ByteString.Lazy.fromStrict . JsonLego.value . Main.JsonLego.resultValue) input)
         ,
         bench "aeson" (nf (Data.Aeson.encode) input)
         ,

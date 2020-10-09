@@ -5,50 +5,50 @@ import JsonLego
 import qualified Main.Model as A
 
 
-result :: A.Result -> Value
-result x =
+resultValue :: A.Result -> Value
+resultValue A.Result{..} =
   object $
-  row "results" (array (foldMap (element . story) (A.results x))) <>
-  row "max_id" ((intNumber . fromIntegral) (A.max_id x)) <>
-  row "since_id" ((intNumber . fromIntegral) (A.since_id x)) <>
-  row "refresh_url" (string (A.refresh_url x)) <>
-  row "next_page" (string (A.next_page x)) <>
-  row "results_per_page" ((intNumber . fromIntegral) (A.results_per_page x)) <>
-  row "page" ((intNumber . fromIntegral) (A.page x)) <>
-  row "completed_in" (doubleNumber (A.completed_in x)) <>
-  row "since_id_str" (string (A.since_id_str x)) <>
-  row "max_id_str" (string (A.max_id_str x)) <>
-  row "query" (string (A.query x))
+  row "results" (array (foldMap (element . storyValue) results)) <>
+  row "max_id" ((intNumber . fromIntegral) max_id) <>
+  row "since_id" ((intNumber . fromIntegral) since_id) <>
+  row "refresh_url" (string refresh_url) <>
+  row "next_page" (string next_page) <>
+  row "results_per_page" ((intNumber . fromIntegral) results_per_page) <>
+  row "page" ((intNumber . fromIntegral) page) <>
+  row "completed_in" (doubleNumber completed_in) <>
+  row "since_id_str" (string since_id_str) <>
+  row "max_id_str" (string max_id_str) <>
+  row "query" (string query)
 
-story :: A.Story -> Value
-story x =
+storyValue :: A.Story -> Value
+storyValue A.Story{..} =
   object $
-  row "from_user_id_str" (string (A.from_user_id_str x)) <>
-  row "profile_image_url" (string (A.profile_image_url x)) <>
-  row "created_at" (string (A.created_at x)) <>
-  row "from_user" (string (A.from_user x)) <>
-  row "id_str" (string (A.id_str x)) <>
-  row "metadata" (metadata (A.metadata x)) <>
-  row "to_user_id" (maybe null (intNumber . fromIntegral) (A.to_user_id x)) <>
-  row "text" (string (A.text x)) <>
-  row "id" ((intNumber . fromIntegral) (A.id x)) <>
-  row "from_user_id" ((intNumber . fromIntegral) (A.from_user_id x)) <>
-  row "geo" (maybe null geo (A.geo x)) <>
-  row "iso_language_code" (string (A.iso_language_code x)) <>
-  row "to_user_id_str" (maybe null string (A.to_user_id_str x)) <>
-  row "source" (string (A.source x))
+  row "from_user_id_str" (string from_user_id_str) <>
+  row "profile_image_url" (string profile_image_url) <>
+  row "created_at" (string created_at) <>
+  row "from_user" (string from_user) <>
+  row "id_str" (string id_str) <>
+  row "metadata" (metadataValue metadata) <>
+  row "to_user_id" (maybe null (intNumber . fromIntegral) to_user_id) <>
+  row "text" (string text) <>
+  row "id" ((intNumber . fromIntegral) id) <>
+  row "from_user_id" ((intNumber . fromIntegral) from_user_id) <>
+  row "geo" (maybe null geoValue geo) <>
+  row "iso_language_code" (string iso_language_code) <>
+  row "to_user_id_str" (maybe null string to_user_id_str) <>
+  row "source" (string source)
 
-geo :: A.Geo -> Value
-geo x =
+geoValue :: A.Geo -> Value
+geoValue A.Geo{..} =
   object $
-  row "type_" (string (A.type_ x)) <>
-  row "coordinates" (coordinates (A.coordinates x))
+  row "type_" (string type_) <>
+  row "coordinates" (coordinatesValue coordinates)
 
-coordinates :: (Double, Double) -> Value
-coordinates (x, y) =
+coordinatesValue :: (Double, Double) -> Value
+coordinatesValue (x, y) =
   array (element (doubleNumber x) <> element (doubleNumber y))
 
-metadata :: A.Metadata -> Value
-metadata x =
+metadataValue :: A.Metadata -> Value
+metadataValue A.Metadata{..} =
   object $
-  row "result_type" (string (A.result_type x))
+  row "result_type" (string result_type)
