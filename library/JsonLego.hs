@@ -134,10 +134,20 @@ data Array =
 instance Semigroup Array where
   Array lElements lAllocation lPokers <> Array rElements rAllocation rPokers =
     Array (lElements + rElements) (lAllocation + rAllocation) (lPokers <> rPokers)
+  sconcat list =
+    Array
+      (getSum (foldMap (Sum . arrayElements) list))
+      (getSum (foldMap (Sum . arrayAllocation) list))
+      (foldMap arrayElementPokers list)
 
 instance Monoid Array where
   mempty =
     Array 0 0 mempty
+  mconcat list =
+    Array
+      (getSum (foldMap (Sum . arrayElements) list))
+      (getSum (foldMap (Sum . arrayAllocation) list))
+      (foldMap arrayElementPokers list)
 
 {-# INLINE element #-}
 element :: Value -> Array
@@ -163,6 +173,7 @@ data Object =
     }
 
 instance Semigroup Object where
+  {-# INLINE (<>) #-}
   Object lRows lAlloc lPokers <> Object rRows rAlloc rPokers =
     Object (lRows + rRows) (lAlloc + rAlloc) (lPokers <> rPokers)
 
