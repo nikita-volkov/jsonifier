@@ -25,7 +25,6 @@ library
   other-modules:
     JsonLego.Allocation
     JsonLego.Base16EncodingTable
-    JsonLego.BoundedPrim
     JsonLego.ByteString
     JsonLego.Poker
     JsonLego.Prelude
