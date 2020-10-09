@@ -16,7 +16,7 @@ import qualified JsonLego
 main =
   do
     input <- load "samples/twitter100.json"
-    defaultMain [
+    deepseq input $ defaultMain [
       bgroup "strict" [
         bench "json-lego" (nf (JsonLego.value . Main.JsonLego.resultValue) input)
         ,
