@@ -1,6 +1,7 @@
 module JsonLego
 (
-  run,
+  -- * ByteString
+  value,
   -- * Value
   Value,
   null,
@@ -30,8 +31,11 @@ import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.Internal as ByteString
 
 
-run :: Value -> ByteString
-run (Value {..}) =
+{-|
+Render a value builder into strict bytestring.
+-}
+value :: Value -> ByteString
+value (Value {..}) =
   ByteString.unsafeCreate valueAllocation (void . Poker.run valuePoker)
 
 
@@ -104,6 +108,14 @@ data Array =
     arrayAllocation :: Int,
     arrayElementPokers :: Acc Poker
     }
+
+instance Semigroup Array where
+  Array lElements lAllocation lPokers <> Array rElements rAllocation rPokers =
+    Array (lElements + rElements) (lAllocation + rAllocation) (lPokers <> rPokers)
+
+instance Monoid Array where
+  mempty =
+    Array 0 0 mempty
 
 element :: Value -> Array
 element (Value {..}) =

@@ -30,9 +30,18 @@ library
     JsonLego.Prelude
   build-depends:
     acc >=0.1.2 && <0.2,
-    base >=4.9 && <5,
+    base >=4.11 && <5,
     bytestring >=0.10.10 && <0.11,
     char-qq >=0.1.1.1 && <0.2,
     number-length >=0.2.1.0 && <0.3,
     ptr-poker >=0.1 && <0.2,
     text >=1 && <2
+
+test-suite demo
+  type: exitcode-stdio-1.0
+  hs-source-dirs: demo
+  main-is: Main.hs
+  default-language: Haskell2010
+  build-depends:
+    json-lego,
+    rerebase
