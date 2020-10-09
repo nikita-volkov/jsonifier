@@ -36,6 +36,7 @@ import qualified Data.ByteString.Internal as ByteString
 {-|
 Render a value builder into strict bytestring.
 -}
+{-# INLINE value #-}
 value :: Value -> ByteString
 value (Value {..}) =
   ByteString.unsafeCreate valueAllocation (void . Poker.run valuePoker)
@@ -50,10 +51,12 @@ data Value =
     valuePoker :: Poker
     }
 
+{-# INLINE null #-}
 null :: Value
 null =
   Value 4 Poker.null
 
+{-# INLINE bool #-}
 bool :: Bool -> Value
 bool =
   \ case
@@ -62,16 +65,19 @@ bool =
     False ->
       Value 5 Poker.false
 
+{-# INLINE intNumber #-}
 intNumber :: Int -> Value
 intNumber a =
   Value
     (NumberLength.signedNumberLength a)
     (Poker.asciiDecInt a)
 
+{-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Value
 doubleNumber =
   scientificNumber . realToFrac
 
+{-# INLINE scientificNumber #-}
 scientificNumber :: Scientific -> Value
 scientificNumber a =
   let
@@ -79,6 +85,7 @@ scientificNumber a =
       ByteString.scientific a
     in Value (ByteString.length byteString) (Poker.byteString byteString)
 
+{-# INLINE string #-}
 string :: Text -> Value
 string text =
   let
@@ -90,6 +97,7 @@ string text =
       Poker.string bodyByteString
     in Value allocation poker
 
+{-# INLINE array #-}
 array :: Array -> Value
 array (Array {..}) =
   Value allocation poker
@@ -99,6 +107,7 @@ array (Array {..}) =
     poker =
       Poker.array arrayElementPokers
 
+{-# INLINE object #-}
 object :: Object -> Value
 object (Object {..}) =
   Value allocation poker
@@ -130,6 +139,7 @@ instance Monoid Array where
   mempty =
     Array 0 0 mempty
 
+{-# INLINE element #-}
 element :: Value -> Array
 element (Value {..}) =
   Array 1 valueAllocation (pure valuePoker)
@@ -160,6 +170,7 @@ instance Monoid Object where
   mempty =
     Object 0 0 mempty
 
+{-# INLINE row #-}
 row :: Text -> Value -> Object
 row keyText (Value {..}) =
   Object amount allocation rowPokers
@@ -174,6 +185,7 @@ row keyText (Value {..}) =
     rowPokers =
       pure (Poker.objectRow keyByteString valuePoker)
 
+{-# INLINE rows #-}
 rows :: [(Text, Value)] -> Object
 rows list =
   Object amount allocation rowPokers
