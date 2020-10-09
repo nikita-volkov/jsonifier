@@ -93,7 +93,7 @@ string text =
     bodyByteString =
       ByteString.jsonStringBody text
     allocation =
-      2 + ByteString.length bodyByteString
+      2 + Allocation.stringBody text
     poker =
       Poker.string bodyByteString
     in Value allocation poker
@@ -200,7 +200,7 @@ row keyText (Value {..}) =
     keyByteString =
       ByteString.jsonStringBody keyText
     allocation =
-      ByteString.length keyByteString +
+      Allocation.stringBody keyText +
       valueAllocation
     rowPokers =
       pure (Poker.objectRow keyByteString valuePoker)
