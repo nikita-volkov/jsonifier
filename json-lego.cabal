@@ -24,10 +24,12 @@ library
     JsonLego
   other-modules:
     JsonLego.Allocation
+    JsonLego.Base16EncodingTable
     JsonLego.BoundedPrim
     JsonLego.ByteString
     JsonLego.Poker
     JsonLego.Prelude
+    JsonLego.UncheckedShifting
   build-depends:
     acc >=0.1.2 && <0.2,
     base >=4.11 && <5,
