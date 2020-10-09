@@ -1,6 +1,6 @@
 name: json-lego
 version: 0.1
-synopsis: Direct to bytes JSON construction toolkit
+synopsis: Direct to strict bytestring JSON construction toolkit
 category: JSON
 homepage: https://github.com/nikita-volkov/json-lego
 bug-reports: https://github.com/nikita-volkov/json-lego/issues
@@ -35,6 +35,7 @@ library
     char-qq >=0.1.1.1 && <0.2,
     number-length >=0.2.1.0 && <0.3,
     ptr-poker >=0.1 && <0.2,
+    scientific >=0.3.6.2 && <0.4,
     text >=1 && <2
 
 test-suite demo
@@ -45,3 +46,20 @@ test-suite demo
   build-depends:
     json-lego,
     rerebase
+
+test-suite test
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  default-extensions: BangPatterns, ConstraintKinds, DataKinds, DefaultSignatures, DeriveDataTypeable, DeriveFoldable, DeriveFunctor, DeriveGeneric, DeriveTraversable, EmptyDataDecls, FlexibleContexts, FlexibleInstances, FunctionalDependencies, GADTs, GeneralizedNewtypeDeriving, InstanceSigs, LambdaCase, LiberalTypeSynonyms, MagicHash, MultiParamTypeClasses, MultiWayIf, NoImplicitPrelude, NoMonomorphismRestriction, OverloadedStrings, PatternGuards, ParallelListComp, QuasiQuotes, RankNTypes, RecordWildCards, ScopedTypeVariables, StandaloneDeriving, StrictData, TemplateHaskell, TupleSections, TypeApplications, TypeFamilies, TypeOperators, UnboxedTuples, ViewPatterns
+  default-language: Haskell2010
+  main-is: Main.hs
+  build-depends:
+    aeson >=1.4.7.1 && <2,
+    generic-arbitrary >=0.1 && <0.2,
+    json-lego,
+    QuickCheck >=2.8.1 && <3,
+    quickcheck-instances >=0.3.11 && <0.4,
+    rerebase >=1.10.0.1 && <2,
+    tasty >=0.12 && <2,
+    tasty-hunit >=0.9 && <0.11,
+    tasty-quickcheck >=0.9 && <0.11

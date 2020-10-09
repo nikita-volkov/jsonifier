@@ -5,8 +5,9 @@ module JsonLego
   -- * Value
   Value,
   null,
-  boolean,
+  bool,
   intNumber,
+  scientificNumber,
   string,
   array,
   object,
@@ -20,7 +21,7 @@ module JsonLego
 )
 where
 
-import JsonLego.Prelude hiding (null)
+import JsonLego.Prelude hiding (null, bool)
 import PtrPoker (Poker)
 import qualified JsonLego.Allocation as Allocation
 import qualified JsonLego.Poker as Poker
@@ -52,8 +53,8 @@ null :: Value
 null =
   Value 4 Poker.null
 
-boolean :: Bool -> Value
-boolean =
+bool :: Bool -> Value
+bool =
   \ case
     True ->
       Value 4 Poker.true
@@ -65,6 +66,13 @@ intNumber a =
   Value
     (NumberLength.signedNumberLength a)
     (Poker.asciiDecInt a)
+
+scientificNumber :: Scientific -> Value
+scientificNumber a =
+  let
+    byteString =
+      ByteString.scientific a
+    in Value (ByteString.length byteString) (Poker.byteString byteString)
 
 string :: Text -> Value
 string text =

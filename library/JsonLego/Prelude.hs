@@ -88,5 +88,11 @@ import Data.ByteString as Exports (ByteString)
 -- acc
 -------------------------
 import Acc as Exports (Acc)
+
+-- scientific
+-------------------------
+import Data.Scientific as Exports (Scientific)
+
+
 showAsText :: Show a => a -> Text
 showAsText = show >>> fromString

@@ -1,4 +1,4 @@
-resolver: https://raw.githubusercontent.com/nikita-volkov/stack-snapshot/12ec5253ebf91a5bd38f5e2f2b1d47fe330c6965/snapshot.yaml
+resolver: https://raw.githubusercontent.com/nikita-volkov/stack-snapshot/74590f31f695d84137d1ad54c3a46897dec2c7a9/snapshot.yaml
 extra-deps:
 - git: https://github.com/nikita-volkov/ptr-poker
   commit: 8f8993b101822595ae263d63639b94c01ab30308
