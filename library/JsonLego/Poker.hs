@@ -141,13 +141,11 @@ objectRow keyBody valuePoker =
   string keyBody <> colon <> valuePoker
 
 {-# INLINE array #-}
-array :: Acc Poker -> Poker
-array acc =
-  case Acc.uncons acc of
-    Just (h, t) ->
-      openingSquareBracket <> h <> foldMap (comma <>) t <> closingSquareBracket
-    Nothing ->
-      emptyArray
+array :: Foldable f => f Poker -> Poker
+array f =
+  snd (foldl' (\ (first, acc) p -> (False, acc <> if first then p else comma <> p))
+      (True, openingSquareBracket) f) <>
+  closingSquareBracket
 
 {-# INLINE object #-}
 object :: Foldable f => f Poker -> Poker
