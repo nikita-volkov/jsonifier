@@ -210,9 +210,9 @@ rows list =
     amount = 
       length list
     allocation =
-      foldl' (\ a (key, Value {..}) -> a + Allocation.stringBody key + valueAllocation)
-        0 list
+      list
+        & fmap (\ (key, Value {..}) -> Allocation.stringBody key + valueAllocation)
+        & sum
     rowPokers =
       list
-        & fmap (\ (key, Value {..}) -> Poker.objectRow key valuePoker)
-        & fromList
+        & foldMap (\ (key, Value {..}) -> pure (Poker.objectRow key valuePoker))
