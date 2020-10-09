@@ -1,0 +1,33 @@
+name: json-lego
+version: 0.1
+synopsis: Direct to bytes JSON construction toolkit
+category: JSON
+homepage: https://github.com/nikita-volkov/json-lego
+bug-reports: https://github.com/nikita-volkov/json-lego/issues
+author: Nikita Volkov <nikita.y.volkov@mail.ru>
+maintainer: Nikita Volkov <nikita.y.volkov@mail.ru>
+copyright: (c) 2020 Nikita Volkov
+license: MIT
+license-file: LICENSE
+build-type: Simple
+cabal-version: >=1.10
+
+source-repository head
+  type: git
+  location: git://github.com/nikita-volkov/json-lego.git
+
+library
+  hs-source-dirs: library
+  default-extensions: BangPatterns, BlockArguments, ConstraintKinds, DataKinds, DefaultSignatures, DeriveDataTypeable, DeriveFoldable, DeriveFunctor, DeriveGeneric, DeriveTraversable, DerivingVia, EmptyDataDecls, FlexibleContexts, FlexibleInstances, FunctionalDependencies, GADTs, GeneralizedNewtypeDeriving, InstanceSigs, LambdaCase, LiberalTypeSynonyms, MagicHash, MultiParamTypeClasses, MultiWayIf, NoImplicitPrelude, NoMonomorphismRestriction, OverloadedStrings, PatternGuards, ParallelListComp, QuasiQuotes, RankNTypes, RecordWildCards, ScopedTypeVariables, StandaloneDeriving, StrictData, TemplateHaskell, TupleSections, TypeApplications, TypeFamilies, TypeOperators, UnboxedTuples
+  default-language: Haskell2010
+  exposed-modules:
+    JsonLego
+  other-modules:
+    JsonLego.Allocation
+    JsonLego.Poker
+    JsonLego.Prelude
+  build-depends:
+    acc >=0.1.2 && <0.2,
+    base >=4.9 && <5,
+    bytestring >=0.10.10 && <0.11,
+    text >=1 && <2
