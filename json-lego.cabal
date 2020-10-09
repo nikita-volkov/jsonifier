@@ -58,3 +58,22 @@ test-suite test
     hedgehog >=1.0.3 && <2,
     json-lego,
     rerebase >=1.10.0.1 && <2
+
+benchmark bench
+  type: exitcode-stdio-1.0
+  hs-source-dirs: bench
+  main-is: Main.hs
+  other-modules:
+    Main.Aeson
+    Main.JsonBytesBuilder
+    Main.JsonLego
+    Main.Model
+  ghc-options: -O2 -threaded "-with-rtsopts=-N"
+  default-extensions: BangPatterns, ConstraintKinds, DataKinds, DefaultSignatures, DeriveDataTypeable, DeriveFoldable, DeriveFunctor, DeriveGeneric, DeriveTraversable, EmptyDataDecls, FlexibleContexts, FlexibleInstances, FunctionalDependencies, GADTs, GeneralizedNewtypeDeriving, InstanceSigs, LambdaCase, LiberalTypeSynonyms, MagicHash, MultiParamTypeClasses, MultiWayIf, NoImplicitPrelude, NoMonomorphismRestriction, OverloadedStrings, PatternGuards, ParallelListComp, QuasiQuotes, RankNTypes, RecordWildCards, ScopedTypeVariables, StandaloneDeriving, StrictData, TemplateHaskell, TupleSections, TypeApplications, TypeFamilies, TypeOperators, UnboxedTuples, ViewPatterns
+  default-language: Haskell2010
+  build-depends:
+    aeson >=1.5.4.1 && <1.6,
+    gauge >=0.2.5 && <0.3,
+    json-bytes-builder >=0.5.2.1 && <0.6,
+    json-lego,
+    rerebase >=1.10.0.1 && <2

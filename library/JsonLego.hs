@@ -7,6 +7,7 @@ module JsonLego
   null,
   bool,
   intNumber,
+  doubleNumber,
   scientificNumber,
   string,
   array,
@@ -66,6 +67,10 @@ intNumber a =
   Value
     (NumberLength.signedNumberLength a)
     (Poker.asciiDecInt a)
+
+doubleNumber :: Double -> Value
+doubleNumber =
+  scientificNumber . realToFrac
 
 scientificNumber :: Scientific -> Value
 scientificNumber a =
