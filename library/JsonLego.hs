@@ -3,19 +3,30 @@ module JsonLego
   run,
   -- * Value
   Value,
+  null,
+  boolean,
+  intNumber,
+  string,
+  array,
   object,
   -- * Object
   Object,
   row,
+  rows,
+  -- * Array
+  Array,
+  element,
 )
 where
 
-import JsonLego.Prelude
+import JsonLego.Prelude hiding (null)
 import PtrPoker (Poker)
 import qualified JsonLego.Allocation as Allocation
 import qualified JsonLego.Poker as Poker
 import qualified PtrPoker as Poker
 import qualified Data.NumberLength as NumberLength
+import qualified JsonLego.ByteString as ByteString
+import qualified Data.ByteString as ByteString
 
 
 run :: Value -> ByteString
@@ -32,6 +43,10 @@ data Value =
     valuePoker :: Poker
     }
 
+null :: Value
+null =
+  Value 4 Poker.null
+
 boolean :: Bool -> Value
 boolean =
   \ case
@@ -45,6 +60,17 @@ intNumber a =
   Value
     (NumberLength.signedNumberLength a)
     (Poker.asciiDecInt a)
+
+string :: Text -> Value
+string text =
+  let
+    bodyByteString =
+      ByteString.jsonStringBody text
+    allocation =
+      2 + ByteString.length bodyByteString
+    poker =
+      Poker.string bodyByteString
+    in Value allocation poker
 
 array :: Array -> Value
 array (Array {..}) =
@@ -114,11 +140,13 @@ row keyText (Value {..}) =
   where
     amount = 
       1
+    keyByteString =
+      ByteString.jsonStringBody keyText
     allocation =
-      Allocation.stringBody keyText +
+      ByteString.length keyByteString +
       valueAllocation
     rowPokers =
-      pure (Poker.objectRow keyText valuePoker)
+      pure (Poker.objectRow keyByteString valuePoker)
 
 rows :: [(Text, Value)] -> Object
 rows list =
@@ -126,10 +154,13 @@ rows list =
   where
     amount = 
       length list
+    listWithPreparedKeys =
+      list &
+        fmap (first ByteString.jsonStringBody)
     allocation =
-      foldl' (\ a (keyText, Value {..}) -> a + Allocation.stringBody keyText + valueAllocation)
-        0 list
+      foldl' (\ a (key, Value {..}) -> a + ByteString.length key + valueAllocation)
+        0 listWithPreparedKeys
     rowPokers =
-      list
-        & fmap (\ (keyText, Value {..}) -> Poker.objectRow keyText valuePoker)
+      listWithPreparedKeys
+        & fmap (\ (key, Value {..}) -> Poker.objectRow key valuePoker)
         & fromList

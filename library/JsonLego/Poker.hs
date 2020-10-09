@@ -30,16 +30,16 @@ intNumber :: Int -> Poker
 intNumber =
   asciiDecInt
 
-stringLiteral :: Text -> Poker
-stringLiteral =
-  error "TODO"
+string :: ByteString -> Poker
+string body =
+  doubleQuote <> byteString body <> doubleQuote
 
 {-|
 > "key":value
 -}
-objectRow :: Text -> Poker -> Poker
-objectRow keyText valuePoker =
-  stringLiteral keyText <> colon <> valuePoker
+objectRow :: ByteString -> Poker -> Poker
+objectRow keyBody valuePoker =
+  string keyBody <> colon <> valuePoker
 
 array :: Acc Poker -> Poker
 array acc =
@@ -96,3 +96,8 @@ colon =
 comma :: Poker
 comma =
   word8 [Q.ord|,|]
+
+{-# NOINLINE doubleQuote #-}
+doubleQuote :: Poker
+doubleQuote =
+  word8 [Q.ord|"|]

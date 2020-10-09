@@ -24,6 +24,8 @@ library
     JsonLego
   other-modules:
     JsonLego.Allocation
+    JsonLego.BoundedPrim
+    JsonLego.ByteString
     JsonLego.Poker
     JsonLego.Prelude
   build-depends:
