@@ -131,6 +131,7 @@ data Array =
     }
 
 instance Semigroup Array where
+  {-# INLINE (<>) #-}
   Array lElements lAllocation lPokers <> Array rElements rAllocation rPokers =
     Array (lElements + rElements) (lAllocation + rAllocation) (lPokers <> rPokers)
   sconcat list =
@@ -158,8 +159,8 @@ elements :: [Value] -> Array
 elements list =
   Array
     (length list)
-    (getSum (foldMap' (Sum . valueAllocation) list))
-    (fromList (fmap valuePoker list))
+    (sum (fmap valueAllocation list))
+    (foldMap (pure . valuePoker) list)
 
 
 -- * Object
