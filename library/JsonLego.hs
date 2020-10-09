@@ -12,13 +12,14 @@ module JsonLego
   string,
   array,
   object,
+  -- * Array
+  Array,
+  element,
+  elements,
   -- * Object
   Object,
   row,
   rows,
-  -- * Array
-  Array,
-  element,
 )
 where
 
@@ -153,6 +154,14 @@ instance Monoid Array where
 element :: Value -> Array
 element (Value {..}) =
   Array 1 valueAllocation (pure valuePoker)
+
+{-# INLINE elements #-}
+elements :: [Value] -> Array
+elements list =
+  Array
+    (length list)
+    (getSum (foldMap' (Sum . valueAllocation) list))
+    (fromList (fmap valuePoker list))
 
 
 -- * Object

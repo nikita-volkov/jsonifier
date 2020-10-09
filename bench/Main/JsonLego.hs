@@ -8,7 +8,7 @@ import qualified Main.Model as A
 resultValue :: A.Result -> Value
 resultValue A.Result{..} =
   object $
-  row "results" (array (foldMap (element . storyValue) results)) <>
+  row "results" (array (elements (fmap storyValue results))) <>
   row "max_id" ((intNumber . fromIntegral) max_id) <>
   row "since_id" ((intNumber . fromIntegral) since_id) <>
   row "refresh_url" (string refresh_url) <>
