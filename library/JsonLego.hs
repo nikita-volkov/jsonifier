@@ -10,7 +10,7 @@ module JsonLego
 where
 
 import JsonLego.Prelude
-import JsonLego.Poker (Poker)
+import PtrPoker (Poker)
 import qualified JsonLego.Allocation as Allocation
 import qualified JsonLego.Poker as Poker
 

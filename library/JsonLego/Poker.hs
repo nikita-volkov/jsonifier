@@ -2,18 +2,30 @@ module JsonLego.Poker
 where
 
 import JsonLego.Prelude
+import PtrPoker
 import qualified Acc
 
 
-type Poker =
-  Ptr Word8 -> IO (Ptr Word8)
+boolean :: Bool -> Poker
+boolean =
+  bool false true
+
+{-# NOINLINE true #-}
+true :: Poker
+true =
+  byteString "true"
+
+{-# NOINLINE false #-}
+false :: Poker
+false =
+  byteString "false"
 
 {-|
 > "key":value
 -}
 objectRow :: Text -> Poker -> Poker
 objectRow keyText valuePoker =
-  stringLiteral keyText >=> colon >=> valuePoker
+  stringLiteral keyText <> colon <> valuePoker
 
 stringLiteral :: Text -> Poker
 stringLiteral =
@@ -23,21 +35,18 @@ array :: Acc Poker -> Poker
 array =
   error "TODO"
 
+{-# NOINLINE emptyObject #-}
 emptyObject :: Poker
-emptyObject p =
-  error "TODO"
+emptyObject =
+  byteString "{}"
 
 object :: Acc Poker -> Poker
 object acc =
   case Acc.uncons acc of
     Just (h, t) ->
-      openingCurlyBracket >=> h >=> concatPrependingColon t >=> closingCurlyBracket
+      openingCurlyBracket <> h <> foldMap (colon <>) t <> closingCurlyBracket
     Nothing ->
       emptyObject
-
-concatPrependingColon :: Acc Poker -> Poker
-concatPrependingColon pokers p =
-  foldM (\ p poker -> colon p >>= poker) p pokers
 
 openingCurlyBracket :: Poker
 openingCurlyBracket =
