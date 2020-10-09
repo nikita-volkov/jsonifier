@@ -11,12 +11,13 @@ import qualified Hedgehog.Range as Range
 
 
 main =
-  defaultMain $ pure $ checkParallel $ Group "All" [
-    (,) "Rendering random JSON tree and parsing it produces the same tree" $
-    withTests 99 $ property $ do
-      aeson <- forAll aesonGen
-      tripping aeson (JL.value . aesonJL) Aeson.eitherDecodeStrict'
-    ]
+  defaultMain $ pure $ checkParallel $ $$(discover)
+
+prop_aesonRoundtrip =
+  withTests 99999 $
+  property $ do
+    aeson <- forAll aesonGen
+    tripping aeson (JL.value . aesonJL) Aeson.eitherDecodeStrict'
 
 aesonGen :: Gen Aeson.Value
 aesonGen =
