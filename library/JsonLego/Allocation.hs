@@ -36,8 +36,10 @@ stringBody :: Text -> Int
 stringBody (Text.Text arr off len) =
   go off 0
   where
+    maxOffset =
+      off + len
     go !i !size =
-      if i >= len
+      if i >= maxOffset
         then
           size
         else
