@@ -27,11 +27,12 @@ import qualified PtrPoker as Poker
 import qualified Data.NumberLength as NumberLength
 import qualified JsonLego.ByteString as ByteString
 import qualified Data.ByteString as ByteString
+import qualified Data.ByteString.Internal as ByteString
 
 
 run :: Value -> ByteString
-run =
-  error "TODO"
+run (Value {..}) =
+  ByteString.unsafeCreate valueAllocation (void . Poker.run valuePoker)
 
 
 -- * Value
