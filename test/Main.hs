@@ -1,36 +1,46 @@
 module Main where
 
-import Prelude hiding (assert)
-import Test.QuickCheck.Instances
-import Test.Tasty
-import Test.Tasty.Runners
-import Test.Tasty.HUnit
-import Test.Tasty.QuickCheck
-import Test.QuickCheck.Arbitrary.Generic
-import qualified Test.QuickCheck as QuickCheck
+import Prelude
+import Hedgehog
+import Hedgehog.Main
 import qualified Data.Aeson as Aeson
 import qualified JsonLego as JL
 import qualified Data.HashMap.Strict as HashMap
+import qualified Hedgehog.Gen as Gen
+import qualified Hedgehog.Range as Range
 
 
 main =
-  defaultMain $ 
-  testGroup "All tests" [
-    testProperty "Rendering random JSON tree and parsing it produces the same tree" $
-      \ aeson ->
-        let
-          byteString =
-            JL.value (aesonJL aeson)
-          decoding =
-            Aeson.eitherDecodeStrict' byteString
-          in Right aeson === decoding
+  defaultMain $ pure $ checkParallel $ Group "All" [
+    (,) "Rendering random JSON tree and parsing it produces the same tree" $
+    withTests 99 $ property $ do
+      aeson <- forAll aesonGen
+      tripping aeson (JL.value . aesonJL) Aeson.eitherDecodeStrict'
     ]
 
-instance Arbitrary Aeson.Value where
-  arbitrary =
-    genericArbitrary
-  shrink =
-    genericShrink
+aesonGen :: Gen Aeson.Value
+aesonGen =
+  value
+  where
+    value =
+      Gen.recursive Gen.choice [null, bool, number, string] [array, object]
+    null =
+      pure Aeson.Null
+    bool =
+      Aeson.Bool <$> Gen.bool
+    number =
+      Aeson.Number . realToFrac <$> Gen.double (Range.linearFrac (-9999) 9999)
+    string =
+      Aeson.String <$> Gen.text (Range.exponential 0 999) Gen.unicode
+    array =
+      Aeson.Array . fromList <$> Gen.list (Range.exponential 0 99) value
+    object =
+      Aeson.Object . fromList <$> Gen.list (Range.exponential 0 99) row
+      where
+        row =
+          (,) <$>
+            Gen.text (Range.exponential 0 99) Gen.unicode <*>
+            value
 
 aesonJL :: Aeson.Value -> JL.Value
 aesonJL =
