@@ -150,13 +150,11 @@ array acc =
       emptyArray
 
 {-# INLINE object #-}
-object :: Acc Poker -> Poker
-object acc =
-  case Acc.uncons acc of
-    Just (h, t) ->
-      openingCurlyBracket <> h <> foldMap (comma <>) t <> closingCurlyBracket
-    Nothing ->
-      emptyObject
+object :: Foldable f => f Poker -> Poker
+object f =
+  snd (foldl' (\ (first, acc) p -> (False, acc <> if first then p else comma <> p))
+      (True, openingCurlyBracket) f) <>
+  closingCurlyBracket
 
 {-# NOINLINE emptyArray #-}
 emptyArray :: Poker
