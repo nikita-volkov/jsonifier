@@ -3,7 +3,6 @@ where
 
 import JsonLego.Prelude
 import PtrPoker
-import qualified Acc
 import qualified CharQq as Q
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
@@ -148,11 +147,17 @@ array f =
   closingSquareBracket
 
 {-# INLINE object #-}
-object :: Foldable f => f Poker -> Poker
-object f =
-  snd (foldl' (\ (first, acc) p -> (False, acc <> if first then p else comma <> p))
-      (True, openingCurlyBracket) f) <>
-  closingCurlyBracket
+object :: Poker -> Poker
+object body =
+  openingCurlyBracket <> body <> closingCurlyBracket
+
+{-# INLINE objectBody #-}
+objectBody :: Foldable f => f Poker -> Poker
+objectBody =
+  foldl'
+    (\ (first, acc) p -> (False, acc <> if first then p else comma <> p))
+    (True, mempty)
+    >>> snd
 
 {-# NOINLINE emptyArray #-}
 emptyArray :: Poker

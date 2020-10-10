@@ -86,10 +86,6 @@ import Data.Text as Exports (Text)
 -------------------------
 import Data.ByteString as Exports (ByteString)
 
--- acc
--------------------------
-import Acc as Exports (Acc)
-
 -- scientific
 -------------------------
 import Data.Scientific as Exports (Scientific)

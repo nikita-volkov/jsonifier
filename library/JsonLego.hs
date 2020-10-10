@@ -104,7 +104,7 @@ array (Array {..}) =
     allocation =
       Allocation.array arrayElements arrayAllocation
     poker =
-      Poker.array arrayElementPokers
+      Poker.openingSquareBracket <> arrayPoker <> Poker.closingSquareBracket
 
 {-# INLINE object #-}
 object :: Object -> Value
@@ -114,7 +114,7 @@ object (Object {..}) =
     allocation =
       Allocation.object objectRows objectAllocation
     poker =
-      Poker.object objectRowPokers
+      Poker.openingCurlyBracket <> objectPoker <> Poker.closingCurlyBracket
 
 
 -- * Array
@@ -127,18 +127,25 @@ data Array =
     -}
     arrayElements :: Int,
     arrayAllocation :: Int,
-    arrayElementPokers :: Acc Poker
+    arrayPoker :: Poker
     }
 
 instance Semigroup Array where
   {-# INLINE (<>) #-}
-  Array lElements lAllocation lPokers <> Array rElements rAllocation rPokers =
-    Array (lElements + rElements) (lAllocation + rAllocation) (lPokers <> rPokers)
+  Array lElements lAllocation lPoker <> Array rElements rAllocation rPoker =
+    Array (lElements + rElements) (lAllocation + rAllocation) poker
+    where
+      poker =
+        if lElements > 0 && rElements > 0
+          then
+            lPoker <> Poker.comma <> rPoker
+          else
+            lPoker <> rPoker
   sconcat list =
     Array
       (getSum (foldMap (Sum . arrayElements) list))
       (getSum (foldMap (Sum . arrayAllocation) list))
-      (foldMap arrayElementPokers list)
+      (foldMap arrayPoker list)
 
 instance Monoid Array where
   mempty =
@@ -147,12 +154,12 @@ instance Monoid Array where
     Array
       (getSum (foldMap (Sum . arrayElements) list))
       (getSum (foldMap (Sum . arrayAllocation) list))
-      (foldMap arrayElementPokers list)
+      (foldMap arrayPoker list)
 
 {-# INLINE element #-}
 element :: Value -> Array
 element (Value {..}) =
-  Array 1 valueAllocation (pure valuePoker)
+  Array 1 valueAllocation valuePoker
 
 {-# INLINE elements #-}
 elements :: [Value] -> Array
@@ -160,7 +167,7 @@ elements list =
   Array
     (length list)
     (sum (fmap valueAllocation list))
-    (foldMap (pure . valuePoker) list)
+    (foldMap valuePoker list)
 
 
 -- * Object
@@ -177,13 +184,20 @@ data Object =
     Does not account for commas, colons and quotes.
     -}
     objectAllocation :: Int,
-    objectRowPokers :: Acc Poker
+    objectPoker :: Poker
     }
 
 instance Semigroup Object where
   {-# INLINE (<>) #-}
-  Object lRows lAlloc lPokers <> Object rRows rAlloc rPokers =
-    Object (lRows + rRows) (lAlloc + rAlloc) (lPokers <> rPokers)
+  Object lRows lAlloc lPoker <> Object rRows rAlloc rPoker =
+    Object (lRows + rRows) (lAlloc + rAlloc) poker
+    where
+      poker =
+        if lRows > 0 && rRows > 0
+          then
+            lPoker <> Poker.comma <> rPoker
+          else
+            lPoker <> rPoker
 
 instance Monoid Object where
   mempty =
@@ -192,20 +206,20 @@ instance Monoid Object where
 {-# INLINE row #-}
 row :: Text -> Value -> Object
 row keyText (Value {..}) =
-  Object amount allocation rowPokers
+  Object amount allocation poker
   where
     amount = 
       1
     allocation =
       Allocation.stringBody keyText +
       valueAllocation
-    rowPokers =
-      pure (Poker.objectRow keyText valuePoker)
+    poker =
+      Poker.objectRow keyText valuePoker
 
 {-# INLINE rows #-}
 rows :: [(Text, Value)] -> Object
 rows list =
-  Object amount allocation rowPokers
+  Object amount allocation poker
   where
     amount = 
       length list
@@ -213,6 +227,7 @@ rows list =
       list
         & fmap (\ (key, Value {..}) -> Allocation.stringBody key + valueAllocation)
         & sum
-    rowPokers =
+    poker =
       list
-        & foldMap (\ (key, Value {..}) -> pure (Poker.objectRow key valuePoker))
+        & fmap (\ (key, Value {..}) -> Poker.objectRow key valuePoker)
+        & Poker.objectBody
