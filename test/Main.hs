@@ -14,7 +14,7 @@ main =
   defaultMain $ pure $ checkParallel $ $$(discover)
 
 prop_aesonRoundtrip =
-  withTests 999999 $
+  withTests 99999 $
   property $ do
     aeson <- forAll aesonGen
     tripping aeson (JL.value . aesonJL) Aeson.eitherDecodeStrict'
