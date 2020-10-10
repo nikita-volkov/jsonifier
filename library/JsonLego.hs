@@ -136,11 +136,12 @@ instance Semigroup Array where
     Array (lElements + rElements) (lAllocation + rAllocation) poker
     where
       poker =
-        if lElements > 0 && rElements > 0
-          then
-            lPoker <> Poker.comma <> rPoker
-          else
-            lPoker <> rPoker
+        if lElements > 0
+          then if rElements > 0
+            then
+              lPoker <> Poker.comma <> rPoker
+            else lPoker
+          else rPoker
   sconcat list =
     Array
       (getSum (foldMap (Sum . arrayElements) list))
@@ -193,11 +194,12 @@ instance Semigroup Object where
     Object (lRows + rRows) (lAlloc + rAlloc) poker
     where
       poker =
-        if lRows > 0 && rRows > 0
-          then
-            lPoker <> Poker.comma <> rPoker
-          else
-            lPoker <> rPoker
+        if lRows > 0
+          then if rRows > 0
+            then
+              lPoker <> Poker.comma <> rPoker
+            else lPoker
+          else rPoker
 
 instance Monoid Object where
   mempty =
