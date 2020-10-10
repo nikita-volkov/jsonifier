@@ -6,6 +6,7 @@ import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
 
 
+{-# INLINE object #-}
 object :: Int -> Int -> Int
 object rowsAmount contentsAllocation =
   curlies + commas rowsAmount + colonsAndQuotes + contentsAllocation
@@ -15,6 +16,7 @@ object rowsAmount contentsAllocation =
     colonsAndQuotes =
       rowsAmount * 3
 
+{-# INLINE array #-}
 array :: Int -> Int -> Int
 array elementsAmount contentsAllocation =
   brackets + commas elementsAmount + contentsAllocation
@@ -22,6 +24,7 @@ array elementsAmount contentsAllocation =
     brackets =
       2
 
+{-# INLINE commas #-}
 commas rowsAmount =
   if rowsAmount <= 1
     then 0
