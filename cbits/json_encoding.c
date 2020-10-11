@@ -57,7 +57,6 @@ uint8_t* _hs_json_lego_encode_string
           if (x < 32) {
 
             uint8_t high_byte = (x & 0xFF00U) >> 8U;
-            uint8_t low_byte = (x & 0x00FFU);
 
             // \u
             *dest++ = 92;
@@ -66,8 +65,8 @@ uint8_t* _hs_json_lego_encode_string
             // hex encoding of 4 nibbles
             *dest++ = digits[high_byte >> 4 & 0xF];
             *dest++ = digits[high_byte & 0xF];
-            *dest++ = digits[low_byte >> 4 & 0xF];
-            *dest++ = digits[low_byte & 0xF];
+            *dest++ = digits[x >> 4 & 0xF];
+            *dest++ = digits[x & 0xF];
 
           } else {
             *dest++ = x;
