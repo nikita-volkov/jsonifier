@@ -37,11 +37,7 @@ intNumber =
 
 {-# INLINE string #-}
 string :: Text -> Poker
-string body =
-  doubleQuote <> stringBody body <> doubleQuote
-
-stringBody :: Text -> Poker
-stringBody (Text.Text arr off len) =
+string (Text.Text arr off len) =
   Poker $ \ ptr ->
     JsonEncodingFfi.string ptr (TextArray.aBA arr) (fromIntegral off) (fromIntegral len)
 

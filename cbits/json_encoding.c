@@ -27,6 +27,8 @@ uint8_t* _hs_json_lego_encode_string
   
   const uint16_t *src_end = src + src_length;
 
+  *dest++ = 34;
+
   while (src < src_end) {
     uint16_t x = *src++;
 
@@ -89,6 +91,8 @@ uint8_t* _hs_json_lego_encode_string
       *dest++ = (c & 0x3F) | 0x80;
     }
   }
+
+  *dest++ = 34;
 
   return dest;
 }
