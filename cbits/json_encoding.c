@@ -23,12 +23,11 @@ uint8_t* _hs_json_lego_encode_string
   size_t src_length
 )
 {
-  const uint16_t *srcend;
-
   src += src_offset;
-  srcend = src + src_length;
+  
+  const uint16_t *src_end = src + src_length;
 
-  while (src < srcend) {
+  while (src < src_end) {
     uint16_t x = *src++;
 
     if (x <= 0x7F) {
