@@ -15,6 +15,13 @@
 
 static const char* digits = "0123456789abcdef";
 
+static const uint16_t slash_slash_bytes = '\\' | '\\' << 8;
+static const uint16_t slash_doublequote_bytes = '\\' | '"' << 8;
+static const uint16_t slash_n_bytes = '\\' | 'n' << 8;
+static const uint16_t slash_r_bytes = '\\' | 'r' << 8;
+static const uint16_t slash_t_bytes = '\\' | 't' << 8;
+static const uint16_t slash_u_bytes = '\\' | 'u' << 8;
+
 uint8_t* _hs_json_lego_encode_string
 (
   uint8_t *dest,
@@ -35,32 +42,32 @@ uint8_t* _hs_json_lego_encode_string
     if (x <= 0x7F) {
       switch (x) {
         case 92:
-          *dest++ = 92;
-          *dest++ = 92;
+          *((uint16_t*) dest) = slash_slash_bytes;
+          dest += 2;
           continue;
         case 34:
-          *dest++ = 92;
-          *dest++ = 34;
+          *((uint16_t*) dest) = slash_doublequote_bytes;
+          dest += 2;
           continue;
         default:
           if (x < 32) {
             switch (x) {
               case 10:
-                *dest++ = 92;
-                *dest++ = 110;
+                *((uint16_t*) dest) = slash_n_bytes;
+                dest += 2;
                 continue;
               case 13:
-                *dest++ = 92;
-                *dest++ = 114;
+                *((uint16_t*) dest) = slash_r_bytes;
+                dest += 2;
                 continue;
               case 9:
-                *dest++ = 92;
-                *dest++ = 116;
+                *((uint16_t*) dest) = slash_t_bytes;
+                dest += 2;
                 continue;
               default:
                 // \u
-                *dest++ = 92;
-                *dest++ = 117;
+                *((uint16_t*) dest) = slash_u_bytes;
+                dest += 2;
 
                 // hex encoding of 4 nibbles
                 *dest++ = digits[x >> 12 & 0xF];
