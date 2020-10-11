@@ -40,31 +40,32 @@ uint8_t* _hs_json_lego_encode_string
           *dest++ = 92;
           *dest++ = 34;
           continue;
-        case 10:
-          *dest++ = 92;
-          *dest++ = 110;
-          continue;
-        case 13:
-          *dest++ = 92;
-          *dest++ = 114;
-          continue;
-        case 9:
-          *dest++ = 92;
-          *dest++ = 116;
-          continue;
         default:
           if (x < 32) {
+            switch (x) {
+              case 10:
+                *dest++ = 92;
+                *dest++ = 110;
+                continue;
+              case 13:
+                *dest++ = 92;
+                *dest++ = 114;
+                continue;
+              case 9:
+                *dest++ = 92;
+                *dest++ = 116;
+                continue;
+              default:
+                // \u
+                *dest++ = 92;
+                *dest++ = 117;
 
-            // \u
-            *dest++ = 92;
-            *dest++ = 117;
-
-            // hex encoding of 4 nibbles
-            *dest++ = digits[x >> 12 & 0xF];
-            *dest++ = digits[x >> 8 & 0xF];
-            *dest++ = digits[x >> 4 & 0xF];
-            *dest++ = digits[x & 0xF];
-
+                // hex encoding of 4 nibbles
+                *dest++ = digits[x >> 12 & 0xF];
+                *dest++ = digits[x >> 8 & 0xF];
+                *dest++ = digits[x >> 4 & 0xF];
+                *dest++ = digits[x & 0xF];
+            }
           } else {
             *dest++ = x;
           }
