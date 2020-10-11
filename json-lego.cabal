@@ -24,11 +24,12 @@ library
     JsonLego
   other-modules:
     JsonLego.Allocation
-    JsonLego.Base16EncodingTable
     JsonLego.ByteString
     JsonLego.Poker
+    JsonLego.Poker.Ffi.JsonEncoding
     JsonLego.Prelude
-    JsonLego.UncheckedShifting
+  c-sources:
+    cbits/json_encoding.c
   build-depends:
     base >=4.11 && <5,
     bytestring >=0.10.10 && <0.11,
