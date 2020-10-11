@@ -25,8 +25,8 @@ library
   other-modules:
     JsonLego.Allocation
     JsonLego.ByteString
+    JsonLego.Ffi.JsonEncoding
     JsonLego.Poker
-    JsonLego.Poker.Ffi.JsonEncoding
     JsonLego.Prelude
   c-sources:
     cbits/json_encoding.c

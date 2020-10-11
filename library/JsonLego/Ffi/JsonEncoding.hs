@@ -1,5 +1,5 @@
 {-# LANGUAGE UnliftedFFITypes #-}
-module JsonLego.Poker.Ffi.JsonEncoding
+module JsonLego.Ffi.JsonEncoding
 where
 
 import JsonLego.Prelude

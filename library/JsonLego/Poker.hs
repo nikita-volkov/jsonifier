@@ -7,7 +7,7 @@ import qualified Foreign.Marshal.Utils as Foreign
 import qualified CharQq as Q
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
-import qualified JsonLego.Poker.Ffi.JsonEncoding as JsonEncodingFfi
+import qualified JsonLego.Ffi.JsonEncoding as JsonEncodingFfi
 
 
 {-# NOINLINE null #-}
