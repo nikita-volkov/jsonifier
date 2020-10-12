@@ -13,6 +13,12 @@ import qualified Hedgehog.Range as Range
 main =
   defaultMain $ pure $ checkParallel $ $$(discover)
 
+prop_sample =
+  withTests 1 $
+  property $ do
+    sample <- liftIO $ load "samples/twitter100.json"
+    Aeson.eitherDecodeStrict' (JL.value (aesonJL sample)) === Right sample
+
 prop_aesonRoundtrip =
   withTests 99999 $
   property $ do
@@ -58,3 +64,8 @@ aesonJL =
       JL.array (foldMap (JL.element . aesonJL) a)
     Aeson.Object a ->
       JL.object (HashMap.foldMapWithKey (\ k -> JL.row k . aesonJL) a)
+
+load :: FilePath -> IO Aeson.Value
+load fileName =
+  Aeson.eitherDecodeFileStrict' fileName
+    >>= either fail return
