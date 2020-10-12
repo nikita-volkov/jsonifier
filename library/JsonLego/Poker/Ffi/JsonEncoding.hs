@@ -8,6 +8,6 @@ import GHC.Base (ByteArray#, MutableByteArray#)
 
 
 foreign import ccall unsafe
-  "static _hs_json_lego_encode_string"
+  "static encode_utf16_as_string"
   string
     :: Ptr Word8 -> ByteArray# -> CSize -> CSize -> IO (Ptr Word8)

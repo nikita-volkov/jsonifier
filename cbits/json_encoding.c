@@ -29,7 +29,7 @@ static const bool pass_through_by_septet[128] =
 static const uint16_t two_byte_seq_by_septet[128] =
   {0,0,0,0,0,0,0,0,0,slash_t_seq,slash_n_seq,0,0,slash_r_seq,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_doublequote_seq,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_slash_seq};
 
-uint8_t* _hs_json_lego_encode_string
+uint8_t* encode_utf16_as_string
 (
   uint8_t *dest,
   const uint16_t *src,
