@@ -68,7 +68,6 @@ benchmark bench
   main-is: Main.hs
   other-modules:
     Main.Aeson
-    Main.JsonBytesBuilder
     Main.JsonLego
     Main.Model
   ghc-options: -O2 -threaded "-with-rtsopts=-N"
@@ -77,6 +76,5 @@ benchmark bench
   build-depends:
     aeson >=1.5.4.1 && <1.6,
     gauge >=0.2.5 && <0.3,
-    json-bytes-builder >=0.5.2.1 && <0.6,
     json-lego,
     rerebase >=1.10.0.1 && <2
