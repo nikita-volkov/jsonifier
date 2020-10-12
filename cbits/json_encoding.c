@@ -9,6 +9,7 @@
  */
 
 #include <string.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -22,7 +23,10 @@ static const uint16_t slash_r_seq = '\\' | 'r' << 8;
 static const uint16_t slash_t_seq = '\\' | 't' << 8;
 static const uint16_t slash_u_seq = '\\' | 'u' << 8;
 
-static const uint16_t two_byte_seq_by_byte[128] =
+static const bool pass_through_by_septet[128] =
+  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+
+static const uint16_t two_byte_seq_by_septet[128] =
   {0,0,0,0,0,0,0,0,0,slash_t_seq,slash_n_seq,0,0,slash_r_seq,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_doublequote_seq,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_slash_seq};
 
 uint8_t* _hs_json_lego_encode_string
@@ -44,22 +48,24 @@ uint8_t* _hs_json_lego_encode_string
     uint16_t x = *src++;
 
     if (x <= 0x7F) {
-      uint16_t two_byte_seq = two_byte_seq_by_byte[x];
-      if (two_byte_seq) {
-        *((uint16_t*) dest) = two_byte_seq;
-        dest += 2;
-      } else if (x < 32) {
-        // \u
-        *((uint16_t*) dest) = slash_u_seq;
-        dest += 2;
-
-        // hex encoding of 4 nibbles
-        *dest++ = digits[x >> 12 & 0xF];
-        *dest++ = digits[x >> 8 & 0xF];
-        *dest++ = digits[x >> 4 & 0xF];
-        *dest++ = digits[x & 0xF];
-      } else {
+      if (pass_through_by_septet[x]) {
         *dest++ = x;
+      } else {
+        uint16_t two_byte_seq = two_byte_seq_by_septet[x];
+        if (two_byte_seq) {
+          *((uint16_t*) dest) = two_byte_seq;
+          dest += 2;
+        } else {
+          // \u
+          *((uint16_t*) dest) = slash_u_seq;
+          dest += 2;
+
+          // hex encoding of 4 nibbles
+          *dest++ = digits[x >> 12 & 0xF];
+          *dest++ = digits[x >> 8 & 0xF];
+          *dest++ = digits[x >> 4 & 0xF];
+          *dest++ = digits[x & 0xF];
+        }
       }
     }
     else if (x <= 0x7FF) {
