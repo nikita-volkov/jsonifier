@@ -46,7 +46,9 @@ geoValue A.Geo{..} =
 
 coordinatesValue :: (Double, Double) -> Value
 coordinatesValue (x, y) =
-  array (elements [doubleNumber x, doubleNumber y])
+  array $
+  element (doubleNumber x) <>
+  element (doubleNumber y)
 
 metadataValue :: A.Metadata -> Value
 metadataValue A.Metadata{..} =
