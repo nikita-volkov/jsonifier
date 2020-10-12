@@ -83,19 +83,13 @@ int64Number a =
 
 {-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Value
-doubleNumber a =
-  let
-    byteString =
-      ByteString.double a
-    in Value (ByteString.length byteString) (Poker.byteString byteString)
+doubleNumber =
+  byteString . ByteString.double
 
 {-# INLINE scientificNumber #-}
 scientificNumber :: Scientific -> Value
-scientificNumber a =
-  let
-    byteString =
-      ByteString.scientific a
-    in Value (ByteString.length byteString) (Poker.byteString byteString)
+scientificNumber =
+  byteString . ByteString.scientific
 
 {-# INLINE string #-}
 string :: Text -> Value
@@ -124,6 +118,11 @@ object (Object {..}) =
       Allocation.object objectRows objectAllocation
     poker =
       Poker.openingCurlyBracket <> objectPoker <> Poker.closingCurlyBracket
+
+{-# INLINE byteString #-}
+byteString :: ByteString -> Value
+byteString a =
+  Value (ByteString.length a) (Poker.byteString a)
 
 
 -- * Array
