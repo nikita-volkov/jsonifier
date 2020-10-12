@@ -13,16 +13,39 @@ import qualified JsonLego
 
 main =
   do
-    input <- load "samples/twitter100.json"
+    twitter10000Data <- load "samples/twitter10000.json"
+    twitter1000Data <- load "samples/twitter1000.json"
+    twitter100Data <- load "samples/twitter100.json"
+    twitter10Data <- load "samples/twitter10.json"
 
     -- Ensure that encoders are correct
-    test "json-lego" encodeWithJsonLego input
-    test "aeson" encodeWithAeson input
+    test "json-lego" encodeWithJsonLego twitter100Data
+    test "aeson" encodeWithAeson twitter100Data
 
-    deepseq input $ defaultMain [
-      bench "json-lego" (nf encodeWithJsonLego input)
+    deepseq (twitter10000Data, twitter1000Data, twitter100Data, twitter10Data) $ defaultMain [
+      bgroup "twitter10000" [
+        bench "json-lego" (nf encodeWithJsonLego twitter10000Data)
+        ,
+        bench "aeson" (nf encodeWithAeson twitter10000Data)
+        ]
       ,
-      bench "aeson" (nf encodeWithAeson input)
+      bgroup "twitter1000" [
+        bench "json-lego" (nf encodeWithJsonLego twitter1000Data)
+        ,
+        bench "aeson" (nf encodeWithAeson twitter1000Data)
+        ]
+      ,
+      bgroup "twitter100" [
+        bench "json-lego" (nf encodeWithJsonLego twitter100Data)
+        ,
+        bench "aeson" (nf encodeWithAeson twitter100Data)
+        ]
+      ,
+      bgroup "twitter10" [
+        bench "json-lego" (nf encodeWithJsonLego twitter10Data)
+        ,
+        bench "aeson" (nf encodeWithAeson twitter10Data)
+        ]
       ]
 
 load :: FilePath -> IO Main.Model.Result
