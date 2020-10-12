@@ -15,23 +15,15 @@
 
 static const char* digits = "0123456789abcdef";
 
-static const uint16_t slash_slash_bytes = '\\' | '\\' << 8;
-static const uint16_t slash_doublequote_bytes = '\\' | '"' << 8;
-static const uint16_t slash_n_bytes = '\\' | 'n' << 8;
-static const uint16_t slash_r_bytes = '\\' | 'r' << 8;
-static const uint16_t slash_t_bytes = '\\' | 't' << 8;
-static const uint16_t slash_u_bytes = '\\' | 'u' << 8;
+static const uint16_t slash_slash_seq = '\\' | '\\' << 8;
+static const uint16_t slash_doublequote_seq = '\\' | '"' << 8;
+static const uint16_t slash_n_seq = '\\' | 'n' << 8;
+static const uint16_t slash_r_seq = '\\' | 'r' << 8;
+static const uint16_t slash_t_seq = '\\' | 't' << 8;
+static const uint16_t slash_u_seq = '\\' | 'u' << 8;
 
-static uint16_t two_byte_seq_array[128];
-
-void init(void)
-{
-  two_byte_seq_array[92] = slash_slash_bytes;
-  two_byte_seq_array[34] = slash_doublequote_bytes;
-  two_byte_seq_array[10] = slash_n_bytes;
-  two_byte_seq_array[13] = slash_r_bytes;
-  two_byte_seq_array[9] = slash_t_bytes;
-}
+static const uint16_t two_byte_seq_by_byte[128] =
+  {0,0,0,0,0,0,0,0,0,slash_t_seq,slash_n_seq,0,0,slash_r_seq,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_doublequote_seq,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_slash_seq};
 
 uint8_t* _hs_json_lego_encode_string
 (
@@ -41,7 +33,6 @@ uint8_t* _hs_json_lego_encode_string
   size_t src_length
 )
 {
-  init();
 
   src += src_offset;
   
@@ -53,13 +44,13 @@ uint8_t* _hs_json_lego_encode_string
     uint16_t x = *src++;
 
     if (x <= 0x7F) {
-      uint16_t two_byte_seq = two_byte_seq_array[x];
+      uint16_t two_byte_seq = two_byte_seq_by_byte[x];
       if (two_byte_seq) {
         *((uint16_t*) dest) = two_byte_seq;
         dest += 2;
       } else if (x < 32) {
         // \u
-        *((uint16_t*) dest) = slash_u_bytes;
+        *((uint16_t*) dest) = slash_u_seq;
         dest += 2;
 
         // hex encoding of 4 nibbles
