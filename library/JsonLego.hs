@@ -7,6 +7,7 @@ module JsonLego
   null,
   bool,
   intNumber,
+  int64Number,
   doubleNumber,
   scientificNumber,
   string,
@@ -72,6 +73,13 @@ intNumber a =
   Value
     (NumberLength.signedNumberLength a)
     (Poker.asciiDecInt a)
+
+{-# INLINE int64Number #-}
+int64Number :: Int64 -> Value
+int64Number a =
+  Value
+    (NumberLength.signedNumberLength a)
+    (Poker.asciiDecInt64 a)
 
 {-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Value
