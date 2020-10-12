@@ -23,7 +23,8 @@ prop_aesonRoundtrip =
   withTests 99999 $
   property $ do
     aeson <- forAll aesonGen
-    tripping aeson (JL.value . aesonJL) Aeson.eitherDecodeStrict'
+    encoding <- forAll (JL.value <$> jlGen aeson)
+    Aeson.eitherDecodeStrict' encoding === Right aeson
 
 aesonGen :: Gen Aeson.Value
 aesonGen =
@@ -48,6 +49,36 @@ aesonGen =
           (,) <$>
             Gen.text (Range.exponential 0 99) Gen.unicode <*>
             value
+
+jlGen :: Aeson.Value -> Gen JL.Value
+jlGen =
+  \ case
+    Aeson.Null ->
+      return $ JL.null
+    Aeson.Bool a ->
+      return $ JL.bool a
+    Aeson.Number a ->
+      return $ JL.scientificNumber a
+    Aeson.String a ->
+      return $ JL.string a
+    Aeson.Array a ->
+      Gen.choice [
+        a & traverse jlGen
+          & fmap (JL.array . JL.elements . toList)
+        ,
+        a & traverse jlGen
+          & fmap (JL.array . foldMap JL.element)
+        ]
+    Aeson.Object a ->
+      Gen.choice [
+        HashMap.toList a
+          & traverse (traverse jlGen)
+          & fmap (JL.object . JL.rows)
+        ,
+        HashMap.toList a
+          & traverse (\ (k, v) -> JL.row k <$> jlGen v)
+          & fmap (JL.object . fold)
+        ]
 
 aesonJL :: Aeson.Value -> JL.Value
 aesonJL =

@@ -176,7 +176,7 @@ elements list =
   Array
     (length list)
     (sum (fmap valueAllocation list))
-    (foldMap valuePoker list)
+    (list & fmap valuePoker & intersperse Poker.comma & fold)
 
 
 -- * Object
