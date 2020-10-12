@@ -169,12 +169,19 @@ element (Value {..}) =
   Array 1 valueAllocation valuePoker
 
 {-# INLINE elements #-}
-elements :: [Value] -> Array
+elements :: Foldable f => f Value -> Array
 elements list =
-  Array
-    (length list)
-    (sum (fmap valueAllocation list))
-    (list & fmap valuePoker & intersperse Poker.comma & fold)
+  foldr step finalize list True 0 0 mempty
+  where
+    step (Value{..}) next first !size !allocation !poker =
+      if first
+        then
+          next False (succ size) valueAllocation valuePoker
+        else
+          next False (succ size) (allocation + valueAllocation)
+            (poker <> Poker.comma <> valuePoker)
+    finalize _ size allocation poker =
+      Array size allocation poker
 
 
 -- * Object
