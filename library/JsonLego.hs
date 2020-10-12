@@ -179,7 +179,7 @@ elements list =
     step (Value{..}) next first !size !allocation !poker =
       if first
         then
-          next False (succ size) valueAllocation valuePoker
+          next False 1 valueAllocation valuePoker
         else
           next False (succ size) (allocation + valueAllocation)
             (poker <> Poker.comma <> valuePoker)
@@ -235,17 +235,22 @@ row keyText (Value {..}) =
       Poker.objectRow keyText valuePoker
 
 {-# INLINE rows #-}
-rows :: [(Text, Value)] -> Object
-rows list =
-  Object amount allocation poker
+rows :: Foldable f => f (Text, Value) -> Object
+rows f =
+  foldr step finalize f True 0 0 mempty
   where
-    amount = 
-      length list
-    allocation =
-      list
-        & fmap (\ (key, Value {..}) -> Allocation.stringBody key + valueAllocation)
-        & sum
-    poker =
-      list
-        & fmap (\ (key, Value {..}) -> Poker.objectRow key valuePoker)
-        & Poker.objectBody
+    step (key, Value{..}) next first !size !allocation !poker =
+      if first
+        then
+          next False 1 rowAllocation rowPoker
+        else
+          next False (succ size) (allocation + rowAllocation)
+            (poker <> Poker.comma <> rowPoker)
+      where
+        rowAllocation =
+          Allocation.stringBody key +
+          valueAllocation
+        rowPoker =
+          Poker.objectRow key valuePoker
+    finalize _ =
+      Object
