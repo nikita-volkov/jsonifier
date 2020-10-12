@@ -13,14 +13,6 @@ module JsonLego
   string,
   array,
   object,
-  -- * Array
-  Array,
-  element,
-  elements,
-  -- * Object
-  Object,
-  row,
-  rows,
 )
 where
 
@@ -101,78 +93,9 @@ string text =
       Poker.string text
     in Value allocation poker
 
-array :: Array -> Value
-array (Array {..}) =
-  Value allocation poker
-  where
-    allocation =
-      Allocation.array arrayElements arrayAllocation
-    poker =
-      Poker.openingSquareBracket <> arrayPoker <> Poker.closingSquareBracket
-
-object :: Object -> Value
-object (Object {..}) =
-  Value allocation poker
-  where
-    allocation =
-      Allocation.object objectRows objectAllocation
-    poker =
-      Poker.openingCurlyBracket <> objectPoker <> Poker.closingCurlyBracket
-
-{-# INLINE byteString #-}
-byteString :: ByteString -> Value
-byteString a =
-  Value (ByteString.length a) (Poker.byteString a)
-
-
--- * Array
--------------------------
-
-data Array =
-  Array {
-    {-|
-    Amount of elements.
-    -}
-    arrayElements :: Int,
-    arrayAllocation :: Int,
-    arrayPoker :: Poker
-    }
-
-instance Semigroup Array where
-  {-# INLINE (<>) #-}
-  Array lElements lAllocation lPoker <> Array rElements rAllocation rPoker =
-    Array (lElements + rElements) (lAllocation + rAllocation) poker
-    where
-      poker =
-        if lElements > 0
-          then if rElements > 0
-            then
-              lPoker <> Poker.comma <> rPoker
-            else lPoker
-          else rPoker
-  sconcat list =
-    Array
-      (getSum (foldMap (Sum . arrayElements) list))
-      (getSum (foldMap (Sum . arrayAllocation) list))
-      (foldMap arrayPoker list)
-
-instance Monoid Array where
-  mempty =
-    Array 0 0 mempty
-  mconcat list =
-    Array
-      (getSum (foldMap (Sum . arrayElements) list))
-      (getSum (foldMap (Sum . arrayAllocation) list))
-      (foldMap arrayPoker list)
-
-{-# INLINE element #-}
-element :: Value -> Array
-element (Value {..}) =
-  Array 1 valueAllocation valuePoker
-
-{-# INLINE elements #-}
-elements :: Foldable f => f Value -> Array
-elements list =
+{-# INLINE array #-}
+array :: Foldable f => f Value -> Value
+array list =
   foldr step finalize list True 0 0 mempty
   where
     step (Value{..}) next first !size !allocation !poker =
@@ -182,60 +105,17 @@ elements list =
         else
           next False (succ size) (allocation + valueAllocation)
             (poker <> Poker.comma <> valuePoker)
-    finalize _ size allocation poker =
-      Array size allocation poker
+    finalize _ size contentsAllocation bodyPoker =
+      Value allocation poker
+      where
+        allocation =
+          Allocation.array size contentsAllocation
+        poker =
+          Poker.openingSquareBracket <> bodyPoker <> Poker.closingSquareBracket
 
-
--- * Object
--------------------------
-
-data Object =
-  Object {
-    {-|
-    Amount of rows.
-    -}
-    objectRows :: Int,
-    {-|
-    Allocation size for all keys and values.
-    Does not account for commas, colons and quotes.
-    -}
-    objectAllocation :: Int,
-    objectPoker :: Poker
-    }
-
-instance Semigroup Object where
-  {-# INLINE (<>) #-}
-  Object lRows lAlloc lPoker <> Object rRows rAlloc rPoker =
-    Object (lRows + rRows) (lAlloc + rAlloc) poker
-    where
-      poker =
-        if lRows > 0
-          then if rRows > 0
-            then
-              lPoker <> Poker.comma <> rPoker
-            else lPoker
-          else rPoker
-
-instance Monoid Object where
-  mempty =
-    Object 0 0 mempty
-
-{-# INLINE row #-}
-row :: Text -> Value -> Object
-row keyText (Value {..}) =
-  Object amount allocation poker
-  where
-    amount = 
-      1
-    allocation =
-      Allocation.stringBody keyText +
-      valueAllocation
-    poker =
-      Poker.objectRow keyText valuePoker
-
-{-# INLINE rows #-}
-rows :: Foldable f => f (Text, Value) -> Object
-rows f =
+{-# INLINE object #-}
+object :: Foldable f => f (Text, Value) -> Value
+object f =
   foldr step finalize f True 0 0 mempty
   where
     step (key, Value{..}) next first !size !allocation !poker =
@@ -251,5 +131,15 @@ rows f =
           valueAllocation
         rowPoker =
           Poker.objectRow key valuePoker
-    finalize _ =
-      Object
+    finalize _ size contentsAllocation bodyPoker =
+      Value allocation poker
+      where
+        allocation =
+          Allocation.object size contentsAllocation
+        poker =
+          Poker.openingCurlyBracket <> bodyPoker <> Poker.closingCurlyBracket
+
+{-# INLINE byteString #-}
+byteString :: ByteString -> Value
+byteString a =
+  Value (ByteString.length a) (Poker.byteString a)

@@ -27,14 +27,16 @@ data Genre =
 
 artist :: Artist -> J.Value
 artist (Artist name genres) =
-  J.object $
-    J.row "name" (J.string name) <>
-    J.row "genres" (J.array (foldMap (J.element . genre) genres))
+  J.object [
+    ("name", J.string name),
+    ("genres", J.array (fmap genre genres))
+    ]
 
 genre :: Genre -> J.Value
 genre (Genre name) =
-  J.object $
-    J.row "name" (J.string name)
+  J.object [
+    ("name", J.string name)
+    ]
 
 metallica :: J.Value
 metallica =

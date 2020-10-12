@@ -62,23 +62,12 @@ jlGen =
     Aeson.String a ->
       return $ JL.string a
     Aeson.Array a ->
-      Gen.choice [
-        a & traverse jlGen
-          & fmap (JL.array . JL.elements . toList)
-        ,
-        a & traverse jlGen
-          & fmap (JL.array . foldMap JL.element)
-        ]
+      a & traverse jlGen
+        & fmap JL.array
     Aeson.Object a ->
-      Gen.choice [
-        HashMap.toList a
-          & traverse (traverse jlGen)
-          & fmap (JL.object . JL.rows)
-        ,
-        HashMap.toList a
-          & traverse (\ (k, v) -> JL.row k <$> jlGen v)
-          & fmap (JL.object . fold)
-        ]
+      HashMap.toList a
+        & traverse (traverse jlGen)
+        & fmap JL.object
 
 aesonJL :: Aeson.Value -> JL.Value
 aesonJL =
@@ -92,9 +81,9 @@ aesonJL =
     Aeson.String a ->
       JL.string a
     Aeson.Array a ->
-      JL.array (foldMap (JL.element . aesonJL) a)
+      JL.array (fmap aesonJL a)
     Aeson.Object a ->
-      JL.object (HashMap.foldMapWithKey (\ k -> JL.row k . aesonJL) a)
+      JL.object (HashMap.foldMapWithKey (\ k -> (: []) . (,) k . aesonJL) a)
 
 load :: FilePath -> IO Aeson.Value
 load fileName =
