@@ -104,7 +104,6 @@ string text =
       Poker.string text
     in Value allocation poker
 
-{-# INLINE array #-}
 array :: Array -> Value
 array (Array {..}) =
   Value allocation poker
@@ -114,7 +113,6 @@ array (Array {..}) =
     poker =
       Poker.openingSquareBracket <> arrayPoker <> Poker.closingSquareBracket
 
-{-# INLINE object #-}
 object :: Object -> Value
 object (Object {..}) =
   Value allocation poker
