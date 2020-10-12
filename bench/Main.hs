@@ -23,28 +23,24 @@ main =
     test "aeson" encodeWithAeson twitter100Data
 
     deepseq (twitter10000Data, twitter1000Data, twitter100Data, twitter10Data) $ defaultMain [
-      bgroup "twitter10000" [
-        bench "json-lego" (nf encodeWithJsonLego twitter10000Data)
+      bgroup "json-lego" [
+        bench "10" (nf encodeWithJsonLego twitter10Data)
         ,
-        bench "aeson" (nf encodeWithAeson twitter10000Data)
+        bench "100" (nf encodeWithJsonLego twitter100Data)
+        ,
+        bench "1000" (nf encodeWithJsonLego twitter1000Data)
+        ,
+        bench "10000" (nf encodeWithJsonLego twitter10000Data)
         ]
       ,
-      bgroup "twitter1000" [
-        bench "json-lego" (nf encodeWithJsonLego twitter1000Data)
+      bgroup "aeson" [
+        bench "10" (nf encodeWithAeson twitter10Data)
         ,
-        bench "aeson" (nf encodeWithAeson twitter1000Data)
-        ]
-      ,
-      bgroup "twitter100" [
-        bench "json-lego" (nf encodeWithJsonLego twitter100Data)
+        bench "100" (nf encodeWithAeson twitter100Data)
         ,
-        bench "aeson" (nf encodeWithAeson twitter100Data)
-        ]
-      ,
-      bgroup "twitter10" [
-        bench "json-lego" (nf encodeWithJsonLego twitter10Data)
+        bench "1000" (nf encodeWithAeson twitter1000Data)
         ,
-        bench "aeson" (nf encodeWithAeson twitter10Data)
+        bench "10000" (nf encodeWithAeson twitter10000Data)
         ]
       ]
 
