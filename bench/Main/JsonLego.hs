@@ -22,21 +22,22 @@ resultValue A.Result{..} =
 
 storyValue :: A.Story -> Value
 storyValue A.Story{..} =
-  object $
-  row "from_user_id_str" (string from_user_id_str) <>
-  row "profile_image_url" (string profile_image_url) <>
-  row "created_at" (string created_at) <>
-  row "from_user" (string from_user) <>
-  row "id_str" (string id_str) <>
-  row "metadata" (metadataValue metadata) <>
-  row "to_user_id" (maybe null int64Number to_user_id) <>
-  row "text" (string text) <>
-  row "id" (int64Number id) <>
-  row "from_user_id" (int64Number from_user_id) <>
-  row "geo" (maybe null geoValue geo) <>
-  row "iso_language_code" (string iso_language_code) <>
-  row "to_user_id_str" (maybe null string to_user_id_str) <>
-  row "source" (string source)
+  object $ rows [
+    ("from_user_id_str", string from_user_id_str),
+    ("profile_image_url", string profile_image_url),
+    ("created_at", string created_at),
+    ("from_user", string from_user),
+    ("id_str", string id_str),
+    ("metadata", metadataValue metadata),
+    ("to_user_id", maybe null int64Number to_user_id),
+    ("text", string text),
+    ("id", int64Number id),
+    ("from_user_id", int64Number from_user_id),
+    ("geo", maybe null geoValue geo),
+    ("iso_language_code", string iso_language_code),
+    ("to_user_id_str", maybe null string to_user_id_str),
+    ("source", string source)
+    ]
 
 geoValue :: A.Geo -> Value
 geoValue A.Geo{..} =
