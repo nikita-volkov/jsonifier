@@ -10,7 +10,6 @@ import qualified Data.Text.Array as TextArray
 import qualified JsonLego.Ffi.JsonEncoding as JsonEncodingFfi
 
 
-{-# NOINLINE null #-}
 null :: Poker
 null =
   byteString "null"
@@ -20,12 +19,10 @@ boolean :: Bool -> Poker
 boolean =
   bool false true
 
-{-# NOINLINE true #-}
 true :: Poker
 true =
   byteString "true"
 
-{-# NOINLINE false #-}
 false :: Poker
 false =
   byteString "false"
@@ -69,12 +66,10 @@ objectBody =
     (True, mempty)
     >>> snd
 
-{-# NOINLINE emptyArray #-}
 emptyArray :: Poker
 emptyArray =
   byteString "[]"
 
-{-# NOINLINE emptyObject #-}
 emptyObject :: Poker
 emptyObject =
   byteString "{}"
