@@ -1,9 +1,11 @@
+{-# LANGUAGE UnliftedFFITypes #-}
 module JsonLego.Allocation
 where
 
 import JsonLego.Prelude
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
+import qualified JsonLego.Ffi.JsonAllocation as JsonAllocationFfi
 
 
 {-# INLINE object #-}
@@ -37,39 +39,7 @@ https://hackage.haskell.org/package/text-1.2.4.0/docs/src/Data.Text.Encoding.htm
 -}
 stringBody :: Text -> Int
 stringBody (Text.Text arr off len) =
-  go off 0
-  where
-    maxOffset =
-      off + len
-    go !i !size =
-      if i >= maxOffset
-        then
-          size
-        else
-          if w <= 0x7F
-            then
-              case w of
-                92 {- \\ -} -> step 1 2
-                34 {- \" -} -> step 1 2
-                _ -> 
-                  if w < 32
-                    then case w of
-                      10 {- \n -} -> step 1 2
-                      13 {- \r -} -> step 1 2
-                      9 {- \t -} -> step 1 2
-                      _ {- control -} -> step 1 6
-                    else
-                      step 1 1
-            else if w <= 0x7FF
-              then
-                step 1 2
-              else if w <= 0xDBFF && w >= 0xD800
-                then
-                  step 2 4
-                else
-                  step 1 3
-          where
-        w =
-          TextArray.unsafeIndex arr i
-        step a b =
-          go (i + a) (size + b)
+  JsonAllocationFfi.string
+    (TextArray.aBA arr) (fromIntegral off) (fromIntegral len)
+    & unsafeDupablePerformIO
+    & fromIntegral

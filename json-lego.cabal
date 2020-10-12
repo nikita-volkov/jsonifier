@@ -25,10 +25,12 @@ library
   other-modules:
     JsonLego.Allocation
     JsonLego.ByteString
+    JsonLego.Ffi.JsonAllocation
     JsonLego.Ffi.JsonEncoding
     JsonLego.Poker
     JsonLego.Prelude
   c-sources:
+    cbits/json_allocation.c
     cbits/json_encoding.c
   build-depends:
     base >=4.11 && <5,
