@@ -83,8 +83,11 @@ int64Number a =
 
 {-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Value
-doubleNumber =
-  scientificNumber . realToFrac
+doubleNumber a =
+  let
+    byteString =
+      ByteString.double a
+    in Value (ByteString.length byteString) (Poker.byteString byteString)
 
 {-# INLINE scientificNumber #-}
 scientificNumber :: Scientific -> Value
