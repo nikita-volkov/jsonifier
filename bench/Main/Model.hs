@@ -43,7 +43,7 @@ data Story =
     to_user_id_str    :: Maybe Text,
     source            :: Text
   }
-  deriving (Show, Typeable, Data, Generic)
+  deriving (Eq, Show, Typeable, Data, Generic)
 
 instance NFData Story
 
@@ -61,6 +61,6 @@ data Result =
     max_id_str       :: Text,
     query            :: Text
   }
-  deriving (Show, Typeable, Data, Generic)
+  deriving (Eq, Show, Typeable, Data, Generic)
 
 instance NFData Result
