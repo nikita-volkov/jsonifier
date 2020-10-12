@@ -1,9 +1,9 @@
 module JsonLego
 (
   -- * ByteString
-  value,
-  -- * Value
-  Value,
+  json,
+  -- * Json
+  Json,
   null,
   bool,
   intNumber,
@@ -28,77 +28,77 @@ import qualified Data.ByteString.Internal as ByteString
 
 
 {-|
-Render a value builder into strict bytestring.
+Render a JSON builder into strict bytestring.
 -}
-{-# INLINE value #-}
-value :: Value -> ByteString
-value (Value {..}) =
+{-# INLINE json #-}
+json :: Json -> ByteString
+json (Json {..}) =
   ByteString.unsafeCreate valueAllocation (void . Poker.run valuePoker)
 
 
--- * Value
+-- * Json
 -------------------------
 
-data Value =
-  Value {
+data Json =
+  Json {
     valueAllocation :: Int,
     valuePoker :: Poker
     }
 
 {-# INLINE null #-}
-null :: Value
+null :: Json
 null =
-  Value 4 Poker.null
+  Json 4 Poker.null
 
 {-# INLINE bool #-}
-bool :: Bool -> Value
+bool :: Bool -> Json
 bool =
   \ case
     True ->
-      Value 4 Poker.true
+      Json 4 Poker.true
     False ->
-      Value 5 Poker.false
+      Json 5 Poker.false
 
 {-# INLINE intNumber #-}
-intNumber :: Int -> Value
+intNumber :: Int -> Json
 intNumber a =
-  Value
+  Json
     (NumberLength.signedNumberLength a)
     (Poker.asciiDecInt a)
 
 {-# INLINE int64Number #-}
-int64Number :: Int64 -> Value
+int64Number :: Int64 -> Json
 int64Number a =
-  Value
+  Json
     (NumberLength.signedNumberLength a)
     (Poker.asciiDecInt64 a)
 
 {-# INLINE doubleNumber #-}
-doubleNumber :: Double -> Value
+doubleNumber :: Double -> Json
 doubleNumber =
   byteString . ByteString.double
 
 {-# INLINE scientificNumber #-}
-scientificNumber :: Scientific -> Value
+scientificNumber :: Scientific -> Json
 scientificNumber =
   byteString . ByteString.scientific
 
 {-# INLINE string #-}
-string :: Text -> Value
+string :: Text -> Json
 string text =
   let
     allocation =
       2 + Allocation.stringBody text
     poker =
       Poker.string text
-    in Value allocation poker
+    in Json allocation poker
 
 {-# INLINE array #-}
-array :: Foldable f => f Value -> Value
+array :: Foldable f => f Json -> Json
 array list =
   foldr step finalize list True 0 0 mempty
   where
-    step (Value{..}) next first !size !allocation !poker =
+    step (Json{..}) next first !size !allocation !poker =
       if first
         then
           next False 1 valueAllocation valuePoker
@@ -106,7 +106,7 @@ array list =
           next False (succ size) (allocation + valueAllocation)
             (poker <> Poker.comma <> valuePoker)
     finalize _ size contentsAllocation bodyPoker =
-      Value allocation poker
+      Json allocation poker
       where
         allocation =
           Allocation.array size contentsAllocation
@@ -114,11 +114,11 @@ array list =
           Poker.openingSquareBracket <> bodyPoker <> Poker.closingSquareBracket
 
 {-# INLINE object #-}
-object :: Foldable f => f (Text, Value) -> Value
+object :: Foldable f => f (Text, Json) -> Json
 object f =
   foldr step finalize f True 0 0 mempty
   where
-    step (key, Value{..}) next first !size !allocation !poker =
+    step (key, Json{..}) next first !size !allocation !poker =
       if first
         then
           next False 1 rowAllocation rowPoker
@@ -132,7 +132,7 @@ object f =
         rowPoker =
           Poker.objectRow key valuePoker
     finalize _ size contentsAllocation bodyPoker =
-      Value allocation poker
+      Json allocation poker
       where
         allocation =
           Allocation.object size contentsAllocation
@@ -140,6 +140,6 @@ object f =
           Poker.openingCurlyBracket <> bodyPoker <> Poker.closingCurlyBracket
 
 {-# INLINE byteString #-}
-byteString :: ByteString -> Value
+byteString :: ByteString -> Json
 byteString a =
-  Value (ByteString.length a) (Poker.byteString a)
+  Json (ByteString.length a) (Poker.byteString a)

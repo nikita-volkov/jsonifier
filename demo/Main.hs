@@ -9,7 +9,7 @@ import qualified Data.ByteString.Char8 as AsciiByteString
 -- 
 -- > {"name":"Metallica","genres":[{"name":"Metal"},{"name":"Rock"},{"name":"Blues"}]}
 main =
-  AsciiByteString.putStrLn (J.value metallica)
+  AsciiByteString.putStrLn (J.json metallicaJson)
 
 
 -- * Model
@@ -25,19 +25,19 @@ data Genre =
 -- * Builders
 -------------------------
 
-artist :: Artist -> J.Value
-artist (Artist name genres) =
+artistJson :: Artist -> J.Json
+artistJson (Artist name genres) =
   J.object [
     ("name", J.string name),
-    ("genres", J.array (fmap genre genres))
+    ("genres", J.array (fmap genreJson genres))
     ]
 
-genre :: Genre -> J.Value
-genre (Genre name) =
+genreJson :: Genre -> J.Json
+genreJson (Genre name) =
   J.object [
     ("name", J.string name)
     ]
 
-metallica :: J.Value
-metallica =
-  artist (Artist "Metallica" [Genre "Metal", Genre "Rock", Genre "Blues"])
+metallicaJson :: J.Json
+metallicaJson =
+  artistJson (Artist "Metallica" [Genre "Metal", Genre "Rock", Genre "Blues"])

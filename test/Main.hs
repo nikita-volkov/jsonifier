@@ -17,13 +17,13 @@ prop_sample =
   withTests 1 $
   property $ do
     sample <- liftIO $ load "samples/twitter100.json"
-    Aeson.eitherDecodeStrict' (JL.value (aesonJL sample)) === Right sample
+    Aeson.eitherDecodeStrict' (JL.json (aesonJL sample)) === Right sample
 
 prop_aesonRoundtrip =
   withTests 99999 $
   property $ do
     aeson <- forAll aesonGen
-    encoding <- forAll (JL.value <$> jlGen aeson)
+    encoding <- forAll (JL.json <$> jlGen aeson)
     Aeson.eitherDecodeStrict' encoding === Right aeson
 
 aesonGen :: Gen Aeson.Value
@@ -50,7 +50,7 @@ aesonGen =
             Gen.text (Range.exponential 0 99) Gen.unicode <*>
             value
 
-jlGen :: Aeson.Value -> Gen JL.Value
+jlGen :: Aeson.Value -> Gen JL.Json
 jlGen =
   \ case
     Aeson.Null ->
@@ -69,7 +69,7 @@ jlGen =
         & traverse (traverse jlGen)
         & fmap JL.object
 
-aesonJL :: Aeson.Value -> JL.Value
+aesonJL :: Aeson.Value -> JL.Json
 aesonJL =
   \ case
     Aeson.Null ->
