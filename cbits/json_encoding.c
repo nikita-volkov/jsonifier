@@ -22,6 +22,17 @@ static const uint16_t slash_r_bytes = '\\' | 'r' << 8;
 static const uint16_t slash_t_bytes = '\\' | 't' << 8;
 static const uint16_t slash_u_bytes = '\\' | 'u' << 8;
 
+static uint16_t two_byte_seq_array[128];
+
+void init(void)
+{
+  two_byte_seq_array[92] = slash_slash_bytes;
+  two_byte_seq_array[34] = slash_doublequote_bytes;
+  two_byte_seq_array[10] = slash_n_bytes;
+  two_byte_seq_array[13] = slash_r_bytes;
+  two_byte_seq_array[9] = slash_t_bytes;
+}
+
 uint8_t* _hs_json_lego_encode_string
 (
   uint8_t *dest,
@@ -30,6 +41,8 @@ uint8_t* _hs_json_lego_encode_string
   size_t src_length
 )
 {
+  init();
+
   src += src_offset;
   
   const uint16_t *src_end = src + src_length;
@@ -40,44 +53,22 @@ uint8_t* _hs_json_lego_encode_string
     uint16_t x = *src++;
 
     if (x <= 0x7F) {
-      switch (x) {
-        case 92:
-          *((uint16_t*) dest) = slash_slash_bytes;
-          dest += 2;
-          continue;
-        case 34:
-          *((uint16_t*) dest) = slash_doublequote_bytes;
-          dest += 2;
-          continue;
-        default:
-          if (x < 32) {
-            switch (x) {
-              case 10:
-                *((uint16_t*) dest) = slash_n_bytes;
-                dest += 2;
-                continue;
-              case 13:
-                *((uint16_t*) dest) = slash_r_bytes;
-                dest += 2;
-                continue;
-              case 9:
-                *((uint16_t*) dest) = slash_t_bytes;
-                dest += 2;
-                continue;
-              default:
-                // \u
-                *((uint16_t*) dest) = slash_u_bytes;
-                dest += 2;
+      uint16_t two_byte_seq = two_byte_seq_array[x];
+      if (two_byte_seq) {
+        *((uint16_t*) dest) = two_byte_seq;
+        dest += 2;
+      } else if (x < 32) {
+        // \u
+        *((uint16_t*) dest) = slash_u_bytes;
+        dest += 2;
 
-                // hex encoding of 4 nibbles
-                *dest++ = digits[x >> 12 & 0xF];
-                *dest++ = digits[x >> 8 & 0xF];
-                *dest++ = digits[x >> 4 & 0xF];
-                *dest++ = digits[x & 0xF];
-            }
-          } else {
-            *dest++ = x;
-          }
+        // hex encoding of 4 nibbles
+        *dest++ = digits[x >> 12 & 0xF];
+        *dest++ = digits[x >> 8 & 0xF];
+        *dest++ = digits[x >> 4 & 0xF];
+        *dest++ = digits[x & 0xF];
+      } else {
+        *dest++ = x;
       }
     }
     else if (x <= 0x7FF) {
