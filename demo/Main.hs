@@ -11,6 +11,10 @@ import qualified Data.ByteString.Char8 as AsciiByteString
 main =
   AsciiByteString.putStrLn (J.json (artistJson metallica))
 
+metallica :: Artist
+metallica =
+  Artist "Metallica" [Genre "Metal", Genre "Rock", Genre "Blues"]
+
 
 -- * Model
 -------------------------
@@ -20,10 +24,6 @@ data Artist =
 
 data Genre =
   Genre { genreName :: Text }
-
-metallica :: Artist
-metallica =
-  Artist "Metallica" [Genre "Metal", Genre "Rock", Genre "Blues"]
 
 
 -- * Builders
