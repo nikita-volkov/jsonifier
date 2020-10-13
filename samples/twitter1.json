@@ -1,0 +1,33 @@
+{
+  "results": [
+    {
+      "from_user_id_str": "3646730",
+      "profile_image_url": "http://a3.twimg.com/profile_images/404973767/avatar_normal.jpg",
+      "created_at": "Wed, 26 Jan 2011 04:35:07 +0000",
+      "from_user": "nicolaslara",
+      "id_str": "30121530767708160",
+      "metadata": {
+        "result_type": "recent"
+      },
+      "to_user_id": 18616016,
+      "text": "@josej30 Python y Clojure. Obviamente son diferentes, y cada uno tiene sus ventajas y desventajas. De Haskell faltaría pattern matching",
+      "id": 30121530767708160,
+      "from_user_id": 3646730,
+      "to_user": "josej30",
+      "geo": null,
+      "iso_language_code": "es",
+      "to_user_id_str": "18616016",
+      "source": "&lt;a href=&quot;http://twitter.com/&quot; rel=&quot;nofollow&quot;&gt;Twitter for iPhone&lt;/a&gt;"
+    }
+  ],
+  "max_id": 30121530767708160,
+  "since_id": 0,
+  "refresh_url": "?since_id=30121530767708160&q=haskell",
+  "next_page": "?page=2&max_id=30121530767708160&rpp=100&q=haskell",
+  "results_per_page": 100,
+  "page": 1,
+  "completed_in": 1.195569,
+  "since_id_str": "0",
+  "max_id_str": "30121530767708160",
+  "query": "haskell"
+}
