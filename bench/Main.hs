@@ -3,12 +3,12 @@ module Main where
 import Prelude
 import Gauge.Main
 import qualified Main.Model
-import qualified Main.JsonLego
+import qualified Main.Jsonifier
 import qualified Main.Aeson
 import qualified Data.Aeson
 import qualified Data.ByteString.Lazy
 import qualified Data.ByteString.Char8 as Char8ByteString
-import qualified JsonLego
+import qualified Jsonifier
 
 
 main =
@@ -20,20 +20,20 @@ main =
     twitter1Data <- load "samples/twitter1.json"
 
     -- Ensure that encoders are correct
-    test "json-lego" encodeWithJsonLego twitter1Data
+    test "jsonifier" encodeWithJsonifier twitter1Data
     test "aeson" encodeWithAeson twitter1Data
 
     deepseq (twitter10000Data, twitter1000Data, twitter100Data, twitter10Data) $ defaultMain [
-      bgroup "json-lego" [
-        bench "1" (nf encodeWithJsonLego twitter1Data)
+      bgroup "jsonifier" [
+        bench "1" (nf encodeWithJsonifier twitter1Data)
         ,
-        bench "10" (nf encodeWithJsonLego twitter10Data)
+        bench "10" (nf encodeWithJsonifier twitter10Data)
         ,
-        bench "100" (nf encodeWithJsonLego twitter100Data)
+        bench "100" (nf encodeWithJsonifier twitter100Data)
         ,
-        bench "1000" (nf encodeWithJsonLego twitter1000Data)
+        bench "1000" (nf encodeWithJsonifier twitter1000Data)
         ,
-        bench "10000" (nf encodeWithJsonLego twitter10000Data)
+        bench "10000" (nf encodeWithJsonifier twitter10000Data)
         ]
       ,
       bgroup "aeson" [
@@ -78,8 +78,8 @@ test name strictEncoder input =
       Left err ->
         fail ("Encoder " <> name <> " failed: " <> err <> ".\nOutput:\n" <> Char8ByteString.unpack encoding)
 
-encodeWithJsonLego =
-  JsonLego.toByteString . Main.JsonLego.resultJson
+encodeWithJsonifier =
+  Jsonifier.toByteString . Main.Jsonifier.resultJson
 
 encodeWithAeson =
   Data.ByteString.Lazy.toStrict . Data.Aeson.encode

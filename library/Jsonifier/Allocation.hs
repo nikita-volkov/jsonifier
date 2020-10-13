@@ -1,11 +1,11 @@
 {-# LANGUAGE UnliftedFFITypes #-}
-module JsonLego.Allocation
+module Jsonifier.Allocation
 where
 
-import JsonLego.Prelude
+import Jsonifier.Prelude
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
-import qualified JsonLego.Ffi.JsonAllocation as JsonAllocationFfi
+import qualified Jsonifier.Ffi.JsonAllocation as JsonAllocationFfi
 
 
 {-# INLINE object #-}

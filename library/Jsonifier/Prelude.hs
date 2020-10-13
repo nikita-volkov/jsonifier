@@ -1,4 +1,4 @@
-module JsonLego.Prelude
+module Jsonifier.Prelude
 ( 
   module Exports,
   showAsText,

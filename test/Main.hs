@@ -4,7 +4,7 @@ import Prelude
 import Hedgehog
 import Hedgehog.Main
 import qualified Data.Aeson as Aeson
-import qualified JsonLego as JL
+import qualified Jsonifier as JL
 import qualified Data.HashMap.Strict as HashMap
 import qualified Hedgehog.Gen as Gen
 import qualified Hedgehog.Range as Range

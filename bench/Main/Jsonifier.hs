@@ -1,7 +1,7 @@
-module Main.JsonLego where
+module Main.Jsonifier where
 
 import Prelude hiding (null, bool)
-import JsonLego
+import Jsonifier
 import qualified Main.Model as A
 
 

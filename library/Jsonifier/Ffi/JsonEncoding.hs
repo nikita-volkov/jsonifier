@@ -1,8 +1,8 @@
 {-# LANGUAGE UnliftedFFITypes #-}
-module JsonLego.Ffi.JsonEncoding
+module Jsonifier.Ffi.JsonEncoding
 where
 
-import JsonLego.Prelude
+import Jsonifier.Prelude
 import Foreign.C
 import GHC.Base (ByteArray#, MutableByteArray#)
 

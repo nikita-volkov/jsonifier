@@ -1,4 +1,4 @@
-name: json-lego
+name: jsonifier
 version: 0.1
 synopsis: Fast and simple JSON encoding toolkit
 description:
@@ -16,11 +16,11 @@ description:
   the rendered JSON.
   \"lazy-aeson\" stands for \"aeson\" producing a lazy bytestring.
   .
-  > json-lego/1          mean 1.970 μs  ( +- 21.85 ns  )
-  > json-lego/10         mean 12.12 μs  ( +- 259.9 ns  )
-  > json-lego/100        mean 117.4 μs  ( +- 2.291 μs  )
-  > json-lego/1000       mean 1.295 ms  ( +- 22.47 μs  )
-  > json-lego/10000      mean 20.48 ms  ( +- 1.076 ms  )
+  > jsonifier/1          mean 1.970 μs  ( +- 21.85 ns  )
+  > jsonifier/10         mean 12.12 μs  ( +- 259.9 ns  )
+  > jsonifier/100        mean 117.4 μs  ( +- 2.291 μs  )
+  > jsonifier/1000       mean 1.295 ms  ( +- 22.47 μs  )
+  > jsonifier/10000      mean 20.48 ms  ( +- 1.076 ms  )
   > aeson/1              mean 6.687 μs  ( +- 106.5 ns  )
   > aeson/10             mean 31.19 μs  ( +- 845.4 ns  )
   > aeson/100            mean 262.8 μs  ( +- 6.484 μs  )
@@ -38,8 +38,8 @@ description:
   For the example of usage check out the \"demo\".
   It comes bundled as well.
 category: JSON
-homepage: https://github.com/nikita-volkov/json-lego
-bug-reports: https://github.com/nikita-volkov/json-lego/issues
+homepage: https://github.com/nikita-volkov/jsonifier
+bug-reports: https://github.com/nikita-volkov/jsonifier/issues
 author: Nikita Volkov <nikita.y.volkov@mail.ru>
 maintainer: Nikita Volkov <nikita.y.volkov@mail.ru>
 copyright: (c) 2020 Nikita Volkov
@@ -50,20 +50,20 @@ cabal-version: >=1.10
 
 source-repository head
   type: git
-  location: git://github.com/nikita-volkov/json-lego.git
+  location: git://github.com/nikita-volkov/jsonifier.git
 
 library
   hs-source-dirs: library
   default-extensions: BangPatterns, BlockArguments, ConstraintKinds, DataKinds, DefaultSignatures, DeriveDataTypeable, DeriveFoldable, DeriveFunctor, DeriveGeneric, DeriveTraversable, DerivingVia, EmptyDataDecls, FlexibleContexts, FlexibleInstances, FunctionalDependencies, GADTs, GeneralizedNewtypeDeriving, InstanceSigs, LambdaCase, LiberalTypeSynonyms, MagicHash, MultiParamTypeClasses, MultiWayIf, NoImplicitPrelude, NoMonomorphismRestriction, OverloadedStrings, PatternGuards, ParallelListComp, QuasiQuotes, RankNTypes, RecordWildCards, ScopedTypeVariables, StandaloneDeriving, StrictData, TemplateHaskell, TupleSections, TypeApplications, TypeFamilies, TypeOperators, UnboxedTuples
   default-language: Haskell2010
   exposed-modules:
-    JsonLego
+    Jsonifier
   other-modules:
-    JsonLego.Allocation
-    JsonLego.Ffi.JsonAllocation
-    JsonLego.Ffi.JsonEncoding
-    JsonLego.Poke
-    JsonLego.Prelude
+    Jsonifier.Allocation
+    Jsonifier.Ffi.JsonAllocation
+    Jsonifier.Ffi.JsonEncoding
+    Jsonifier.Poke
+    Jsonifier.Prelude
   c-sources:
     cbits/json_allocation.c
     cbits/json_encoding.c
@@ -80,7 +80,7 @@ test-suite demo
   main-is: Main.hs
   default-language: Haskell2010
   build-depends:
-    json-lego,
+    jsonifier,
     rerebase
 
 test-suite test
@@ -92,7 +92,7 @@ test-suite test
   build-depends:
     aeson >=1.4.7.1 && <2,
     hedgehog >=1.0.3 && <2,
-    json-lego,
+    jsonifier,
     rerebase >=1.10.0.1 && <2
 
 benchmark bench
@@ -101,7 +101,7 @@ benchmark bench
   main-is: Main.hs
   other-modules:
     Main.Aeson
-    Main.JsonLego
+    Main.Jsonifier
     Main.Model
   ghc-options: -O2 -threaded "-with-rtsopts=-N"
   default-extensions: BangPatterns, ConstraintKinds, DataKinds, DefaultSignatures, DeriveDataTypeable, DeriveFoldable, DeriveFunctor, DeriveGeneric, DeriveTraversable, EmptyDataDecls, FlexibleContexts, FlexibleInstances, FunctionalDependencies, GADTs, GeneralizedNewtypeDeriving, InstanceSigs, LambdaCase, LiberalTypeSynonyms, MagicHash, MultiParamTypeClasses, MultiWayIf, NoImplicitPrelude, NoMonomorphismRestriction, OverloadedStrings, PatternGuards, ParallelListComp, QuasiQuotes, RankNTypes, RecordWildCards, ScopedTypeVariables, StandaloneDeriving, StrictData, TemplateHaskell, TupleSections, TypeApplications, TypeFamilies, TypeOperators, UnboxedTuples, ViewPatterns
@@ -109,5 +109,5 @@ benchmark bench
   build-depends:
     aeson >=1.5.4.1 && <1.6,
     gauge >=0.2.5 && <0.3,
-    json-lego,
+    jsonifier,
     rerebase >=1.10.0.1 && <2

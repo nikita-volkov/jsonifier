@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards #-}
 
-import qualified JsonLego as J
+import qualified Jsonifier as J
 import qualified Data.ByteString.Char8 as AsciiByteString
 
 

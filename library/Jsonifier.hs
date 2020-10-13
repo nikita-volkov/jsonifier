@@ -1,4 +1,4 @@
-module JsonLego
+module Jsonifier
 (
   -- * ByteString
   toByteString,
@@ -16,11 +16,11 @@ module JsonLego
 )
 where
 
-import JsonLego.Prelude hiding (null, bool)
+import Jsonifier.Prelude hiding (null, bool)
 import PtrPoker.Poke (Poke)
 import PtrPoker.Write (Write)
-import qualified JsonLego.Allocation as Allocation
-import qualified JsonLego.Poke as Poke
+import qualified Jsonifier.Allocation as Allocation
+import qualified Jsonifier.Poke as Poke
 import qualified PtrPoker.Poke as Poke
 import qualified PtrPoker.Write as Write
 import qualified Data.ByteString as ByteString
