@@ -37,6 +37,10 @@ description:
   .
   For the example of usage check out the \"demo\".
   It comes bundled as well.
+  .
+  The quality of the library is ensured with a test property in which
+  a random \"aeson\" value is generated, then rendered using \"jsonifier\",
+  then parsed with \"aeson\" and compared to the original.
 category: JSON
 homepage: https://github.com/nikita-volkov/jsonifier
 bug-reports: https://github.com/nikita-volkov/jsonifier/issues
