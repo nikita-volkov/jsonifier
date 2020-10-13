@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, RecordWildCards #-}
 
 import qualified JsonLego as J
 import qualified Data.ByteString.Char8 as AsciiByteString
