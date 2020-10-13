@@ -10,7 +10,7 @@ module Jsonifier
   int64Number,
   doubleNumber,
   scientificNumber,
-  string,
+  textString,
   array,
   object,
 )
@@ -81,9 +81,9 @@ scientificNumber :: Scientific -> Json
 scientificNumber =
   Json . Write.scientificAsciiDec
 
-{-# INLINE string #-}
-string :: Text -> Json
-string text =
+{-# INLINE textString #-}
+textString :: Text -> Json
+textString text =
   let
     allocation =
       2 + Allocation.stringBody text

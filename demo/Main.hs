@@ -32,12 +32,12 @@ data Genre =
 artistJson :: Artist -> J.Json
 artistJson Artist{..} =
   J.object [
-    ("name", J.string artistName),
+    ("name", J.textString artistName),
     ("genres", J.array (fmap genreJson artistGenres))
     ]
 
 genreJson :: Genre -> J.Json
 genreJson Genre{..} =
   J.object [
-    ("name", J.string genreName)
+    ("name", J.textString genreName)
     ]

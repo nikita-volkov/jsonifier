@@ -60,7 +60,7 @@ jlGen =
     Aeson.Number a ->
       return $ JL.scientificNumber a
     Aeson.String a ->
-      return $ JL.string a
+      return $ JL.textString a
     Aeson.Array a ->
       a & traverse jlGen
         & fmap JL.array
@@ -79,7 +79,7 @@ aesonJL =
     Aeson.Number a ->
       JL.scientificNumber a
     Aeson.String a ->
-      JL.string a
+      JL.textString a
     Aeson.Array a ->
       JL.array (fmap aesonJL a)
     Aeson.Object a ->

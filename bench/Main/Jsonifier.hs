@@ -11,39 +11,39 @@ resultJson A.Result{..} =
     ("results", array (fmap storyJson results)),
     ("max_id", int64Number max_id),
     ("since_id", int64Number since_id),
-    ("refresh_url", string refresh_url),
-    ("next_page", string next_page),
+    ("refresh_url", textString refresh_url),
+    ("next_page", textString next_page),
     ("results_per_page", int64Number results_per_page),
     ("page", int64Number page),
     ("completed_in", doubleNumber completed_in),
-    ("since_id_str", string since_id_str),
-    ("max_id_str", string max_id_str),
-    ("query", string query)
+    ("since_id_str", textString since_id_str),
+    ("max_id_str", textString max_id_str),
+    ("query", textString query)
     ]
 
 storyJson :: A.Story -> Json
 storyJson A.Story{..} =
   object [
-    ("from_user_id_str", string from_user_id_str),
-    ("profile_image_url", string profile_image_url),
-    ("created_at", string created_at),
-    ("from_user", string from_user),
-    ("id_str", string id_str),
+    ("from_user_id_str", textString from_user_id_str),
+    ("profile_image_url", textString profile_image_url),
+    ("created_at", textString created_at),
+    ("from_user", textString from_user),
+    ("id_str", textString id_str),
     ("metadata", metadataJson metadata),
     ("to_user_id", maybe null int64Number to_user_id),
-    ("text", string text),
+    ("text", textString text),
     ("id", int64Number id),
     ("from_user_id", int64Number from_user_id),
     ("geo", maybe null geoJson geo),
-    ("iso_language_code", string iso_language_code),
-    ("to_user_id_str", maybe null string to_user_id_str),
-    ("source", string source)
+    ("iso_language_code", textString iso_language_code),
+    ("to_user_id_str", maybe null textString to_user_id_str),
+    ("source", textString source)
     ]
 
 geoJson :: A.Geo -> Json
 geoJson A.Geo{..} =
   object [
-    ("type_", string type_),
+    ("type_", textString type_),
     ("coordinates", coordinatesJson coordinates)
     ]
 
@@ -57,5 +57,5 @@ coordinatesJson (x, y) =
 metadataJson :: A.Metadata -> Json
 metadataJson A.Metadata{..} =
   object [
-    ("result_type", string result_type)
+    ("result_type", textString result_type)
     ]
