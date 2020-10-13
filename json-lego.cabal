@@ -1,6 +1,6 @@
 name: json-lego
 version: 0.1
-synopsis: Direct to strict bytestring JSON construction toolkit
+synopsis: Fast and simple JSON marshalling toolkit
 category: JSON
 homepage: https://github.com/nikita-volkov/json-lego
 bug-reports: https://github.com/nikita-volkov/json-lego/issues
