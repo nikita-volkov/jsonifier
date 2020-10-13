@@ -26,18 +26,18 @@ data Genre =
   Genre { genreName :: Text }
 
 
--- * Builders
+-- * Encoders
 -------------------------
 
 artistJson :: Artist -> J.Json
-artistJson (Artist name genres) =
+artistJson Artist{..} =
   J.object [
-    ("name", J.string name),
-    ("genres", J.array (fmap genreJson genres))
+    ("name", J.string artistName),
+    ("genres", J.array (fmap genreJson artistGenres))
     ]
 
 genreJson :: Genre -> J.Json
-genreJson (Genre name) =
+genreJson Genre{..} =
   J.object [
-    ("name", J.string name)
+    ("name", J.string genreName)
     ]

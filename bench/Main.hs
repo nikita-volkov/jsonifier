@@ -17,13 +17,16 @@ main =
     twitter1000Data <- load "samples/twitter1000.json"
     twitter100Data <- load "samples/twitter100.json"
     twitter10Data <- load "samples/twitter10.json"
+    twitter1Data <- load "samples/twitter1.json"
 
     -- Ensure that encoders are correct
-    test "json-lego" encodeWithJsonLego twitter100Data
-    test "aeson" encodeWithAeson twitter100Data
+    test "json-lego" encodeWithJsonLego twitter1Data
+    test "aeson" encodeWithAeson twitter1Data
 
     deepseq (twitter10000Data, twitter1000Data, twitter100Data, twitter10Data) $ defaultMain [
       bgroup "json-lego" [
+        bench "1" (nf encodeWithJsonLego twitter1Data)
+        ,
         bench "10" (nf encodeWithJsonLego twitter10Data)
         ,
         bench "100" (nf encodeWithJsonLego twitter100Data)
@@ -34,6 +37,8 @@ main =
         ]
       ,
       bgroup "aeson" [
+        bench "1" (nf encodeWithAeson twitter1Data)
+        ,
         bench "10" (nf encodeWithAeson twitter10Data)
         ,
         bench "100" (nf encodeWithAeson twitter100Data)
@@ -41,6 +46,18 @@ main =
         bench "1000" (nf encodeWithAeson twitter1000Data)
         ,
         bench "10000" (nf encodeWithAeson twitter10000Data)
+        ]
+      ,
+      bgroup "lazy-aeson" [
+        bench "1" (nf encodeWithLazyAeson twitter1Data)
+        ,
+        bench "10" (nf encodeWithLazyAeson twitter10Data)
+        ,
+        bench "100" (nf encodeWithLazyAeson twitter100Data)
+        ,
+        bench "1000" (nf encodeWithLazyAeson twitter1000Data)
+        ,
+        bench "10000" (nf encodeWithLazyAeson twitter10000Data)
         ]
       ]
 
@@ -57,7 +74,7 @@ test name strictEncoder input =
           then
             return ()
           else
-            fail ("Encoder " <> name <> " encodes incorrectly")
+            fail ("Encoder " <> name <> " encodes incorrectly.\nOutput:\n" <> Char8ByteString.unpack encoding)
       Left err ->
         fail ("Encoder " <> name <> " failed: " <> err <> ".\nOutput:\n" <> Char8ByteString.unpack encoding)
 
@@ -66,3 +83,6 @@ encodeWithJsonLego =
 
 encodeWithAeson =
   Data.ByteString.Lazy.toStrict . Data.Aeson.encode
+
+encodeWithLazyAeson =
+  Data.Aeson.encode
