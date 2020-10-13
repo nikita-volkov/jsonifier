@@ -69,28 +69,29 @@ intNumber a =
 {-# INLINE int64Number #-}
 int64Number :: Int64 -> Json
 int64Number a =
-  if a < 0
-    then
-      error "TODO"
-    else
-      let
-        loop a bytes !length =
-          case divMod a 10 of
-            (next, !digit) ->
-              let
-                newBytes =
-                  fromIntegral (digit + 48) : bytes
-                newLength =
-                  succ length
-                in if next == 0
-                  then
-                    finalize newBytes newLength
-                  else
-                    loop next newBytes newLength
-        finalize bytes length =
-          Json length (Poker.Poker $ \ p -> foldM (\ p b -> poke p b $> plusPtr p 1) p bytes)
-        in
-          loop a [] 0
+  byteString (ByteString.unsafeCreateDownToN 24 populate)
+  where
+    populate p =
+      if a < 0
+        then
+          error "TODO"
+        else
+          let
+            loop a !length p =
+              case divMod a 10 of
+                (next, digit) ->
+                  let
+                    byte = 
+                      fromIntegral digit + 48
+                    newLength =
+                      succ length
+                    in if next == 0
+                      then
+                        poke p byte $> newLength
+                      else
+                        poke p byte >> loop next newLength (plusPtr p (-1))
+            in
+              loop a 0 p
 
 {-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Json

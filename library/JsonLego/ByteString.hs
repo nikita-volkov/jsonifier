@@ -5,7 +5,7 @@ import JsonLego.Prelude
 import Data.ByteString.Builder.Prim
 import qualified Data.Text as Text
 import qualified Data.Text.Encoding as TextEncoding
-import qualified Data.ByteString.Internal as ByteString
+import Data.ByteString.Internal
 import qualified Data.ByteString.Lazy as Lazy
 import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Builder.Extra as Builder
@@ -26,6 +26,13 @@ scientific sci =
 
 double :: Double -> ByteString
 double dbl =
-  ByteString.unsafeCreateUptoN 24 (\ ptr ->
+  unsafeCreateUptoN 24 (\ ptr ->
     DtoaFfi.pokeDouble dbl ptr
       & fmap fromIntegral)
+
+unsafeCreateDownToN :: Int -> (Ptr Word8 -> IO Int) -> ByteString
+unsafeCreateDownToN allocSize populate =
+  unsafeDupablePerformIO $ do
+    fp <- mallocByteString allocSize
+    actualSize <- withForeignPtr fp (\ p -> populate (plusPtr p (pred allocSize)))
+    return $! PS fp (allocSize - actualSize) actualSize
