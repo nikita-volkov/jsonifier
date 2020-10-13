@@ -103,13 +103,13 @@ array list =
         else
           next False (succ size) (allocation + writeSize)
             (poke <> Poke.comma <> writePoke)
-    finalize _ size contentsAllocation bodyPoker =
+    finalize _ size contentsAllocation bodyPoke =
       write allocation poke
       where
         allocation =
           Allocation.array size contentsAllocation
         poke =
-          Poke.openingSquareBracket <> bodyPoker <> Poke.closingSquareBracket
+          Poke.openingSquareBracket <> bodyPoke <> Poke.closingSquareBracket
 
 {-# INLINE object #-}
 object :: Foldable f => f (Text, Json) -> Json
@@ -119,20 +119,20 @@ object f =
     step (key, Json (Write.Write{..})) next first !size !allocation !poke =
       if first
         then
-          next False 1 rowAllocation rowPoker
+          next False 1 rowAllocation rowPoke
         else
           next False (succ size) (allocation + rowAllocation)
-            (poke <> Poke.comma <> rowPoker)
+            (poke <> Poke.comma <> rowPoke)
       where
         rowAllocation =
           Allocation.stringBody key +
           writeSize
-        rowPoker =
+        rowPoke =
           Poke.objectRow key writePoke
-    finalize _ size contentsAllocation bodyPoker =
+    finalize _ size contentsAllocation bodyPoke =
       write allocation poke
       where
         allocation =
           Allocation.object size contentsAllocation
         poke =
-          Poke.openingCurlyBracket <> bodyPoker <> Poke.closingCurlyBracket
+          Poke.openingCurlyBracket <> bodyPoke <> Poke.closingCurlyBracket

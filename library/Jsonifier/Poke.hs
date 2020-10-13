@@ -37,8 +37,8 @@ string (Text.Text arr off len) =
 -}
 {-# INLINE objectRow #-}
 objectRow :: Text -> Poke -> Poke
-objectRow keyBody valuePoker =
-  string keyBody <> colon <> valuePoker
+objectRow keyBody valuePoke =
+  string keyBody <> colon <> valuePoke
 
 {-# INLINE array #-}
 array :: Foldable f => f Poke -> Poke
