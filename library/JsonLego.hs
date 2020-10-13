@@ -21,7 +21,6 @@ import PtrPoker (Poker)
 import qualified JsonLego.Allocation as Allocation
 import qualified JsonLego.Poker as Poker
 import qualified PtrPoker as Poker
-import qualified Data.NumberLength as NumberLength
 import qualified JsonLego.ByteString as ByteString
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.Internal as ByteString
@@ -63,7 +62,7 @@ bool =
 intNumber :: Int -> Json
 intNumber a =
   Json
-    (NumberLength.signedNumberLength a)
+    (Allocation.intDec a)
     (Poker.asciiDecInt a)
 
 {-# INLINE int64Number #-}
@@ -72,7 +71,7 @@ int64Number a =
   Json allocation poker
   where
     allocation =
-      Allocation.int64 a
+      Allocation.int64Dec a
     poker =
       Poker.int64Number allocation a 
 

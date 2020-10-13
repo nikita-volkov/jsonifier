@@ -44,8 +44,12 @@ stringBody (Text.Text arr off len) =
     & unsafeDupablePerformIO
     & fromIntegral
 
-int64 :: Int64 -> Int
-int64 x =
+intDec :: Int -> Int
+intDec =
+  int64Dec . fromIntegral
+
+int64Dec :: Int64 -> Int
+int64Dec x =
   if x < 0
     then if x < -9999999999
       then if x < -99999999999999
