@@ -69,9 +69,28 @@ intNumber a =
 {-# INLINE int64Number #-}
 int64Number :: Int64 -> Json
 int64Number a =
-  Json
-    (NumberLength.signedNumberLength a)
-    (Poker.asciiDecInt64 a)
+  if a < 0
+    then
+      error "TODO"
+    else
+      let
+        loop a bytes !length =
+          case divMod a 10 of
+            (next, !digit) ->
+              let
+                newBytes =
+                  fromIntegral (digit + 48) : bytes
+                newLength =
+                  succ length
+                in if next == 0
+                  then
+                    finalize newBytes newLength
+                  else
+                    loop next newBytes newLength
+        finalize bytes length =
+          Json length (Poker.Poker $ \ p -> foldM (\ p b -> poke p b $> plusPtr p 1) p bytes)
+        in
+          loop a [] 0
 
 {-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Json
