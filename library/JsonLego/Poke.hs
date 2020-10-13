@@ -4,7 +4,6 @@ where
 import JsonLego.Prelude
 import PtrPoker.Poke
 import qualified Foreign.Marshal.Utils as Foreign
-import qualified CharQq as Q
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
 import qualified JsonLego.Ffi.JsonEncoding as JsonEncodingFfi
@@ -71,28 +70,28 @@ emptyObject =
 
 openingSquareBracket :: Poke
 openingSquareBracket =
-  word8 [Q.ord|[|]
+  word8 91
 
 closingSquareBracket :: Poke
 closingSquareBracket =
-  word8 [Q.ord|]|]
+  word8 93
 
 openingCurlyBracket :: Poke
 openingCurlyBracket =
-  word8 [Q.ord|{|]
+  word8 123
 
 closingCurlyBracket :: Poke
 closingCurlyBracket =
-  word8 [Q.ord|}|]
+  word8 125
 
 colon :: Poke
 colon =
-  word8 [Q.ord|:|]
+  word8 58
 
 comma :: Poke
 comma =
-  word8 [Q.ord|,|]
+  word8 44
 
 doubleQuote :: Poke
 doubleQuote =
-  word8 [Q.ord|"|]
+  word8 34
