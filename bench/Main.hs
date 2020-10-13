@@ -47,6 +47,18 @@ main =
         ,
         bench "10000" (nf encodeWithAeson twitter10000Data)
         ]
+      ,
+      bgroup "lazy-aeson" [
+        bench "1" (nf encodeWithLazyAeson twitter1Data)
+        ,
+        bench "10" (nf encodeWithLazyAeson twitter10Data)
+        ,
+        bench "100" (nf encodeWithLazyAeson twitter100Data)
+        ,
+        bench "1000" (nf encodeWithLazyAeson twitter1000Data)
+        ,
+        bench "10000" (nf encodeWithLazyAeson twitter10000Data)
+        ]
       ]
 
 load :: FilePath -> IO Main.Model.Result
@@ -71,3 +83,6 @@ encodeWithJsonLego =
 
 encodeWithAeson =
   Data.ByteString.Lazy.toStrict . Data.Aeson.encode
+
+encodeWithLazyAeson =
+  Data.Aeson.encode
