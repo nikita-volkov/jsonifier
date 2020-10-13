@@ -48,6 +48,7 @@ intDec :: Int -> Int
 intDec =
   int64Dec . fromIntegral
 
+{-# INLINE int64Dec #-}
 int64Dec :: Int64 -> Int
 int64Dec x =
   if x < 0
