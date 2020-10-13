@@ -9,14 +9,12 @@
 #include <stdlib.h>
 
 
-int write_int64_in_reverse
+uint8_t* poke_int64_in_reverse
 (
   uint8_t* dst,
   int64_t val
 )
 {
-  uint8_t* original_dst = dst;
-  
   bool negate = false;
 
   if (val < 0) {
@@ -36,5 +34,14 @@ int write_int64_in_reverse
     *dst-- = '-';
   }
 
-  return original_dst - dst;
+  return dst;
+}
+
+int write_int64_in_reverse
+(
+  uint8_t* dst,
+  int64_t val
+)
+{
+  return dst - poke_int64_in_reverse(dst, val);
 }
