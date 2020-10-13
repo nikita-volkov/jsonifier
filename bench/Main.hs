@@ -79,7 +79,7 @@ test name strictEncoder input =
         fail ("Encoder " <> name <> " failed: " <> err <> ".\nOutput:\n" <> Char8ByteString.unpack encoding)
 
 encodeWithJsonLego =
-  JsonLego.json . Main.JsonLego.resultJson
+  JsonLego.toByteString . Main.JsonLego.resultJson
 
 encodeWithAeson =
   Data.ByteString.Lazy.toStrict . Data.Aeson.encode

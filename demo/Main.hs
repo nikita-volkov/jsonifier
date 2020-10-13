@@ -9,7 +9,7 @@ import qualified Data.ByteString.Char8 as AsciiByteString
 -- 
 -- > {"name":"Metallica","genres":[{"name":"Metal"},{"name":"Rock"},{"name":"Blues"}]}
 main =
-  AsciiByteString.putStrLn (J.json (artistJson metallica))
+  AsciiByteString.putStrLn (J.toByteString (artistJson metallica))
 
 metallica :: Artist
 metallica =

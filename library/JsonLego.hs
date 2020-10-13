@@ -1,7 +1,7 @@
 module JsonLego
 (
   -- * ByteString
-  json,
+  toByteString,
   -- * Json
   Json,
   null,
@@ -30,9 +30,9 @@ import qualified Data.ByteString.Internal as ByteString
 {-|
 Render a JSON builder into strict bytestring.
 -}
-{-# INLINE json #-}
-json :: Json -> ByteString
-json =
+{-# INLINE toByteString #-}
+toByteString :: Json -> ByteString
+toByteString =
   Write.writeByteString . coerce
 
 

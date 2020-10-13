@@ -17,13 +17,13 @@ prop_sample =
   withTests 1 $
   property $ do
     sample <- liftIO $ load "samples/twitter100.json"
-    Aeson.eitherDecodeStrict' (JL.json (aesonJL sample)) === Right sample
+    Aeson.eitherDecodeStrict' (JL.toByteString (aesonJL sample)) === Right sample
 
 prop_aesonRoundtrip =
   withTests 99999 $
   property $ do
     aeson <- forAll aesonGen
-    encoding <- forAll (JL.json <$> jlGen aeson)
+    encoding <- forAll (JL.toByteString <$> jlGen aeson)
     Aeson.eitherDecodeStrict' encoding === Right aeson
 
 aesonGen :: Gen Aeson.Value
