@@ -4,7 +4,7 @@ import Prelude
 import Hedgehog
 import Hedgehog.Main
 import qualified Data.Aeson as Aeson
-import qualified Jsonifier as JL
+import qualified Jsonifier as J
 import qualified Data.HashMap.Strict as HashMap
 import qualified Hedgehog.Gen as Gen
 import qualified Hedgehog.Range as Range
@@ -17,13 +17,13 @@ prop_sample =
   withTests 1 $
   property $ do
     sample <- liftIO $ load "samples/twitter100.json"
-    Aeson.eitherDecodeStrict' (JL.toByteString (aesonJL sample)) === Right sample
+    Aeson.eitherDecodeStrict' (J.toByteString (aesonJson sample)) === Right sample
 
 prop_aesonRoundtrip =
   withTests 99999 $
   property $ do
     aeson <- forAll aesonGen
-    encoding <- forAll (JL.toByteString <$> jlGen aeson)
+    encoding <- forAll (J.toByteString <$> jlGen aeson)
     Aeson.eitherDecodeStrict' encoding === Right aeson
 
 aesonGen :: Gen Aeson.Value
@@ -50,40 +50,40 @@ aesonGen =
             Gen.text (Range.exponential 0 99) Gen.unicode <*>
             value
 
-jlGen :: Aeson.Value -> Gen JL.Json
+jlGen :: Aeson.Value -> Gen J.Json
 jlGen =
   \ case
     Aeson.Null ->
-      return $ JL.null
+      return $ J.null
     Aeson.Bool a ->
-      return $ JL.bool a
+      return $ J.bool a
     Aeson.Number a ->
-      return $ JL.scientificNumber a
+      return $ J.scientificNumber a
     Aeson.String a ->
-      return $ JL.textString a
+      return $ J.textString a
     Aeson.Array a ->
       a & traverse jlGen
-        & fmap JL.array
+        & fmap J.array
     Aeson.Object a ->
       HashMap.toList a
         & traverse (traverse jlGen)
-        & fmap JL.object
+        & fmap J.object
 
-aesonJL :: Aeson.Value -> JL.Json
-aesonJL =
+aesonJson :: Aeson.Value -> J.Json
+aesonJson =
   \ case
     Aeson.Null ->
-      JL.null
+      J.null
     Aeson.Bool a ->
-      JL.bool a
+      J.bool a
     Aeson.Number a ->
-      JL.scientificNumber a
+      J.scientificNumber a
     Aeson.String a ->
-      JL.textString a
+      J.textString a
     Aeson.Array a ->
-      JL.array (fmap aesonJL a)
+      J.array (fmap aesonJson a)
     Aeson.Object a ->
-      JL.object (HashMap.foldMapWithKey (\ k -> (: []) . (,) k . aesonJL) a)
+      J.object (HashMap.foldMapWithKey (\ k -> (: []) . (,) k . aesonJson) a)
 
 load :: FilePath -> IO Aeson.Value
 load fileName =
