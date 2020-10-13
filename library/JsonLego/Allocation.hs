@@ -6,6 +6,7 @@ import JsonLego.Prelude
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
 import qualified JsonLego.Ffi.JsonAllocation as JsonAllocationFfi
+import qualified JsonLego.Ffi.IntEncoding as IntEncodingFfi
 
 
 {-# INLINE object #-}
@@ -41,5 +42,13 @@ stringBody :: Text -> Int
 stringBody (Text.Text arr off len) =
   JsonAllocationFfi.string
     (TextArray.aBA arr) (fromIntegral off) (fromIntegral len)
+    & unsafeDupablePerformIO
+    & fromIntegral
+
+int64 :: Int64 -> Int
+int64 a =
+  a
+    & fromIntegral
+    & IntEncodingFfi.countDecAllocationOfInt64
     & unsafeDupablePerformIO
     & fromIntegral

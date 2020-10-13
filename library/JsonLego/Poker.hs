@@ -8,6 +8,7 @@ import qualified CharQq as Q
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
 import qualified JsonLego.Ffi.JsonEncoding as JsonEncodingFfi
+import qualified JsonLego.Ffi.IntEncoding as IntEncodingFfi
 
 
 null :: Poker
@@ -31,6 +32,15 @@ false =
 intNumber :: Int -> Poker
 intNumber =
   asciiDecInt
+
+{-# INLINE int64Number #-}
+int64Number :: Int -> Int64 -> Poker
+int64Number allocation a =
+  Poker $ \ ptr ->
+    IntEncodingFfi.pokeInt64InReverse
+      (plusPtr ptr (pred allocation))
+      (fromIntegral a)
+      $> plusPtr ptr allocation
 
 {-# INLINE string #-}
 string :: Text -> Poker

@@ -23,7 +23,6 @@ import qualified JsonLego.Poker as Poker
 import qualified PtrPoker as Poker
 import qualified Data.NumberLength as NumberLength
 import qualified JsonLego.ByteString as ByteString
-import qualified JsonLego.Ffi.IntEncoding as IntEncoding
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.Internal as ByteString
 
@@ -70,10 +69,12 @@ intNumber a =
 {-# INLINE int64Number #-}
 int64Number :: Int64 -> Json
 int64Number a =
-  byteString (ByteString.unsafeCreateDownToN 24 populate)
+  Json allocation poker
   where
-    populate p =
-      fromIntegral <$> IntEncoding.writeInt64InReverse p (fromIntegral a)
+    allocation =
+      Allocation.int64 a
+    poker =
+      Poker.int64Number allocation a 
 
 {-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Json
