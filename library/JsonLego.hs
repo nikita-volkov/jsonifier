@@ -23,6 +23,7 @@ import qualified JsonLego.Poker as Poker
 import qualified PtrPoker as Poker
 import qualified Data.NumberLength as NumberLength
 import qualified JsonLego.ByteString as ByteString
+import qualified JsonLego.Ffi.IntEncoding as IntEncoding
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.Internal as ByteString
 
@@ -72,26 +73,7 @@ int64Number a =
   byteString (ByteString.unsafeCreateDownToN 24 populate)
   where
     populate p =
-      if a < 0
-        then
-          error "TODO"
-        else
-          let
-            loop a !length p =
-              case divMod a 10 of
-                (next, digit) ->
-                  let
-                    byte = 
-                      fromIntegral digit + 48
-                    newLength =
-                      succ length
-                    in if next == 0
-                      then
-                        poke p byte $> newLength
-                      else
-                        poke p byte >> loop next newLength (plusPtr p (-1))
-            in
-              loop a 0 p
+      fromIntegral <$> IntEncoding.writeInt64InReverse p (fromIntegral a)
 
 {-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Json
