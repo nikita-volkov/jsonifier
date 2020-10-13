@@ -1,113 +1,98 @@
-module JsonLego.Poker
+module JsonLego.Poke
 where
 
 import JsonLego.Prelude
-import PtrPoker
+import PtrPoker.Poke
 import qualified Foreign.Marshal.Utils as Foreign
 import qualified CharQq as Q
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
 import qualified JsonLego.Ffi.JsonEncoding as JsonEncodingFfi
-import qualified JsonLego.Ffi.IntEncoding as IntEncodingFfi
 
 
-null :: Poker
+null :: Poke
 null =
   byteString "null"
 
 {-# INLINE boolean #-}
-boolean :: Bool -> Poker
+boolean :: Bool -> Poke
 boolean =
   bool false true
 
-true :: Poker
+true :: Poke
 true =
   byteString "true"
 
-false :: Poker
+false :: Poke
 false =
   byteString "false"
 
-{-# INLINE intNumber #-}
-intNumber :: Int -> Poker
-intNumber =
-  asciiDecInt
-
-{-# INLINE int64Number #-}
-int64Number :: Int -> Int64 -> Poker
-int64Number allocation a =
-  Poker $ \ ptr ->
-    IntEncodingFfi.pokeInt64InReverse
-      (plusPtr ptr (pred allocation))
-      (fromIntegral a)
-      $> plusPtr ptr allocation
-
 {-# INLINE string #-}
-string :: Text -> Poker
+string :: Text -> Poke
 string (Text.Text arr off len) =
-  Poker $ \ ptr ->
+  Poke $ \ ptr ->
     JsonEncodingFfi.string ptr (TextArray.aBA arr) (fromIntegral off) (fromIntegral len)
 
 {-|
 > "key":value
 -}
 {-# INLINE objectRow #-}
-objectRow :: Text -> Poker -> Poker
+objectRow :: Text -> Poke -> Poke
 objectRow keyBody valuePoker =
   string keyBody <> colon <> valuePoker
 
 {-# INLINE array #-}
-array :: Foldable f => f Poker -> Poker
+array :: Foldable f => f Poke -> Poke
 array f =
   snd (foldl' (\ (first, acc) p -> (False, acc <> if first then p else comma <> p))
       (True, openingSquareBracket) f) <>
   closingSquareBracket
 
 {-# INLINE object #-}
-object :: Poker -> Poker
+object :: Poke -> Poke
 object body =
   openingCurlyBracket <> body <> closingCurlyBracket
 
 {-# INLINE objectBody #-}
-objectBody :: Foldable f => f Poker -> Poker
+objectBody :: Foldable f => f Poke -> Poke
 objectBody =
   foldl'
     (\ (first, acc) p -> (False, acc <> if first then p else comma <> p))
     (True, mempty)
     >>> snd
 
-emptyArray :: Poker
+emptyArray :: Poke
 emptyArray =
   byteString "[]"
 
-emptyObject :: Poker
+emptyObject :: Poke
 emptyObject =
   byteString "{}"
 
-openingSquareBracket :: Poker
+openingSquareBracket :: Poke
 openingSquareBracket =
   word8 [Q.ord|[|]
 
-closingSquareBracket :: Poker
+closingSquareBracket :: Poke
 closingSquareBracket =
   word8 [Q.ord|]|]
 
-openingCurlyBracket :: Poker
+openingCurlyBracket :: Poke
 openingCurlyBracket =
   word8 [Q.ord|{|]
 
-closingCurlyBracket :: Poker
+closingCurlyBracket :: Poke
 closingCurlyBracket =
   word8 [Q.ord|}|]
 
-colon :: Poker
+colon :: Poke
 colon =
   word8 [Q.ord|:|]
 
-comma :: Poker
+comma :: Poke
 comma =
   word8 [Q.ord|,|]
 
-doubleQuote :: Poker
+doubleQuote :: Poke
 doubleQuote =
   word8 [Q.ord|"|]

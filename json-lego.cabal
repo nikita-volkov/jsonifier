@@ -24,16 +24,11 @@ library
     JsonLego
   other-modules:
     JsonLego.Allocation
-    JsonLego.ByteString
-    JsonLego.Ffi.Dtoa
     JsonLego.Ffi.JsonAllocation
     JsonLego.Ffi.JsonEncoding
-    JsonLego.Ffi.IntEncoding
-    JsonLego.Poker
+    JsonLego.Poke
     JsonLego.Prelude
   c-sources:
-    cbits/dtoa.c
-    cbits/int_encoding.c
     cbits/json_allocation.c
     cbits/json_encoding.c
   build-depends:

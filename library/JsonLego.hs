@@ -17,11 +17,12 @@ module JsonLego
 where
 
 import JsonLego.Prelude hiding (null, bool)
-import PtrPoker (Poker)
+import PtrPoker.Poke (Poke)
+import PtrPoker.Write (Write)
 import qualified JsonLego.Allocation as Allocation
-import qualified JsonLego.Poker as Poker
-import qualified PtrPoker as Poker
-import qualified JsonLego.ByteString as ByteString
+import qualified JsonLego.Poke as Poke
+import qualified PtrPoker.Poke as Poke
+import qualified PtrPoker.Write as Write
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.Internal as ByteString
 
@@ -31,59 +32,54 @@ Render a JSON builder into strict bytestring.
 -}
 {-# INLINE json #-}
 json :: Json -> ByteString
-json (Json {..}) =
-  ByteString.unsafeCreate valueAllocation (void . Poker.run valuePoker)
+json =
+  Write.writeByteString . coerce
 
 
 -- * Json
 -------------------------
 
-data Json =
-  Json {
-    valueAllocation :: Int,
-    valuePoker :: Poker
-    }
+newtype Json =
+  Json Write.Write
+
+{-# INLINE write #-}
+write :: Int -> Poke.Poke -> Json
+write size poke =
+  Json (Write.Write size poke)
 
 {-# INLINE null #-}
 null :: Json
 null =
-  Json 4 Poker.null
+  write 4 Poke.null
 
 {-# INLINE bool #-}
 bool :: Bool -> Json
 bool =
   \ case
     True ->
-      Json 4 Poker.true
+      write 4 Poke.true
     False ->
-      Json 5 Poker.false
+      write 5 Poke.false
 
 {-# INLINE intNumber #-}
 intNumber :: Int -> Json
-intNumber a =
-  Json
-    (Allocation.intDec a)
-    (Poker.asciiDecInt a)
+intNumber =
+  Json . Write.intAsciiDec
 
 {-# INLINE int64Number #-}
 int64Number :: Int64 -> Json
-int64Number a =
-  Json allocation poker
-  where
-    allocation =
-      Allocation.int64Dec a
-    poker =
-      Poker.int64Number allocation a 
+int64Number =
+  Json . Write.int64AsciiDec
 
 {-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Json
 doubleNumber =
-  byteString . ByteString.double
+  Json . Write.doubleAsciiDec
 
 {-# INLINE scientificNumber #-}
 scientificNumber :: Scientific -> Json
 scientificNumber =
-  byteString . ByteString.scientific
+  Json . Write.scientificAsciiDec
 
 {-# INLINE string #-}
 string :: Text -> Json
@@ -91,57 +87,52 @@ string text =
   let
     allocation =
       2 + Allocation.stringBody text
-    poker =
-      Poker.string text
-    in Json allocation poker
+    poke =
+      Poke.string text
+    in write allocation poke
 
 {-# INLINE array #-}
 array :: Foldable f => f Json -> Json
 array list =
   foldr step finalize list True 0 0 mempty
   where
-    step (Json{..}) next first !size !allocation !poker =
+    step (Json (Write.Write{..})) next first !size !allocation !poke =
       if first
         then
-          next False 1 valueAllocation valuePoker
+          next False 1 writeSize writePoke
         else
-          next False (succ size) (allocation + valueAllocation)
-            (poker <> Poker.comma <> valuePoker)
+          next False (succ size) (allocation + writeSize)
+            (poke <> Poke.comma <> writePoke)
     finalize _ size contentsAllocation bodyPoker =
-      Json allocation poker
+      write allocation poke
       where
         allocation =
           Allocation.array size contentsAllocation
-        poker =
-          Poker.openingSquareBracket <> bodyPoker <> Poker.closingSquareBracket
+        poke =
+          Poke.openingSquareBracket <> bodyPoker <> Poke.closingSquareBracket
 
 {-# INLINE object #-}
 object :: Foldable f => f (Text, Json) -> Json
 object f =
   foldr step finalize f True 0 0 mempty
   where
-    step (key, Json{..}) next first !size !allocation !poker =
+    step (key, Json (Write.Write{..})) next first !size !allocation !poke =
       if first
         then
           next False 1 rowAllocation rowPoker
         else
           next False (succ size) (allocation + rowAllocation)
-            (poker <> Poker.comma <> rowPoker)
+            (poke <> Poke.comma <> rowPoker)
       where
         rowAllocation =
           Allocation.stringBody key +
-          valueAllocation
+          writeSize
         rowPoker =
-          Poker.objectRow key valuePoker
+          Poke.objectRow key writePoke
     finalize _ size contentsAllocation bodyPoker =
-      Json allocation poker
+      write allocation poke
       where
         allocation =
           Allocation.object size contentsAllocation
-        poker =
-          Poker.openingCurlyBracket <> bodyPoker <> Poker.closingCurlyBracket
-
-{-# INLINE byteString #-}
-byteString :: ByteString -> Json
-byteString a =
-  Json (ByteString.length a) (Poker.byteString a)
+        poke =
+          Poke.openingCurlyBracket <> bodyPoker <> Poke.closingCurlyBracket
