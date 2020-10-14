@@ -36,6 +36,4 @@ the results yourself.
 For the example of usage check out the "demo".
 It comes bundled as well.
 
-The quality of the library is ensured with a test property in which
-a random "aeson" value is generated, then rendered using "jsonifier",
-then parsed with "aeson" and compared to the original.
+The quality of the library is ensured with a test property in which a random JSON tree is generated, then rendered using "jsonifier", then parsed using "aeson" and compared to the original.
