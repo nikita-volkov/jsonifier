@@ -33,7 +33,7 @@ Render a JSON builder into strict bytestring.
 {-# INLINE toByteString #-}
 toByteString :: Json -> ByteString
 toByteString =
-  Write.writeByteString . coerce
+  Write.writeToByteString . coerce
 
 
 -- * Json
@@ -74,7 +74,7 @@ int64Number =
 {-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Json
 doubleNumber =
-  Json . Write.doubleAsciiDec
+  Json . Write.zeroNonRealDoubleAsciiDec
 
 {-# INLINE scientificNumber #-}
 scientificNumber :: Scientific -> Json
