@@ -9,6 +9,8 @@ import qualified Data.HashMap.Strict as HashMap
 import qualified Hedgehog.Gen as Gen
 import qualified Hedgehog.Range as Range
 import qualified Data.ByteString.Char8 as Char8ByteString
+import qualified Data.Vector as Vector
+import qualified Main.Util.HedgehogGens as GenExtras
 
 
 main =
@@ -41,12 +43,13 @@ prop_sample =
           J.object (HashMap.foldMapWithKey (\ k -> (: []) . (,) k . aesonJson) a)
 
 prop_aesonRoundtrip =
-  withTests 999 $
+  withTests 9999 $
   property $ do
     sample <- forAll sampleGen
     let encoding = sampleJsonifier sample
     annotate (Char8ByteString.unpack encoding)
-    A.eitherDecodeStrict' encoding === Right (sampleAeson sample)
+    aeson <- evalEither (A.eitherDecodeStrict' encoding)
+    evalEither (maybe (Right ()) Left (detectMismatchInSampleAndAeson sample aeson))
 
 data Sample =
   NullSample |
@@ -80,24 +83,9 @@ sampleGen =
     intNumber =
       Gen.int Range.linearBounded <&> IntNumberSample
     doubleNumber =
-      realFloatNumber DoubleNumberSample
-    realFloatNumber pack =
-      realFloat (Range.exponentialFloat (-9999) 9999) <&> pack
-      where
-        realFloat range =
-          Gen.frequency [
-            (99, Gen.realFloat range),
-            (1, nonReal)
-            ]
-          where
-            nonReal =
-              Gen.element [0 / 0, 1 / 0, (-1) / 0, -0]
+      GenExtras.realFloat <&> DoubleNumberSample
     scientificNumber =
-      scientific (Range.linearFrac (-99999999999999) 99999999999999)
-        <&> ScientificNumberSample
-      where
-        scientific range =
-          Gen.realFrac_ range <&> fromRational
+      GenExtras.scientific <&> ScientificNumberSample
     textString =
       Gen.text (Range.exponential 0 9999) Gen.unicode <&> TextStringSample
     array =
@@ -147,3 +135,58 @@ sampleAeson =
         realNumber a =
           A.Number $
           if isNaN a || isInfinite a then 0 else (read . show) a
+
+{-|
+We have to come down to this trickery due to small differences in
+the way scientific renders floating point values and how ptr-poker does.
+There is no difference when floating point comparison is used instead of scientific,
+so this is what we achieve here.
+
+It must be mentioned that this only applies to floating point numbers.
+-}
+detectMismatchInSampleAndAeson :: Sample -> A.Value -> Maybe (Sample, A.Value)
+detectMismatchInSampleAndAeson =
+  \ case
+    NullSample ->
+      \ case
+        A.Null -> Nothing
+        a -> Just (NullSample, a)
+    BoolSample a ->
+      \ case
+        A.Bool b | b == a -> Nothing
+        b -> Just (BoolSample a, b)
+    IntNumberSample a ->
+      \ case
+        A.Number b | round b == a -> Nothing
+        b -> Just (IntNumberSample a, b)
+    DoubleNumberSample a ->
+      \ case
+        -- This is what it's all for.
+        A.Number b | realToFrac b == if isNaN a || isInfinite a then 0 else a -> Nothing
+        b -> Just (DoubleNumberSample a, b)
+    ScientificNumberSample a ->
+      \ case
+        A.Number b | a == b -> Nothing
+        b -> Just (ScientificNumberSample a, b)
+    TextStringSample a ->
+      \ case
+        A.String b | a == b -> Nothing
+        b -> Just (TextStringSample a, b)
+    ArraySample a ->
+      \ case
+        A.Array b | Vector.length b == length a ->
+          toList b
+            & zip a
+            & foldMap (\ (aa, bb) -> fmap First (detectMismatchInSampleAndAeson aa bb))
+            & fmap getFirst
+        b -> Just (ArraySample a, b)
+    ObjectSample a ->
+      \ case
+        A.Object b ->
+          a & foldMap (\ (ak, av) ->
+                case HashMap.lookup ak b of
+                  Just bv -> fmap First (detectMismatchInSampleAndAeson av bv)
+                  Nothing -> Just (First (ObjectSample a, A.Object b))
+                )
+            & fmap getFirst
+        b -> Just (ObjectSample a, b)
