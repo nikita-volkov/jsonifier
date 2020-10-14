@@ -8,6 +8,7 @@ module Jsonifier
   bool,
   intNumber,
   int64Number,
+  wordNumber,
   doubleNumber,
   scientificNumber,
   textString,
@@ -65,6 +66,11 @@ bool =
 intNumber :: Int -> Json
 intNumber =
   Json . Write.intAsciiDec
+
+{-# INLINE wordNumber #-}
+wordNumber :: Word -> Json
+wordNumber =
+  Json . Write.wordAsciiDec
 
 {-# INLINE int64Number #-}
 int64Number :: Int64 -> Json

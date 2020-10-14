@@ -55,6 +55,7 @@ data Sample =
   NullSample |
   BoolSample Bool |
   IntNumberSample Int |
+  WordNumberSample Word |
   DoubleNumberSample Double |
   ScientificNumberSample Scientific |
   TextStringSample Text |
@@ -70,6 +71,7 @@ sampleGen =
       Gen.recursive Gen.choice [
         null, bool,
         intNumber,
+        wordNumber,
         doubleNumber,
         scientificNumber,
         textString
@@ -82,6 +84,8 @@ sampleGen =
       Gen.bool <&> BoolSample
     intNumber =
       Gen.int Range.exponentialBounded <&> IntNumberSample
+    wordNumber =
+      Gen.word Range.exponentialBounded <&> WordNumberSample
     doubleNumber =
       GenExtras.realFloat <&> DoubleNumberSample
     scientificNumber =
@@ -111,6 +115,7 @@ sampleJsonifier =
         NullSample -> J.null
         BoolSample a -> J.bool a
         IntNumberSample a -> J.intNumber a
+        WordNumberSample a -> J.wordNumber a
         DoubleNumberSample a -> J.doubleNumber a
         ScientificNumberSample a -> J.scientificNumber a
         TextStringSample a -> J.textString a
@@ -126,6 +131,7 @@ sampleAeson =
         NullSample -> A.Null
         BoolSample a -> A.Bool a
         IntNumberSample a -> A.Number (fromIntegral a)
+        WordNumberSample a -> A.Number (fromIntegral a)
         DoubleNumberSample a -> realNumber a
         ScientificNumberSample a -> A.Number a
         TextStringSample a -> A.String a
@@ -159,6 +165,10 @@ detectMismatchInSampleAndAeson =
       \ case
         A.Number b | round b == a -> Nothing
         b -> Just (IntNumberSample a, b)
+    WordNumberSample a ->
+      \ case
+        A.Number b | round b == a -> Nothing
+        b -> Just (WordNumberSample a, b)
     DoubleNumberSample a ->
       \ case
         -- This is what it's all for.
