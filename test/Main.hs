@@ -81,7 +81,7 @@ sampleGen =
     bool =
       Gen.bool <&> BoolSample
     intNumber =
-      Gen.int Range.linearBounded <&> IntNumberSample
+      Gen.int Range.exponentialBounded <&> IntNumberSample
     doubleNumber =
       GenExtras.realFloat <&> DoubleNumberSample
     scientificNumber =
