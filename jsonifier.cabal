@@ -121,4 +121,5 @@ benchmark bench
     aeson >=1.5.4.1 && <1.6,
     gauge >=0.2.5 && <0.3,
     jsonifier,
-    rerebase >=1.10.0.1 && <2
+    rerebase >=1.10.0.1 && <2,
+    text-builder >=0.6.6.1 && <0.7
