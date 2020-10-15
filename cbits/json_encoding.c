@@ -16,12 +16,12 @@
 
 static const char* digits = "0123456789abcdef";
 
-static const uint16_t slash_slash_seq = '\\' | '\\' << 8;
-static const uint16_t slash_doublequote_seq = '\\' | '"' << 8;
-static const uint16_t slash_n_seq = '\\' | 'n' << 8;
-static const uint16_t slash_r_seq = '\\' | 'r' << 8;
-static const uint16_t slash_t_seq = '\\' | 't' << 8;
-static const uint16_t slash_u_seq = '\\' | 'u' << 8;
+#define slash_slash_seq '\\' | '\\' << 8
+#define slash_doublequote_seq '\\' | '"' << 8
+#define slash_n_seq '\\' | 'n' << 8
+#define slash_r_seq '\\' | 'r' << 8
+#define slash_t_seq '\\' | 't' << 8
+#define slash_u_seq '\\' | 'u' << 8
 
 static const bool pass_through_by_septet[128] =
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
