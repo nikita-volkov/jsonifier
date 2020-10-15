@@ -162,19 +162,19 @@ array foldable =
     poke =
       Poke.Poke $
         Poke.pokePtr Poke.openingSquareBracket >=>
-        foldr step finalize foldable True >=>
-        Poke.pokePtr Poke.closingSquareBracket
+        foldr step finalize foldable True
       where
-        step (Json (Write.Write _ poke)) next first ptr =
+        step (Json (Write.Write _ poke)) next first =
           if first
             then
-              Poke.pokePtr poke ptr >>= next False
-            else
-              Poke.pokePtr Poke.comma ptr >>=
-              Poke.pokePtr poke >>=
+              Poke.pokePtr poke >=>
               next False
-        finalize _ ptr =
-          return ptr
+            else
+              Poke.pokePtr Poke.comma >=>
+              Poke.pokePtr poke >=>
+              next False
+        finalize _ =
+          Poke.pokePtr Poke.closingSquareBracket
 
 {-|
 JSON Array literal from a foldable over pairs of key to value literal.
