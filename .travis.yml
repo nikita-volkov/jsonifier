@@ -1,3 +1,5 @@
+if: tag IS blank
+
 env:
   - ghc=8.0.2
   - ghc=8.2.2
