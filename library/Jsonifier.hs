@@ -4,13 +4,17 @@ module Jsonifier
   toByteString,
   -- * Json
   Json,
+  -- ** Primitives
   null,
   bool,
+  -- ** Numbers
   intNumber,
   wordNumber,
   doubleNumber,
   scientificNumber,
+  -- ** Strings
   textString,
+  -- ** Composites
   array,
   object,
 )
@@ -28,7 +32,7 @@ import qualified Data.ByteString.Internal as ByteString
 
 
 {-|
-Render a JSON builder into strict bytestring.
+Render a JSON value into strict bytestring.
 -}
 {-# INLINE toByteString #-}
 toByteString :: Json -> ByteString
@@ -39,6 +43,15 @@ toByteString =
 -- * Json
 -------------------------
 
+{-|
+Specification of how to render a JSON value to 'ByteString'.
+A sort of a JSON-specialized string 'ByteString' builder.
+
+You can construct it by using the specialized
+conversion functions from Haskell types.
+After constructing, you can convert to strict 'ByteString'
+using the 'toByteString' function.
+-}
 newtype Json =
   Json Write.Write
 
@@ -47,11 +60,17 @@ write :: Int -> Poke.Poke -> Json
 write size poke =
   Json (Write.Write size poke)
 
+{-|
+JSON Null literal.
+-}
 {-# INLINE null #-}
 null :: Json
 null =
   write 4 Poke.null
 
+{-|
+JSON Boolean literal.
+-}
 {-# INLINE bool #-}
 bool :: Bool -> Json
 bool =
@@ -61,26 +80,44 @@ bool =
     False ->
       write 5 Poke.false
 
+{-|
+JSON Number literal from @Int@.
+-}
 {-# INLINE intNumber #-}
 intNumber :: Int -> Json
 intNumber =
   Json . Write.intAsciiDec
 
+{-|
+JSON Number literal from @Word@.
+-}
 {-# INLINE wordNumber #-}
 wordNumber :: Word -> Json
 wordNumber =
   Json . Write.wordAsciiDec
 
+{-|
+JSON Number literal from @Double@.
+
+Since JSON doesn\'t have support for them,
+non-real values like @NaN@, @Infinity@, @-Infinity@ get rendered as @0@.
+-}
 {-# INLINE doubleNumber #-}
 doubleNumber :: Double -> Json
 doubleNumber =
   Json . Write.zeroNonRealDoubleAsciiDec
 
+{-|
+JSON Number literal from @Scientific@.
+-}
 {-# INLINE scientificNumber #-}
 scientificNumber :: Scientific -> Json
 scientificNumber =
   Json . Write.scientificAsciiDec
 
+{-|
+JSON String literal from @Text@.
+-}
 {-# INLINE textString #-}
 textString :: Text -> Json
 textString text =
@@ -91,6 +128,12 @@ textString text =
       Poke.string text
     in write allocation poke
 
+{-|
+JSON Array literal from a foldable over element literals.
+
+Don\'t be afraid to use 'fmap' to map the elements of the input datastructure,
+it will all be optimized away.
+-}
 {-# INLINE array #-}
 array :: Foldable f => f Json -> Json
 array list =
@@ -111,6 +154,12 @@ array list =
         poke =
           Poke.openingSquareBracket <> bodyPoke <> Poke.closingSquareBracket
 
+{-|
+JSON Array literal from a foldable over pairs of key to value literal.
+
+Don\'t be afraid to use 'fmap' to map the elements of the input datastructure,
+it will all be optimized away.
+-}
 {-# INLINE object #-}
 object :: Foldable f => f (Text, Json) -> Json
 object f =

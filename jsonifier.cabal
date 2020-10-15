@@ -14,7 +14,8 @@ description:
   of encoding typical documents using this library and \"aeson\".
   The numbers after the slash identify the amount of objects in
   the rendered JSON.
-  \"lazy-aeson\" stands for \"aeson\" producing a lazy bytestring.
+  \"lazy-aeson\" stands for \"aeson\" producing a lazy bytestring
+  (that is what it\'s optimized for).
   .
   > jsonifier/1          mean 1.970 μs  ( +- 21.85 ns  )
   > jsonifier/10         mean 12.12 μs  ( +- 259.9 ns  )

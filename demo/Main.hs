@@ -1,15 +1,16 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards #-}
 
 import qualified Jsonifier as J
-import qualified Data.ByteString.Char8 as AsciiByteString
+import qualified Data.ByteString.Char8 as Char8ByteString
 
 
--- |
--- Outputs the following:
--- 
--- > {"name":"Metallica","genres":[{"name":"Metal"},{"name":"Rock"},{"name":"Blues"}]}
+{-|
+Outputs the following:
+
+> {"name":"Metallica","genres":[{"name":"Metal"},{"name":"Rock"},{"name":"Blues"}]}
+-}
 main =
-  AsciiByteString.putStrLn (J.toByteString (artistJson metallica))
+  Char8ByteString.putStrLn (J.toByteString (artistJson metallica))
 
 metallica :: Artist
 metallica =
