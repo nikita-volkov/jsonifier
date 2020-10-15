@@ -7,7 +7,7 @@ The API consists of just a few functions and
 achieves performance that gets up to **3 times** better than that of "aeson"
 in typical use-cases.
 In cases where we deal with really large documents (60MB) the performance
-of "aeson" becomes on par.
+of "aeson" becomes more comparable.
 
 # Performance
 
@@ -21,24 +21,24 @@ the rendered JSON.
 otherwise it's strict.
 
 ```
-jsonifier/1                              mean 1.969 μs  ( +- 31.14 ns  )
-jsonifier/10                             mean 12.42 μs  ( +- 566.2 ns  )
-jsonifier/100                            mean 116.5 μs  ( +- 2.178 μs  )
-jsonifier/1,000                          mean 1.222 ms  ( +- 16.63 μs  )
-jsonifier/10,000                         mean 20.60 ms  ( +- 400.1 μs  )
-jsonifier/100,000                        mean 225.4 ms  ( +- 14.86 ms  )
-aeson/1                                  mean 6.370 μs  ( +- 141.5 ns  )
-aeson/10                                 mean 30.85 μs  ( +- 507.2 ns  )
-aeson/100                                mean 258.4 μs  ( +- 4.508 μs  )
-aeson/1,000                              mean 3.396 ms  ( +- 103.4 μs  )
-aeson/10,000                             mean 30.08 ms  ( +- 464.6 μs  )
-aeson/100,000                            mean 275.1 ms  ( +- 5.416 ms  )
-lazy-aeson/1                             mean 6.425 μs  ( +- 69.20 ns  )
-lazy-aeson/10                            mean 30.65 μs  ( +- 925.1 ns  )
-lazy-aeson/100                           mean 259.2 μs  ( +- 4.467 μs  )
-lazy-aeson/1,000                         mean 2.532 ms  ( +- 48.72 μs  )
-lazy-aeson/10,000                        mean 25.92 ms  ( +- 2.009 ms  )
-lazy-aeson/100,000                       mean 250.2 ms  ( +- 7.573 ms  )
+jsonifier/1                              mean 2.043 μs  ( +- 24.33 ns  )
+jsonifier/10                             mean 12.60 μs  ( +- 139.3 ns  )
+jsonifier/100                            mean 120.8 μs  ( +- 3.271 μs  )
+jsonifier/1,000                          mean 1.275 ms  ( +- 13.45 μs  )
+jsonifier/10,000                         mean 20.71 ms  ( +- 864.1 μs  )
+jsonifier/100,000                        mean 195.2 ms  ( +- 15.26 ms  )
+aeson/1                                  mean 6.400 μs  ( +- 40.03 ns  )
+aeson/10                                 mean 31.40 μs  ( +- 760.1 ns  )
+aeson/100                                mean 262.1 μs  ( +- 4.486 μs  )
+aeson/1,000                              mean 3.413 ms  ( +- 83.81 μs  )
+aeson/10,000                             mean 30.38 ms  ( +- 439.9 μs  )
+aeson/100,000                            mean 275.8 ms  ( +- 5.646 ms  )
+lazy-aeson/1                             mean 6.403 μs  ( +- 58.98 ns  )
+lazy-aeson/10                            mean 30.30 μs  ( +- 447.1 ns  )
+lazy-aeson/100                           mean 257.7 μs  ( +- 4.806 μs  )
+lazy-aeson/1,000                         mean 2.485 ms  ( +- 24.07 μs  )
+lazy-aeson/10,000                        mean 24.89 ms  ( +- 447.1 μs  )
+lazy-aeson/100,000                       mean 245.4 ms  ( +- 1.571 ms  )
 ```
 
 Here is the table of the data sizes of produced documents by the amounts of objects:
