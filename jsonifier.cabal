@@ -65,8 +65,7 @@ library
     Jsonifier
   other-modules:
     Jsonifier.Allocation
-    Jsonifier.Ffi.JsonAllocation
-    Jsonifier.Ffi.JsonEncoding
+    Jsonifier.Ffi
     Jsonifier.Poke
     Jsonifier.Prelude
     Jsonifier.Write

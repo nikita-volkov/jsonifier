@@ -3,10 +3,9 @@ where
 
 import Jsonifier.Prelude
 import PtrPoker.Poke
-import qualified Foreign.Marshal.Utils as Foreign
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
-import qualified Jsonifier.Ffi.JsonEncoding as JsonEncodingFfi
+import qualified Jsonifier.Ffi as Ffi
 
 
 null :: Poke
@@ -30,7 +29,7 @@ false =
 string :: Text -> Poke
 string (Text.Text arr off len) =
   Poke $ \ ptr ->
-    JsonEncodingFfi.string ptr (TextArray.aBA arr) (fromIntegral off) (fromIntegral len)
+    Ffi.encodeString ptr (TextArray.aBA arr) (fromIntegral off) (fromIntegral len)
 
 {-|
 > "key":value

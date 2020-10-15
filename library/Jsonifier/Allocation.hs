@@ -5,7 +5,7 @@ where
 import Jsonifier.Prelude
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
-import qualified Jsonifier.Ffi.JsonAllocation as JsonAllocationFfi
+import qualified Jsonifier.Ffi as Ffi
 
 
 {-# INLINE object #-}
@@ -39,7 +39,7 @@ https://hackage.haskell.org/package/text-1.2.4.0/docs/src/Data.Text.Encoding.htm
 -}
 stringBody :: Text -> Int
 stringBody (Text.Text arr off len) =
-  JsonAllocationFfi.string
+  Ffi.countStringAllocationSize
     (TextArray.aBA arr) (fromIntegral off) (fromIntegral len)
     & unsafeDupablePerformIO
     & fromIntegral
