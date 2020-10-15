@@ -149,23 +149,32 @@ it will all be optimized away.
 -}
 {-# INLINE array #-}
 array :: Foldable f => f Json -> Json
-array list =
-  foldr step finalize list True 0 0 mempty
+array foldable =
+  write size poke
   where
-    step (Json (Write.Write{..})) next first !size !allocation !poke =
-      if first
-        then
-          next False 1 writeSize writePoke
-        else
-          next False (succ size) (allocation + writeSize)
-            (poke <> Poke.comma <> writePoke)
-    finalize _ size contentsAllocation bodyPoke =
-      write allocation poke
+    size =
+      foldr step finalize foldable 0 0
       where
-        allocation =
-          Allocation.array size contentsAllocation
-        poke =
-          Poke.openingSquareBracket <> bodyPoke <> Poke.closingSquareBracket
+        step (Json (Write.Write writeSize _)) next !count !size =
+          next (succ count) (writeSize + size)
+        finalize count size =
+          Allocation.array count size
+    poke =
+      Poke.Poke $
+        Poke.pokePtr Poke.openingSquareBracket >=>
+        foldr step finalize foldable True >=>
+        Poke.pokePtr Poke.closingSquareBracket
+      where
+        step (Json (Write.Write _ poke)) next first ptr =
+          if first
+            then
+              Poke.pokePtr poke ptr >>= next False
+            else
+              Poke.pokePtr Poke.comma ptr >>=
+              Poke.pokePtr poke >>=
+              next False
+        finalize _ ptr =
+          return ptr
 
 {-|
 JSON Array literal from a foldable over pairs of key to value literal.
