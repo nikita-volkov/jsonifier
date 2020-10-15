@@ -59,6 +59,7 @@ data Sample =
   DoubleNumberSample Double |
   ScientificNumberSample Scientific |
   TextStringSample Text |
+  ScientificStringSample Scientific |
   ArraySample [Sample] |
   ObjectSample [(Text, Sample)]
   deriving (Eq, Show)
@@ -74,7 +75,8 @@ sampleGen =
         wordNumber,
         doubleNumber,
         scientificNumber,
-        textString
+        textString,
+        scientificString
         ] [
         array, object
         ]
@@ -92,6 +94,8 @@ sampleGen =
       GenExtras.scientific <&> ScientificNumberSample
     textString =
       Gen.text (Range.exponential 0 9999) Gen.unicode <&> TextStringSample
+    scientificString =
+      GenExtras.scientific <&> ScientificStringSample
     array =
       Gen.list (Range.exponential 0 999) sample <&> ArraySample
     object =
@@ -119,6 +123,7 @@ sampleJsonifier =
         DoubleNumberSample a -> J.doubleNumber a
         ScientificNumberSample a -> J.scientificNumber a
         TextStringSample a -> J.textString a
+        ScientificStringSample a -> J.scientificString a
         ArraySample a -> J.array (fmap sample a)
         ObjectSample a -> J.object (fmap (fmap sample) a)
 
@@ -134,6 +139,7 @@ sampleAeson =
         WordNumberSample a -> A.Number (fromIntegral a)
         DoubleNumberSample a -> realNumber a
         ScientificNumberSample a -> A.Number a
+        ScientificStringSample a -> A.String (fromString (show a))
         TextStringSample a -> A.String a
         ArraySample a -> A.Array (fromList (fmap sample a))
         ObjectSample a -> A.Object (fromList (fmap (fmap sample) a))
@@ -182,6 +188,10 @@ detectMismatchInSampleAndAeson =
       \ case
         A.String b | a == b -> Nothing
         b -> Just (TextStringSample a, b)
+    ScientificStringSample a ->
+      \ case
+        A.String b | (fromString . show) a == b -> Nothing
+        b -> Just (ScientificStringSample a, b)
     ArraySample a ->
       \ case
         A.Array b | Vector.length b == length a ->

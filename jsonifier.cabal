@@ -69,6 +69,7 @@ library
     Jsonifier.Ffi.JsonEncoding
     Jsonifier.Poke
     Jsonifier.Prelude
+    Jsonifier.Write
   c-sources:
     cbits/json_allocation.c
     cbits/json_encoding.c

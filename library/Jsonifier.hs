@@ -14,6 +14,7 @@ module Jsonifier
   scientificNumber,
   -- ** Strings
   textString,
+  scientificString,
   -- ** Composites
   array,
   object,
@@ -25,6 +26,7 @@ import PtrPoker.Poke (Poke)
 import PtrPoker.Write (Write)
 import qualified Jsonifier.Allocation as Allocation
 import qualified Jsonifier.Poke as Poke
+import qualified Jsonifier.Write as Write
 import qualified PtrPoker.Poke as Poke
 import qualified PtrPoker.Write as Write
 import qualified Data.ByteString as ByteString
@@ -127,6 +129,17 @@ textString text =
     poke =
       Poke.string text
     in write allocation poke
+
+{-|
+JSON String literal from @Scientific@.
+
+You may need this when the reader of your JSON
+cannot handle large number literals.
+-}
+{-# INLINE scientificString #-}
+scientificString :: Scientific -> Json
+scientificString =
+  Json . Write.scientificString
 
 {-|
 JSON Array literal from a foldable over element literals.
