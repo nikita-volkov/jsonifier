@@ -23,7 +23,7 @@ main =
     test "jsonifier" encodeWithJsonifier twitter1Data
     test "aeson" encodeWithAeson twitter1Data
 
-    deepseq (twitter10000Data, twitter1000Data, twitter100Data, twitter10Data) $ defaultMain [
+    defaultMain [
       bgroup "jsonifier" [
         bench "1" (nf encodeWithJsonifier twitter1Data)
         ,
