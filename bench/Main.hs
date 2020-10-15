@@ -23,8 +23,8 @@ main =
       twitter100000Data = mapResultsOfResult (concat . replicate 10) twitter10000Data
 
     -- Ensure that encoders are correct
-    test "jsonifier" encodeWithJsonifier twitter1Data
-    test "aeson" encodeWithAeson twitter1Data
+    test "jsonifier" encodeWithJsonifier twitter10Data
+    test "aeson" encodeWithAeson twitter10Data
 
     -- Print out the data sizes of samples
     TextBuilder.putLnToStdOut $ let
