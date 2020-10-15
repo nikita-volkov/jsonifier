@@ -19,6 +19,7 @@ main =
     let
       twitter1000Data = mapResultsOfResult (concat . replicate 10) twitter100Data
       twitter10000Data = mapResultsOfResult (concat . replicate 10) twitter1000Data
+      twitter100000Data = mapResultsOfResult (concat . replicate 10) twitter10000Data
 
     -- Ensure that encoders are correct
     test "jsonifier" encodeWithJsonifier twitter1Data
@@ -35,6 +36,8 @@ main =
         bench "1000" (nf encodeWithJsonifier twitter1000Data)
         ,
         bench "10000" (nf encodeWithJsonifier twitter10000Data)
+        ,
+        bench "100000" (nf encodeWithJsonifier twitter100000Data)
         ]
       ,
       bgroup "aeson" [
@@ -47,6 +50,8 @@ main =
         bench "1000" (nf encodeWithAeson twitter1000Data)
         ,
         bench "10000" (nf encodeWithAeson twitter10000Data)
+        ,
+        bench "100000" (nf encodeWithAeson twitter100000Data)
         ]
       ,
       bgroup "lazy-aeson" [
@@ -59,6 +64,8 @@ main =
         bench "1000" (nf encodeWithLazyAeson twitter1000Data)
         ,
         bench "10000" (nf encodeWithLazyAeson twitter10000Data)
+        ,
+        bench "100000" (nf encodeWithLazyAeson twitter100000Data)
         ]
       ]
 
