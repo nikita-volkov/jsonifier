@@ -41,16 +41,14 @@ lazy-aeson/10,000                        mean 24.89 ms  ( +- 447.1 μs  )
 lazy-aeson/100,000                       mean 245.4 ms  ( +- 1.571 ms  )
 ```
 
-Here is the table of the data sizes of produced documents by the amounts of objects:
+Here is the listing of the data sizes of produced documents by the amounts of objects:
 
-| Objects amount | Data size |
-| --- | --- |
-| 1 | 941B |
-| 10 | 6.4kB |
-| 100 | 60kB |
-| 1,000 | 604kB |
-| 10,000 | 6MB |
-| 100,000 | 60MB |
+- 1: 941B
+- 10: 6.4kB
+- 100: 60kB
+- 1,000: 604kB
+- 10,000: 6MB
+- 100,000: 60MB
 
 The benchmark suite is bundled with the package.
 
