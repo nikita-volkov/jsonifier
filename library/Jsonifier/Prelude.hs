@@ -31,7 +31,6 @@ import Data.Foldable as Exports hiding (toList)
 import Data.Function as Exports hiding (id, (.))
 import Data.Functor as Exports
 import Data.Functor.Compose as Exports
-import Data.Functor.Contravariant as Exports
 import Data.Int as Exports
 import Data.IORef as Exports
 import Data.Ix as Exports
@@ -61,7 +60,6 @@ import GHC.Exts as Exports (IsList(..), lazy, inline, sortWith, groupWith)
 import GHC.Generics as Exports (Generic)
 import GHC.IO.Exception as Exports
 import GHC.OverloadedLabels as Exports
-import GHC.Records as Exports
 import Numeric as Exports
 import Prelude as Exports hiding (fail, concat, foldr, mapM_, sequence_, foldl1, maximum, minimum, product, sum, all, and, any, concatMap, elem, foldl, foldr1, notElem, or, mapM, sequence, id, (.))
 import System.Environment as Exports
