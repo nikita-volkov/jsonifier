@@ -4,9 +4,10 @@ Minimalistic library for encoding JSON directly to strict bytestring.
 
 The library focuses on 2 aspects: **simplicity** and **performance**.
 The API consists of just a few functions and
-achieves performance that is **3 times** better than that of "aeson"
+achieves performance that gets up to **3 times** better than that of "aeson"
 in typical use-cases.
-No case in which "aeson" performs better has been observed.
+In cases where we deal with really large documents (60MB) the performance
+of "aeson" becomes on par or even supercedes "jsonifier".
 
 # Performance
 
@@ -20,25 +21,36 @@ the rendered JSON.
 (that is what it's optimized for).
 
 ```
-jsonifier/1          mean 1.970 μs  ( +- 21.85 ns  )
-jsonifier/10         mean 12.12 μs  ( +- 259.9 ns  )
-jsonifier/100        mean 117.4 μs  ( +- 2.291 μs  )
-jsonifier/1000       mean 1.295 ms  ( +- 22.47 μs  )
-jsonifier/10000      mean 20.48 ms  ( +- 1.076 ms  )
-aeson/1              mean 6.687 μs  ( +- 106.5 ns  )
-aeson/10             mean 31.19 μs  ( +- 845.4 ns  )
-aeson/100            mean 262.8 μs  ( +- 6.484 μs  )
-aeson/1000           mean 2.944 ms  ( +- 207.0 μs  )
-aeson/10000          mean 29.94 ms  ( +- 957.9 μs  )
-lazy-aeson/1         mean 6.454 μs  ( +- 114.4 ns  )
-lazy-aeson/10        mean 30.69 μs  ( +- 773.1 ns  )
-lazy-aeson/100       mean 259.2 μs  ( +- 2.485 μs  )
-lazy-aeson/1000      mean 2.542 ms  ( +- 60.51 μs  )
-lazy-aeson/10000     mean 25.42 ms  ( +- 269.7 μs  )
+jsonifier/1                              mean 1.933 μs  ( +- 11.00 ns  )
+jsonifier/10                             mean 12.05 μs  ( +- 317.7 ns  )
+jsonifier/100                            mean 113.6 μs  ( +- 735.5 ns  )
+jsonifier/1,000                          mean 1.262 ms  ( +- 12.04 μs  )
+jsonifier/10,000                         mean 27.84 ms  ( +- 478.4 μs  )
+jsonifier/100,000                        mean 282.6 ms  ( +- 34.22 ms  )
+aeson/1                                  mean 5.334 μs  ( +- 50.73 ns  )
+aeson/10                                 mean 26.18 μs  ( +- 192.7 ns  )
+aeson/100                                mean 231.1 μs  ( +- 1.856 μs  )
+aeson/1,000                              mean 3.523 ms  ( +- 95.93 μs  )
+aeson/10,000                             mean 30.04 ms  ( +- 843.5 μs  )
+aeson/100,000                            mean 280.4 ms  ( +- 8.853 ms  )
+lazy-aeson/1                             mean 5.356 μs  ( +- 50.25 ns  )
+lazy-aeson/10                            mean 25.79 μs  ( +- 202.8 ns  )
+lazy-aeson/100                           mean 227.4 μs  ( +- 7.047 μs  )
+lazy-aeson/1,000                         mean 2.306 ms  ( +- 31.83 μs  )
+lazy-aeson/10,000                        mean 22.49 ms  ( +- 285.6 μs  )
+lazy-aeson/100,000                       mean 221.3 ms  ( +- 1.212 ms  )
 ```
 
-The benchmark suite is bundled with the package, so you can observe
-the results yourself.
+Here are the data sizes of the documents by the amounts of objects:
+
+- 1: 941B
+- 10: 6.4kB
+- 100: 60kB
+- 1,000: 604kB
+- 10,000: 6MB
+- 100,000: 60MB
+
+The benchmark suite is bundled with the package.
 
 ## Reasoning
 
