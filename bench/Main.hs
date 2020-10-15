@@ -2,7 +2,7 @@ module Main where
 
 import Prelude
 import Gauge.Main
-import qualified Main.Model
+import qualified Main.Model as Model
 import qualified Main.Jsonifier
 import qualified Main.Aeson
 import qualified Data.Aeson
@@ -13,11 +13,12 @@ import qualified Jsonifier
 
 main =
   do
-    twitter10000Data <- load "samples/twitter10000.json"
-    twitter1000Data <- load "samples/twitter1000.json"
-    twitter100Data <- load "samples/twitter100.json"
-    twitter10Data <- load "samples/twitter10.json"
     twitter1Data <- load "samples/twitter1.json"
+    twitter10Data <- load "samples/twitter10.json"
+    twitter100Data <- load "samples/twitter100.json"
+    let
+      twitter1000Data = mapResultsOfResult (concat . replicate 10) twitter100Data
+      twitter10000Data = mapResultsOfResult (concat . replicate 10) twitter1000Data
 
     -- Ensure that encoders are correct
     test "jsonifier" encodeWithJsonifier twitter1Data
@@ -61,10 +62,14 @@ main =
         ]
       ]
 
-load :: FilePath -> IO Main.Model.Result
+load :: FilePath -> IO Model.Result
 load fileName =
   Data.Aeson.eitherDecodeFileStrict' fileName
     >>= either fail return
+
+mapResultsOfResult :: ([Model.Story] -> [Model.Story]) -> Model.Result -> Model.Result
+mapResultsOfResult f a =
+  a {Model.results = f (Model.results a)}
 
 test name strictEncoder input =
   let encoding = strictEncoder input in
