@@ -14,31 +14,38 @@ of "aeson" becomes more comparable.
 ## Benchmarks
 
 Following are the benchmark results comparing the performance
-of encoding typical documents using this library and "aeson".
+of encoding typical documents using this library, "aeson" and "buffer-builder".
 The numbers after the slash identify the amount of objects in
 the rendered JSON.
 "lazy-aeson" stands for "aeson" producing a lazy bytestring,
 otherwise it's strict.
+"buffer-builder" is another library providing an alternative JSON encoder.
 
 ```
-jsonifier/1          mean 2.043 μs  ( +- 24.33 ns  )
-jsonifier/10         mean 12.60 μs  ( +- 139.3 ns  )
-jsonifier/100        mean 120.8 μs  ( +- 3.271 μs  )
-jsonifier/1,000      mean 1.275 ms  ( +- 13.45 μs  )
-jsonifier/10,000     mean 20.71 ms  ( +- 864.1 μs  )
-jsonifier/100,000    mean 195.2 ms  ( +- 15.26 ms  )
-aeson/1              mean 6.400 μs  ( +- 40.03 ns  )
-aeson/10             mean 31.40 μs  ( +- 760.1 ns  )
-aeson/100            mean 262.1 μs  ( +- 4.486 μs  )
-aeson/1,000          mean 3.413 ms  ( +- 83.81 μs  )
-aeson/10,000         mean 30.38 ms  ( +- 439.9 μs  )
-aeson/100,000        mean 275.8 ms  ( +- 5.646 ms  )
-lazy-aeson/1         mean 6.403 μs  ( +- 58.98 ns  )
-lazy-aeson/10        mean 30.30 μs  ( +- 447.1 ns  )
-lazy-aeson/100       mean 257.7 μs  ( +- 4.806 μs  )
-lazy-aeson/1,000     mean 2.485 ms  ( +- 24.07 μs  )
-lazy-aeson/10,000    mean 24.89 ms  ( +- 447.1 μs  )
-lazy-aeson/100,000   mean 245.4 ms  ( +- 1.571 ms  )
+jsonifier/1              mean 2.038 μs  ( +- 14.23 ns  )
+jsonifier/10             mean 12.55 μs  ( +- 178.1 ns  )
+jsonifier/100            mean 120.8 μs  ( +- 2.406 μs  )
+jsonifier/1,000          mean 1.287 ms  ( +- 19.42 μs  )
+jsonifier/10,000         mean 20.70 ms  ( +- 964.8 μs  )
+jsonifier/100,000        mean 195.1 ms  ( +- 14.70 ms  )
+aeson/1                  mean 6.412 μs  ( +- 65.73 ns  )
+aeson/10                 mean 31.20 μs  ( +- 831.4 ns  )
+aeson/100                mean 261.0 μs  ( +- 3.612 μs  )
+aeson/1,000              mean 3.379 ms  ( +- 93.11 μs  )
+aeson/10,000             mean 30.58 ms  ( +- 847.8 μs  )
+aeson/100,000            mean 278.3 ms  ( +- 5.669 ms  )
+lazy-aeson/1             mean 6.390 μs  ( +- 49.62 ns  )
+lazy-aeson/10            mean 30.24 μs  ( +- 245.1 ns  )
+lazy-aeson/100           mean 259.0 μs  ( +- 2.995 μs  )
+lazy-aeson/1,000         mean 2.538 ms  ( +- 47.43 μs  )
+lazy-aeson/10,000        mean 24.86 ms  ( +- 153.9 μs  )
+lazy-aeson/100,000       mean 247.7 ms  ( +- 594.4 μs  )
+buffer-builder/1         mean 5.473 μs  ( +- 90.16 ns  )
+buffer-builder/10        mean 29.72 μs  ( +- 531.4 ns  )
+buffer-builder/100       mean 304.6 μs  ( +- 6.911 μs  )
+buffer-builder/1,000     mean 3.006 ms  ( +- 73.80 μs  )
+buffer-builder/10,000    mean 33.19 ms  ( +- 480.9 μs  )
+buffer-builder/100,000   mean 310.3 ms  ( +- 2.987 ms  )
 ```
 
 Here is the listing of the data sizes of produced documents by the amounts of objects:

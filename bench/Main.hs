@@ -5,6 +5,7 @@ import Gauge.Main
 import qualified Main.Model as Model
 import qualified Main.Jsonifier
 import qualified Main.Aeson
+import qualified Main.BufferBuilder as BufferBuilder
 import qualified Data.Aeson
 import qualified Data.ByteString.Lazy
 import qualified Data.ByteString.Char8 as Char8ByteString
@@ -24,6 +25,7 @@ main =
 
     -- Ensure that encoders are correct
     test "jsonifier" encodeWithJsonifier twitter10Data
+    test "buffer-builder" BufferBuilder.encodeResult twitter10Data
     test "aeson" encodeWithAeson twitter10Data
 
     -- Print out the data sizes of samples
@@ -85,6 +87,20 @@ main =
         bench "10,000" (nf encodeWithLazyAeson twitter10000Data)
         ,
         bench "100,000" (nf encodeWithLazyAeson twitter100000Data)
+        ]
+      ,
+      bgroup "buffer-builder" [
+        bench "1" (nf BufferBuilder.encodeResult twitter1Data)
+        ,
+        bench "10" (nf BufferBuilder.encodeResult twitter10Data)
+        ,
+        bench "100" (nf BufferBuilder.encodeResult twitter100Data)
+        ,
+        bench "1,000" (nf BufferBuilder.encodeResult twitter1000Data)
+        ,
+        bench "10,000" (nf BufferBuilder.encodeResult twitter10000Data)
+        ,
+        bench "100,000" (nf BufferBuilder.encodeResult twitter100000Data)
         ]
       ]
 
