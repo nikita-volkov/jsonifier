@@ -38,71 +38,38 @@ main =
         "- " <> TextBuilder.text sampleName <> ": " <>
         sampleDataSize sampleData
       in 
-        "Sample data sizes report:\n" <>
-        sample "twitter-1" twitter1Data <> "\n" <>
-        sample "twitter-10" twitter10Data <> "\n" <>
-        sample "twitter-100" twitter100Data <> "\n" <>
-        sample "twitter-1,000" twitter1000Data <> "\n" <>
-        sample "twitter-10,000" twitter10000Data <> "\n" <>
-        sample "twitter-100,000" twitter100000Data
+        "Input data sizes report:\n" <>
+        sample "twitter with 1 objects" twitter1Data <> "\n" <>
+        sample "twitter with 10 objects" twitter10Data <> "\n" <>
+        sample "twitter with 100 objects" twitter100Data <> "\n" <>
+        sample "twitter with 1,000 objects" twitter1000Data <> "\n" <>
+        sample "twitter with 10,000 objects" twitter10000Data <> "\n" <>
+        sample "twitter with 100,000 objects" twitter100000Data
 
-    defaultMain [
-      bgroup "jsonifier" [
-        bench "1" (nf encodeWithJsonifier twitter1Data)
-        ,
-        bench "10" (nf encodeWithJsonifier twitter10Data)
-        ,
-        bench "100" (nf encodeWithJsonifier twitter100Data)
-        ,
-        bench "1,000" (nf encodeWithJsonifier twitter1000Data)
-        ,
-        bench "10,000" (nf encodeWithJsonifier twitter10000Data)
-        ,
-        bench "100,000" (nf encodeWithJsonifier twitter100000Data)
-        ]
-      ,
-      bgroup "aeson" [
-        bench "1" (nf encodeWithAeson twitter1Data)
-        ,
-        bench "10" (nf encodeWithAeson twitter10Data)
-        ,
-        bench "100" (nf encodeWithAeson twitter100Data)
-        ,
-        bench "1,000" (nf encodeWithAeson twitter1000Data)
-        ,
-        bench "10,000" (nf encodeWithAeson twitter10000Data)
-        ,
-        bench "100,000" (nf encodeWithAeson twitter100000Data)
-        ]
-      ,
-      bgroup "lazy-aeson" [
-        bench "1" (nf encodeWithLazyAeson twitter1Data)
-        ,
-        bench "10" (nf encodeWithLazyAeson twitter10Data)
-        ,
-        bench "100" (nf encodeWithLazyAeson twitter100Data)
-        ,
-        bench "1,000" (nf encodeWithLazyAeson twitter1000Data)
-        ,
-        bench "10,000" (nf encodeWithLazyAeson twitter10000Data)
-        ,
-        bench "100,000" (nf encodeWithLazyAeson twitter100000Data)
-        ]
-      ,
-      bgroup "buffer-builder" [
-        bench "1" (nf BufferBuilder.encodeResult twitter1Data)
-        ,
-        bench "10" (nf BufferBuilder.encodeResult twitter10Data)
-        ,
-        bench "100" (nf BufferBuilder.encodeResult twitter100Data)
-        ,
-        bench "1,000" (nf BufferBuilder.encodeResult twitter1000Data)
-        ,
-        bench "10,000" (nf BufferBuilder.encodeResult twitter10000Data)
-        ,
-        bench "100,000" (nf BufferBuilder.encodeResult twitter100000Data)
-        ]
-      ]
+    let
+      benchLib :: NFData a => String -> (Model.Result -> a) -> Benchmark
+      benchLib name encode =
+        bgroup name [
+          bench "1kB" (nf encode twitter1Data)
+          ,
+          bench "6kB" (nf encode twitter10Data)
+          ,
+          bench "60kB" (nf encode twitter100Data)
+          ,
+          bench "600kB" (nf encode twitter1000Data)
+          ,
+          bench "6MB" (nf encode twitter10000Data)
+          ,
+          bench "60MB" (nf encode twitter100000Data)
+          ]
+      in
+        defaultMain [
+          benchLib "jsonifier" encodeWithJsonifier,
+          benchLib "aeson" encodeWithAeson,
+          benchLib "lazy-aeson" encodeWithLazyAeson,
+          benchLib "buffer-builder" BufferBuilder.encodeResult
+          ]
+
 
 load :: FilePath -> IO Model.Result
 load fileName =

@@ -15,47 +15,37 @@ of "aeson" becomes more comparable.
 
 Following are the benchmark results comparing the performance
 of encoding typical documents using this library, "aeson" and "buffer-builder".
-The numbers after the slash identify the amount of objects in
-the rendered JSON.
+Every approach is measured on Twitter API data of sizes ranging from roughly 1kB to 60MB.
 "lazy-aeson" stands for "aeson" producing a lazy bytestring,
 otherwise it's strict.
 "buffer-builder" is another library providing an alternative JSON encoder.
 
 ```
-jsonifier/1              mean 2.038 μs  ( +- 14.23 ns  )
-jsonifier/10             mean 12.55 μs  ( +- 178.1 ns  )
-jsonifier/100            mean 120.8 μs  ( +- 2.406 μs  )
-jsonifier/1,000          mean 1.287 ms  ( +- 19.42 μs  )
-jsonifier/10,000         mean 20.70 ms  ( +- 964.8 μs  )
-jsonifier/100,000        mean 195.1 ms  ( +- 14.70 ms  )
-aeson/1                  mean 6.412 μs  ( +- 65.73 ns  )
-aeson/10                 mean 31.20 μs  ( +- 831.4 ns  )
-aeson/100                mean 261.0 μs  ( +- 3.612 μs  )
-aeson/1,000              mean 3.379 ms  ( +- 93.11 μs  )
-aeson/10,000             mean 30.58 ms  ( +- 847.8 μs  )
-aeson/100,000            mean 278.3 ms  ( +- 5.669 ms  )
-lazy-aeson/1             mean 6.390 μs  ( +- 49.62 ns  )
-lazy-aeson/10            mean 30.24 μs  ( +- 245.1 ns  )
-lazy-aeson/100           mean 259.0 μs  ( +- 2.995 μs  )
-lazy-aeson/1,000         mean 2.538 ms  ( +- 47.43 μs  )
-lazy-aeson/10,000        mean 24.86 ms  ( +- 153.9 μs  )
-lazy-aeson/100,000       mean 247.7 ms  ( +- 594.4 μs  )
-buffer-builder/1         mean 5.473 μs  ( +- 90.16 ns  )
-buffer-builder/10        mean 29.72 μs  ( +- 531.4 ns  )
-buffer-builder/100       mean 304.6 μs  ( +- 6.911 μs  )
-buffer-builder/1,000     mean 3.006 ms  ( +- 73.80 μs  )
-buffer-builder/10,000    mean 33.19 ms  ( +- 480.9 μs  )
-buffer-builder/100,000   mean 310.3 ms  ( +- 2.987 ms  )
+jsonifier/1kB          mean 2.087 μs  ( +- 260.0 ns  )
+jsonifier/6kB          mean 12.33 μs  ( +- 222.2 ns  )
+jsonifier/60kB         mean 118.3 μs  ( +- 1.991 μs  )
+jsonifier/600kB        mean 1.270 ms  ( +- 38.92 μs  )
+jsonifier/6MB          mean 20.53 ms  ( +- 1.042 ms  )
+jsonifier/60MB         mean 194.9 ms  ( +- 15.04 ms  )
+aeson/1kB              mean 6.542 μs  ( +- 199.2 ns  )
+aeson/6kB              mean 31.25 μs  ( +- 494.5 ns  )
+aeson/60kB             mean 261.7 μs  ( +- 8.044 μs  )
+aeson/600kB            mean 3.395 ms  ( +- 114.6 μs  )
+aeson/6MB              mean 30.71 ms  ( +- 701.0 μs  )
+aeson/60MB             mean 277.1 ms  ( +- 4.776 ms  )
+lazy-aeson/1kB         mean 6.423 μs  ( +- 83.69 ns  )
+lazy-aeson/6kB         mean 30.74 μs  ( +- 607.0 ns  )
+lazy-aeson/60kB        mean 259.1 μs  ( +- 4.890 μs  )
+lazy-aeson/600kB       mean 2.511 ms  ( +- 18.71 μs  )
+lazy-aeson/6MB         mean 24.92 ms  ( +- 95.36 μs  )
+lazy-aeson/60MB        mean 248.6 ms  ( +- 736.6 μs  )
+buffer-builder/1kB     mean 5.512 μs  ( +- 77.39 ns  )
+buffer-builder/6kB     mean 30.29 μs  ( +- 459.9 ns  )
+buffer-builder/60kB    mean 307.0 μs  ( +- 3.640 μs  )
+buffer-builder/600kB   mean 3.001 ms  ( +- 75.72 μs  )
+buffer-builder/6MB     mean 33.05 ms  ( +- 336.3 μs  )
+buffer-builder/60MB    mean 308.5 ms  ( +- 3.489 ms  )
 ```
-
-Here is the listing of the data sizes of produced documents by the amounts of objects:
-
-- 1: 941B
-- 10: 6.4kB
-- 100: 60kB
-- 1,000: 604kB
-- 10,000: 6MB
-- 100,000: 60MB
 
 The benchmark suite is bundled with the package.
 
