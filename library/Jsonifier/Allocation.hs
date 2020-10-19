@@ -27,6 +27,7 @@ array elementsAmount contentsAllocation =
       2
 
 {-# INLINE commas #-}
+commas :: Int -> Int
 commas rowsAmount =
   if rowsAmount <= 1
     then 0
@@ -34,8 +35,6 @@ commas rowsAmount =
 
 {-|
 Amount of bytes required for an escaped JSON string value without quotes.
-
-https://hackage.haskell.org/package/text-1.2.4.0/docs/src/Data.Text.Encoding.html#encodeUtf8BuilderEscaped
 -}
 stringBody :: Text -> Int
 stringBody (Text.Text arr off len) =
