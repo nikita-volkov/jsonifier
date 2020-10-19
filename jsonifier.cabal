@@ -37,7 +37,7 @@ library
   exposed-modules:
     Jsonifier
   other-modules:
-    Jsonifier.Allocation
+    Jsonifier.Size
     Jsonifier.Ffi
     Jsonifier.Poke
     Jsonifier.Prelude

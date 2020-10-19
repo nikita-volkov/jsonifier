@@ -1,5 +1,5 @@
 {-# LANGUAGE UnliftedFFITypes #-}
-module Jsonifier.Allocation
+module Jsonifier.Size
 where
 
 import Jsonifier.Prelude
@@ -10,8 +10,8 @@ import qualified Jsonifier.Ffi as Ffi
 
 {-# INLINE object #-}
 object :: Int -> Int -> Int
-object rowsAmount contentsAllocation =
-  curlies + commas rowsAmount + colonsAndQuotes + contentsAllocation
+object rowsAmount contentsSize =
+  curlies + commas rowsAmount + colonsAndQuotes + contentsSize
   where
     curlies =
       2
@@ -20,8 +20,8 @@ object rowsAmount contentsAllocation =
 
 {-# INLINE array #-}
 array :: Int -> Int -> Int
-array elementsAmount contentsAllocation =
-  brackets + commas elementsAmount + contentsAllocation
+array elementsAmount contentsSize =
+  brackets + commas elementsAmount + contentsSize
   where
     brackets =
       2

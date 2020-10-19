@@ -24,7 +24,7 @@ where
 import Jsonifier.Prelude hiding (null, bool)
 import PtrPoker.Poke (Poke)
 import PtrPoker.Write (Write)
-import qualified Jsonifier.Allocation as Allocation
+import qualified Jsonifier.Size as Size
 import qualified Jsonifier.Poke as Poke
 import qualified Jsonifier.Write as Write
 import qualified PtrPoker.Poke as Poke
@@ -124,11 +124,11 @@ JSON String literal from @Text@.
 textString :: Text -> Json
 textString text =
   let
-    allocation =
-      2 + Allocation.stringBody text
+    size =
+      2 + Size.stringBody text
     poke =
       Poke.string text
-    in write allocation poke
+    in write size poke
 
 {-|
 JSON String literal from @Scientific@.
@@ -158,7 +158,7 @@ array foldable =
         step (Json (Write.Write writeSize _)) next !count !size =
           next (succ count) (writeSize + size)
         finalize count size =
-          Allocation.array count size
+          Size.array count size
     poke =
       Poke.Poke $
         Poke.pokePtr Poke.openingSquareBracket >=>
@@ -187,23 +187,23 @@ object :: Foldable f => f (Text, Json) -> Json
 object f =
   foldr step finalize f True 0 0 mempty
   where
-    step (key, Json (Write.Write{..})) next first !size !allocation !poke =
+    step (key, Json (Write.Write{..})) next first !count !size !poke =
       if first
         then
-          next False 1 rowAllocation rowPoke
+          next False 1 rowSize rowPoke
         else
-          next False (succ size) (allocation + rowAllocation)
+          next False (succ count) (size + rowSize)
             (poke <> Poke.comma <> rowPoke)
       where
-        rowAllocation =
-          Allocation.stringBody key +
+        rowSize =
+          Size.stringBody key +
           writeSize
         rowPoke =
           Poke.objectRow key writePoke
-    finalize _ size contentsAllocation bodyPoke =
-      write allocation poke
+    finalize _ count contentsSize bodyPoke =
+      write size poke
       where
-        allocation =
-          Allocation.object size contentsAllocation
+        size =
+          Size.object count contentsSize
         poke =
           Poke.openingCurlyBracket <> bodyPoke <> Poke.closingCurlyBracket
