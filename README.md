@@ -16,35 +16,42 @@ of "aeson" becomes more comparable.
 Following are the benchmark results comparing the performance
 of encoding typical documents using this library, "aeson" and "buffer-builder".
 Every approach is measured on Twitter API data of sizes ranging from roughly 1kB to 60MB.
-"lazy-aeson" stands for "aeson" producing a lazy bytestring,
-otherwise it's strict.
+"aeson" stands for "aeson" producing a strict bytestring,
+"lazy-aeson" - lazy bytestring,
+"lazy-aeson-untrimmed-32k" - lazy bytestring using an untrimmed builder strategy with allocation of 32k.
 "buffer-builder" is another library providing an alternative JSON encoder.
 
 ```
-jsonifier/1kB          mean 2.087 μs  ( +- 260.0 ns  )
-jsonifier/6kB          mean 12.33 μs  ( +- 222.2 ns  )
-jsonifier/60kB         mean 118.3 μs  ( +- 1.991 μs  )
-jsonifier/600kB        mean 1.270 ms  ( +- 38.92 μs  )
-jsonifier/6MB          mean 20.53 ms  ( +- 1.042 ms  )
-jsonifier/60MB         mean 194.9 ms  ( +- 15.04 ms  )
-aeson/1kB              mean 6.542 μs  ( +- 199.2 ns  )
-aeson/6kB              mean 31.25 μs  ( +- 494.5 ns  )
-aeson/60kB             mean 261.7 μs  ( +- 8.044 μs  )
-aeson/600kB            mean 3.395 ms  ( +- 114.6 μs  )
-aeson/6MB              mean 30.71 ms  ( +- 701.0 μs  )
-aeson/60MB             mean 277.1 ms  ( +- 4.776 ms  )
-lazy-aeson/1kB         mean 6.423 μs  ( +- 83.69 ns  )
-lazy-aeson/6kB         mean 30.74 μs  ( +- 607.0 ns  )
-lazy-aeson/60kB        mean 259.1 μs  ( +- 4.890 μs  )
-lazy-aeson/600kB       mean 2.511 ms  ( +- 18.71 μs  )
-lazy-aeson/6MB         mean 24.92 ms  ( +- 95.36 μs  )
-lazy-aeson/60MB        mean 248.6 ms  ( +- 736.6 μs  )
-buffer-builder/1kB     mean 5.512 μs  ( +- 77.39 ns  )
-buffer-builder/6kB     mean 30.29 μs  ( +- 459.9 ns  )
-buffer-builder/60kB    mean 307.0 μs  ( +- 3.640 μs  )
-buffer-builder/600kB   mean 3.001 ms  ( +- 75.72 μs  )
-buffer-builder/6MB     mean 33.05 ms  ( +- 336.3 μs  )
-buffer-builder/60MB    mean 308.5 ms  ( +- 3.489 ms  )
+jsonifier/1kB                    mean 2.037 μs  ( +- 15.93 ns  )
+jsonifier/6kB                    mean 12.68 μs  ( +- 272.7 ns  )
+jsonifier/60kB                   mean 122.7 μs  ( +- 3.081 μs  )
+jsonifier/600kB                  mean 1.304 ms  ( +- 16.41 μs  )
+jsonifier/6MB                    mean 20.98 ms  ( +- 825.8 μs  )
+jsonifier/60MB                   mean 197.1 ms  ( +- 14.81 ms  )
+aeson/1kB                        mean 6.470 μs  ( +- 118.5 ns  )
+aeson/6kB                        mean 31.42 μs  ( +- 680.3 ns  )
+aeson/60kB                       mean 265.0 μs  ( +- 5.558 μs  )
+aeson/600kB                      mean 3.435 ms  ( +- 99.90 μs  )
+aeson/6MB                        mean 30.57 ms  ( +- 470.7 μs  )
+aeson/60MB                       mean 278.5 ms  ( +- 6.307 ms  )
+lazy-aeson/1kB                   mean 6.419 μs  ( +- 183.5 ns  )
+lazy-aeson/6kB                   mean 30.72 μs  ( +- 501.1 ns  )
+lazy-aeson/60kB                  mean 257.0 μs  ( +- 4.227 μs  )
+lazy-aeson/600kB                 mean 2.533 ms  ( +- 61.61 μs  )
+lazy-aeson/6MB                   mean 25.08 ms  ( +- 263.9 μs  )
+lazy-aeson/60MB                  mean 249.5 ms  ( +- 1.333 ms  )
+lazy-aeson-untrimmed-32k/1kB     mean 6.952 μs  ( +- 427.0 ns  )
+lazy-aeson-untrimmed-32k/6kB     mean 29.68 μs  ( +- 656.5 ns  )
+lazy-aeson-untrimmed-32k/60kB    mean 259.8 μs  ( +- 4.344 μs  )
+lazy-aeson-untrimmed-32k/600kB   mean 2.521 ms  ( +- 21.90 μs  )
+lazy-aeson-untrimmed-32k/6MB     mean 25.25 ms  ( +- 295.5 μs  )
+lazy-aeson-untrimmed-32k/60MB    mean 250.8 ms  ( +- 3.536 ms  )
+buffer-builder/1kB               mean 5.573 μs  ( +- 151.5 ns  )
+buffer-builder/6kB               mean 30.40 μs  ( +- 457.2 ns  )
+buffer-builder/60kB              mean 308.9 μs  ( +- 4.601 μs  )
+buffer-builder/600kB             mean 3.020 ms  ( +- 54.79 μs  )
+buffer-builder/6MB               mean 33.55 ms  ( +- 497.8 μs  )
+buffer-builder/60MB              mean 316.1 ms  ( +- 3.747 ms  )
 ```
 
 The benchmark suite is bundled with the package.

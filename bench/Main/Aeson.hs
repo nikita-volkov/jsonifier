@@ -3,7 +3,21 @@ module Main.Aeson where
 import Prelude
 import Main.Model
 import Data.Aeson hiding (Result)
+import qualified Data.ByteString.Lazy as Lbs
+import qualified Data.ByteString.Builder as ByteStringBuilder
+import qualified Data.ByteString.Builder.Extra as ByteStringBuilder
 
+
+resultToLazyByteStringWithUntrimmedStrategy :: Result -> Lbs.ByteString
+resultToLazyByteStringWithUntrimmedStrategy =
+  ByteStringBuilder.toLazyByteStringWith
+    (ByteStringBuilder.untrimmedStrategy 32000 32000)
+    Lbs.empty
+    . resultToByteStringBuilder
+
+resultToByteStringBuilder :: Result -> ByteStringBuilder.Builder
+resultToByteStringBuilder =
+  fromEncoding . toEncoding
 
 instance ToJSON Metadata where
   toJSON Metadata{..} = object [

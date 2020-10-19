@@ -67,6 +67,7 @@ main =
           benchLib "jsonifier" encodeWithJsonifier,
           benchLib "aeson" encodeWithAeson,
           benchLib "lazy-aeson" encodeWithLazyAeson,
+          benchLib "lazy-aeson-untrimmed-32k" Main.Aeson.resultToLazyByteStringWithUntrimmedStrategy,
           benchLib "buffer-builder" BufferBuilder.encodeResult
           ]
 
