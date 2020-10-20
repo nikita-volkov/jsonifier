@@ -1,3 +1,7 @@
+{-|
+Simple DSL for mapping Haskell values into JSON representation and
+rendering it into 'ByteString'.
+-}
 module Jsonifier
 (
   -- * ByteString
@@ -49,8 +53,9 @@ toByteString =
 Specification of how to render a JSON value to 'ByteString'.
 Sort of a JSON-specialized 'ByteString' builder.
 
-You can construct it by using the specialized
-conversion functions from Haskell types.
+You can construct it from Haskell types
+using the specialized conversion functions
+like 'intNumber', 'textString' or 'object'.
 After constructing, you can convert to strict 'ByteString'
 using the 'toByteString' function.
 -}
