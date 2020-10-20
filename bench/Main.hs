@@ -47,30 +47,35 @@ main =
         sample "twitter with 100,000 objects" twitter100000Data
 
     let
-      benchLib :: NFData a => String -> (Model.Result -> a) -> Benchmark
-      benchLib name encode =
+
+      benchInput :: String -> Model.Result -> Benchmark
+      benchInput name input =
         bgroup name [
-          bench "1kB" (nf encode twitter1Data)
+          bench "jsonifier" (nf encodeWithJsonifier input)
           ,
-          bench "6kB" (nf encode twitter10Data)
+          bench "aeson" (nf encodeWithAeson input)
           ,
-          bench "60kB" (nf encode twitter100Data)
+          bench "lazy-aeson" (nf encodeWithLazyAeson input)
           ,
-          bench "600kB" (nf encode twitter1000Data)
+          bench "lazy-aeson-untrimmed-32k" (nf Main.Aeson.resultToLazyByteStringWithUntrimmedStrategy input)
           ,
-          bench "6MB" (nf encode twitter10000Data)
-          ,
-          bench "60MB" (nf encode twitter100000Data)
-          ]
-      in
-        defaultMain [
-          benchLib "jsonifier" encodeWithJsonifier,
-          benchLib "aeson" encodeWithAeson,
-          benchLib "lazy-aeson" encodeWithLazyAeson,
-          benchLib "lazy-aeson-untrimmed-32k" Main.Aeson.resultToLazyByteStringWithUntrimmedStrategy,
-          benchLib "buffer-builder" BufferBuilder.encodeResult
+          bench "buffer-builder" (nf BufferBuilder.encodeResult input)
           ]
 
+      in
+        defaultMain [
+          benchInput "1kB" twitter1Data
+          ,
+          benchInput "6kB" twitter10Data
+          ,
+          benchInput "60kB" twitter100Data
+          ,
+          benchInput "600kB" twitter1000Data
+          ,
+          benchInput "6MB" twitter10000Data
+          ,
+          benchInput "60MB" twitter100000Data
+          ]
 
 load :: FilePath -> IO Model.Result
 load fileName =
