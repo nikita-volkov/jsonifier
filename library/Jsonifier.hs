@@ -47,7 +47,7 @@ toByteString =
 
 {-|
 Specification of how to render a JSON value to 'ByteString'.
-A sort of a JSON-specialized string 'ByteString' builder.
+Sort of a JSON-specialized 'ByteString' builder.
 
 You can construct it by using the specialized
 conversion functions from Haskell types.
