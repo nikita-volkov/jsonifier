@@ -6,8 +6,8 @@ The library focuses on 2 aspects: **simplicity** and **performance**.
 The API consists of just a few functions and
 achieves performance that gets up to **3 times** better than that of "aeson"
 in typical use-cases.
-In cases where we deal with really large documents (60MB) the performance
-of "aeson" becomes more comparable.
+In cases where we deal with very large documents the performance difference
+becomes less drastic.
 
 # Performance
 
