@@ -2,16 +2,10 @@ name: jsonifier
 version: 0.1.0.4
 synopsis: Fast and simple JSON encoding toolkit
 description:
-  Minimalistic library for encoding JSON directly to strict bytestring.
+  Minimalistic library for encoding JSON directly to strict bytestring,
+  which is up to 3x faster than \"aeson\".
   .
-  The library focuses on 2 aspects: simplicity and performance.
-  The API consists of just a few functions and
-  achieves performance that is 3 times better than that of \"aeson\"
-  in typical use-cases.
-  In cases where we deal with really large documents (60MB) the performance
-  of \"aeson\" becomes more comparable.
-  .
-  For further details please refer to README.
+  For introduction, benchmark results and demo please skip to Readme.
 category: JSON
 homepage: https://github.com/nikita-volkov/jsonifier
 bug-reports: https://github.com/nikita-volkov/jsonifier/issues
