@@ -69,8 +69,8 @@ uint8_t* encode_utf16_as_string
       }
     }
     else if (x <= 0x7FF) {
-      *dest++ = (x >> 6) | 0xC0;
-      *dest++ = (x & 0x3f) | 0x80;
+      *((uint16_t*) dest) = (x >> 6) & 0x3f | (x & 0x3f) << 8 | 0x80C0;
+      dest += 2;
     }
     else if (x < 0xD800 || x > 0xDBFF) {
       *dest++ = (x >> 12) | 0xE0;
