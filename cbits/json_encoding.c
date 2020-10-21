@@ -16,18 +16,20 @@
 
 static const char* digits = "0123456789abcdef";
 
-#define slash_slash_seq '\\' | '\\' << 8
-#define slash_doublequote_seq '\\' | '"' << 8
-#define slash_n_seq '\\' | 'n' << 8
-#define slash_r_seq '\\' | 'r' << 8
-#define slash_t_seq '\\' | 't' << 8
-#define slash_u_seq '\\' | 'u' << 8
+#define slash_slash_seq_def '\\' | '\\' << 8
+#define slash_doublequote_seq_def '\\' | '"' << 8
+#define slash_n_seq_def '\\' | 'n' << 8
+#define slash_r_seq_def '\\' | 'r' << 8
+#define slash_t_seq_def '\\' | 't' << 8
+#define slash_u_seq_def '\\' | 'u' << 8
+
+static const uint16_t slash_u_seq = slash_u_seq_def;
 
 static const bool pass_through_by_septet[128] =
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
 static const uint16_t two_byte_seq_by_septet[128] =
-  {0,0,0,0,0,0,0,0,0,slash_t_seq,slash_n_seq,0,0,slash_r_seq,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_doublequote_seq,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_slash_seq};
+  {0,0,0,0,0,0,0,0,0,slash_t_seq_def,slash_n_seq_def,0,0,slash_r_seq_def,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_doublequote_seq_def,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_slash_seq_def};
 
 uint8_t* encode_utf16_as_string
 (
