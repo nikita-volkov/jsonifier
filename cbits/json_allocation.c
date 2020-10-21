@@ -24,19 +24,22 @@ int count_string_allocation
   size_t allocation = 0;
 
   while (src_ptr < end_ptr) {
-    uint16_t w = *src_ptr++;
+    uint16_t w = *src_ptr;
 
     if (w <= 0x7F) {
       allocation += allocation_by_septet[w];
+      src_ptr += 1;
     }
     else if (w <= 0x7FF) {
       allocation += 2;
+      src_ptr += 1;
     }
     else if (w < 0xD800 || w > 0xDBFF) {
       allocation += 3;
+      src_ptr += 1;
     } else {
-      src_ptr++;
       allocation += 4;
+      src_ptr += 2;
     }
   }
 
