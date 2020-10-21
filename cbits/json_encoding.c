@@ -58,13 +58,13 @@ uint8_t* encode_utf16_as_string
         } else {
           // \u
           *((uint16_t*) dest) = slash_u_seq;
-          dest += 2;
 
           // hex encoding of 4 nibbles
-          *dest++ = digits[x >> 12 & 0xF];
-          *dest++ = digits[x >> 8 & 0xF];
-          *dest++ = digits[x >> 4 & 0xF];
-          *dest++ = digits[x & 0xF];
+          *(dest + 2) = digits[x >> 12 & 0xF];
+          *(dest + 3) = digits[x >> 8 & 0xF];
+          *(dest + 4) = digits[x >> 4 & 0xF];
+          *(dest + 5) = digits[x & 0xF];
+          dest += 6;
         }
       }
     }
