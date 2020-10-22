@@ -16,18 +16,20 @@
 
 static const char* digits = "0123456789abcdef";
 
-#define slash_slash_seq '\\' | '\\' << 8
-#define slash_doublequote_seq '\\' | '"' << 8
-#define slash_n_seq '\\' | 'n' << 8
-#define slash_r_seq '\\' | 'r' << 8
-#define slash_t_seq '\\' | 't' << 8
-#define slash_u_seq '\\' | 'u' << 8
+#define slash_slash_seq_def '\\' | '\\' << 8
+#define slash_doublequote_seq_def '\\' | '"' << 8
+#define slash_n_seq_def '\\' | 'n' << 8
+#define slash_r_seq_def '\\' | 'r' << 8
+#define slash_t_seq_def '\\' | 't' << 8
+#define slash_u_seq_def '\\' | 'u' << 8
+
+static const uint16_t slash_u_seq = slash_u_seq_def;
 
 static const bool pass_through_by_septet[128] =
   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
 static const uint16_t two_byte_seq_by_septet[128] =
-  {0,0,0,0,0,0,0,0,0,slash_t_seq,slash_n_seq,0,0,slash_r_seq,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_doublequote_seq,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_slash_seq};
+  {0,0,0,0,0,0,0,0,0,slash_t_seq_def,slash_n_seq_def,0,0,slash_r_seq_def,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_doublequote_seq_def,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_slash_seq_def};
 
 uint8_t* encode_utf16_as_string
 (
@@ -58,19 +60,19 @@ uint8_t* encode_utf16_as_string
         } else {
           // \u
           *((uint16_t*) dest) = slash_u_seq;
-          dest += 2;
 
           // hex encoding of 4 nibbles
-          *dest++ = digits[x >> 12 & 0xF];
-          *dest++ = digits[x >> 8 & 0xF];
-          *dest++ = digits[x >> 4 & 0xF];
-          *dest++ = digits[x & 0xF];
+          *(dest + 2) = digits[x >> 12 & 0xF];
+          *(dest + 3) = digits[x >> 8 & 0xF];
+          *(dest + 4) = digits[x >> 4 & 0xF];
+          *(dest + 5) = digits[x & 0xF];
+          dest += 6;
         }
       }
     }
     else if (x <= 0x7FF) {
-      *dest++ = (x >> 6) | 0xC0;
-      *dest++ = (x & 0x3f) | 0x80;
+      *((uint16_t*) dest) = (x >> 6 | x << 8) & 0x3f3f | 0x80C0;
+      dest += 2;
     }
     else if (x < 0xD800 || x > 0xDBFF) {
       *dest++ = (x >> 12) | 0xE0;
