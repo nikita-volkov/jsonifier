@@ -1,5 +1,5 @@
 name: jsonifier
-version: 0.1.0.4
+version: 0.1.0.5
 synopsis: Fast and simple JSON encoding toolkit
 description:
   Minimalistic library for encoding JSON directly to strict bytestring,
