@@ -182,7 +182,7 @@ array foldable =
           Poke.pokePtr Poke.closingSquareBracket
 
 {-|
-JSON Array literal from a foldable over pairs of key to value literal.
+JSON Object literal from a foldable over pairs of key to value literal.
 
 Don\'t be afraid to use 'fmap' to map the elements of the input datastructure,
 it will all be optimized away.
