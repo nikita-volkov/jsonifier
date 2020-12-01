@@ -14,13 +14,9 @@ static const int allocation_by_septet[128] =
 int count_string_allocation
 (
   const uint16_t *src_ptr,
-  size_t src_off,
-  size_t src_len
+  const uint16_t *end_ptr
 )
 {
-  src_ptr += src_off;
-  const uint16_t *end_ptr = src_ptr + src_len;
-
   size_t allocation = 0;
 
   while (src_ptr < end_ptr) {
@@ -44,4 +40,17 @@ int count_string_allocation
   }
 
   return allocation;
+}
+
+int count_string_allocation_off_len
+(
+  const uint16_t *src_ptr,
+  size_t src_off,
+  size_t src_len
+)
+{
+  src_ptr += src_off;
+  const uint16_t *end_ptr = src_ptr + src_len;
+
+  return count_string_allocation(src_ptr, end_ptr);
 }

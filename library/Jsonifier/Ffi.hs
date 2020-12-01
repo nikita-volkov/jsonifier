@@ -7,7 +7,7 @@ import Foreign.C
 import GHC.Base (ByteArray#, MutableByteArray#)
 
 
-foreign import ccall unsafe "static count_string_allocation"
+foreign import ccall unsafe "static count_string_allocation_off_len"
   countStringAllocationSize :: ByteArray# -> CSize -> CSize -> IO CInt
 
 foreign import ccall unsafe "static encode_utf16_as_string"
