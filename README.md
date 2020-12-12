@@ -82,7 +82,7 @@ JSON from your domain model.
 {-# LANGUAGE OverloadedStrings, RecordWildCards #-}
 
 import qualified Jsonifier as J
-import qualified Data.ByteString.Char8 as Char8ByteString
+import qualified Data.ByteString.Char8
 
 
 {-|
@@ -91,7 +91,7 @@ Outputs the following:
 > {"name":"Metallica","genres":[{"name":"Metal"},{"name":"Rock"},{"name":"Blues"}]}
 -}
 main =
-  Char8ByteString.putStrLn (J.toByteString (artistJson metallica))
+  Data.ByteString.Char8.putStrLn (J.toByteString (artistJson metallica))
 
 metallica :: Artist
 metallica =
