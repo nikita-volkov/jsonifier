@@ -1,52 +1,73 @@
-module Jsonifier.Class where
+module Jsonifier.Class (
+    ToJSON(..)
+  , (&=)
+)where
 
 import Jsonifier.Basic
+    ( Json,
+      null,
+      bool,
+      intNumber,
+      wordNumber,
+      doubleNumber,
+      scientificNumber,
+      textString,
+      array,
+      object )
 
 import Data.ByteString ( ByteString )
 import Jsonifier.Prelude hiding (null, bool)
 
 
 (&=) :: (ToJSON a) => Text -> a -> (Text, Json)
-name &= value = (name, encode value)
+name &= value = (name, toJson value)
 {-# INLINE (&=) #-}
 
 
 class ToJSON a where
-    encode :: a -> Json
+    toJson :: a -> Json
 
 instance ToJSON Int where
-    encode = intNumber
-    {-# INLINE encode #-}
+    toJson = intNumber
+    {-# INLINE toJson #-}
 
 instance ToJSON Bool where
-    encode = bool
-    {-# INLINE encode #-}
+    toJson = bool
+    {-# INLINE toJson #-}
 
 instance ToJSON Word where
-    encode = wordNumber
-    {-# INLINE encode #-}
+    toJson = wordNumber
+    {-# INLINE toJson #-}
 
 instance ToJSON Double where
-    encode = doubleNumber
-    {-# INLINE encode #-}
+    toJson = doubleNumber
+    {-# INLINE toJson #-}
 
 instance ToJSON Scientific where
-    encode = scientificNumber
-    {-# INLINE encode #-}
+    toJson = scientificNumber
+    {-# INLINE toJson #-}
 
 instance ToJSON Text where
-    encode = textString
-    {-# INLINE encode #-}
+    toJson = textString
+    {-# INLINE toJson #-}
 
 instance (Foldable f) => ToJSON (f Json) where
-    encode = array
-    {-# INLINE encode #-}
+    toJson = array
+    {-# INLINE toJson #-}
 
 instance (Foldable f) => ToJSON (f (Text, Json)) where
-    encode = object
-    {-# INLINE encode #-}
+    toJson = object
+    {-# INLINE toJson #-}
 
 instance (ToJSON a) => ToJSON (Maybe a) where
-    encode (Just a) = encode a
-    encode _        = null
-    {-# INLINE encode #-}
+    toJson (Just a) = toJson a
+    toJson _        = null
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b) => ToJSON (a, b) where
+    toJson (a, b) = array [toJson a, toJson b]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a) => ToJSON [a] where
+    toJson xs = array $ fmap toJson xs
+    {-# INLINE toJson #-}
