@@ -4,6 +4,7 @@ import Prelude
 import Gauge.Main
 import qualified Main.Model as Model
 import qualified Main.Jsonifier
+import qualified Main.JsonifierClass
 import qualified Main.Aeson
 import qualified Main.BufferBuilder as BufferBuilder
 import qualified Data.Aeson
@@ -37,7 +38,7 @@ main =
       sample sampleName sampleData =
         "- " <> TextBuilder.text sampleName <> ": " <>
         sampleDataSize sampleData
-      in 
+      in
         "Input data sizes report:\n" <>
         sample "twitter with 1 objects" twitter1Data <> "\n" <>
         sample "twitter with 10 objects" twitter10Data <> "\n" <>
@@ -51,15 +52,12 @@ main =
       benchInput :: String -> Model.Result -> Benchmark
       benchInput name input =
         bgroup name [
-          bench "jsonifier" (nf encodeWithJsonifier input)
-          ,
-          bench "aeson" (nf encodeWithAeson input)
-          ,
-          bench "lazy-aeson" (nf encodeWithLazyAeson input)
-          ,
-          bench "lazy-aeson-untrimmed-32k" (nf Main.Aeson.resultToLazyByteStringWithUntrimmedStrategy input)
-          ,
-          bench "buffer-builder" (nf BufferBuilder.encodeResult input)
+           bench "jsonifier" (nf encodeWithJsonifier input)
+        ,  bench "jsonifier-class" (nf encodeWithJsonifierClass input)
+        , bench "aeson" (nf encodeWithAeson input)
+        , bench "lazy-aeson" (nf encodeWithLazyAeson input)
+        , bench "lazy-aeson-untrimmed-32k" (nf Main.Aeson.resultToLazyByteStringWithUntrimmedStrategy input)
+        , bench "buffer-builder" (nf BufferBuilder.encodeResult input)
           ]
 
       in
@@ -98,11 +96,18 @@ test name strictEncoder input =
       Left err ->
         fail ("Encoder " <> name <> " failed: " <> err <> ".\nOutput:\n" <> Char8ByteString.unpack encoding)
 
+encodeWithJsonifier :: Model.Result -> ByteString
 encodeWithJsonifier =
   Jsonifier.toByteString . Main.Jsonifier.resultJson
 
+encodeWithJsonifierClass :: Model.Result -> ByteString
+encodeWithJsonifierClass =
+  Jsonifier.toByteString . Jsonifier.toJson
+
+encodeWithAeson :: Data.Aeson.ToJSON a => a -> ByteString
 encodeWithAeson =
   Data.ByteString.Lazy.toStrict . Data.Aeson.encode
 
+encodeWithLazyAeson :: Data.Aeson.ToJSON a => a -> Data.ByteString.Lazy.ByteString
 encodeWithLazyAeson =
   Data.Aeson.encode
