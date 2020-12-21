@@ -141,8 +141,8 @@ sampleAeson =
         ScientificNumberSample a -> A.Number a
         ScientificStringSample a -> A.String (fromString (show a))
         TextStringSample a -> A.String a
-        ArraySample a -> A.Array (fromList (fmap sample a))
-        ObjectSample a -> A.Object (fromList (fmap (fmap sample) a))
+        ArraySample a -> A.Array (Vector.fromList (fmap sample a))
+        ObjectSample a -> A.Object (HashMap.fromList (fmap (fmap sample) a))
       where
         realNumber a =
           A.Number $
