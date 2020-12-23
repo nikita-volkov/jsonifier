@@ -4,7 +4,7 @@ module Jsonifier.Class (
 )where
 
 import Jsonifier.Basic
-    ( Json,
+    (utf8ByteString,  Json,
       null,
       bool,
       intNumber,
@@ -18,6 +18,27 @@ import Jsonifier.Basic
 import Data.ByteString ( ByteString )
 import Jsonifier.Prelude hiding (null, bool)
 
+import Data.Word
+import Data.Int
+import Data.Void
+import Data.Version
+import Data.These
+
+import Data.Coerce
+import qualified Data.Text as T
+import qualified Data.Text.Lazy as LT
+import Foreign.C.Types (CTime (..))
+import Data.Time
+import qualified Data.ByteString.Builder as B
+import qualified Data.ByteString.Lazy as LB (toStrict)
+import Data.Time.Clock.System (SystemTime (..))
+import qualified Data.Sequence as Seq
+import qualified Data.Set as Set
+import qualified Data.Array as A
+import qualified Data.Vector as V
+import qualified Data.Vector.Unboxed as U
+
+import Jsonifier.Time (timeOfDay, zonedTime, localTime, utcTime,  day )
 
 (&=) :: (ToJSON a) => Text -> a -> (Text, Json)
 name &= value = (name, toJson value)
@@ -26,6 +47,7 @@ name &= value = (name, toJson value)
 
 class ToJSON a where
     toJson :: a -> Json
+
 
 instance ToJSON Int where
     toJson = intNumber
@@ -39,6 +61,46 @@ instance ToJSON Word where
     toJson = wordNumber
     {-# INLINE toJson #-}
 
+instance ToJSON Word8 where
+    toJson = wordNumber . fromIntegral
+    {-# INLINE toJson #-}
+
+instance ToJSON Word16 where
+    toJson = wordNumber . fromIntegral
+    {-# INLINE toJson #-}
+
+instance ToJSON Word32 where
+    toJson = wordNumber . fromIntegral
+    {-# INLINE toJson #-}
+
+instance ToJSON Word64 where
+    toJson = wordNumber . fromIntegral
+    {-# INLINE toJson #-}
+
+instance ToJSON Int8 where
+    toJson = wordNumber . fromIntegral
+    {-# INLINE toJson #-}
+
+instance ToJSON Int16 where
+    toJson = wordNumber . fromIntegral
+    {-# INLINE toJson #-}
+
+instance ToJSON Int32 where
+    toJson = wordNumber . fromIntegral
+    {-# INLINE toJson #-}
+
+instance ToJSON Int64 where
+    toJson = wordNumber . fromIntegral
+    {-# INLINE toJson #-}
+
+instance ToJSON Integer where
+    toJson = wordNumber . fromInteger
+    {-# INLINE toJson #-}
+
+instance ToJSON Float where
+    toJson = doubleNumber . realToFrac
+    {-# INLINE toJson #-}
+
 instance ToJSON Double where
     toJson = doubleNumber
     {-# INLINE toJson #-}
@@ -47,8 +109,25 @@ instance ToJSON Scientific where
     toJson = scientificNumber
     {-# INLINE toJson #-}
 
+instance ToJSON Char where
+    toJson c = textString (T.singleton c)
+    {-# INLINE toJson #-}
+
+instance {-# OVERLAPPING #-} ToJSON String where
+    {-# SPECIALIZE instance ToJSON String #-}
+    toJson c = textString (T.pack c)
+    {-# INLINE toJson #-}
+
 instance ToJSON Text where
     toJson = textString
+    {-# INLINE toJson #-}
+
+instance ToJSON LT.Text where
+    toJson = textString . LT.toStrict
+    {-# INLINE toJson #-}
+
+instance ToJSON Version where
+    toJson = toJson . showVersion
     {-# INLINE toJson #-}
 
 instance (Foldable f) => ToJSON (f Json) where
@@ -64,10 +143,128 @@ instance (ToJSON a) => ToJSON (Maybe a) where
     toJson _        = null
     {-# INLINE toJson #-}
 
-instance (ToJSON a, ToJSON b) => ToJSON (a, b) where
-    toJson (a, b) = array [toJson a, toJson b]
+instance (ToJSON a, ToJSON b) => ToJSON (Either a b) where
+    toJson (Left x)  = object [ "Left" &=  x]
+    toJson (Right x) = object [ "Right" &=  x]
+    {-# INLINE toJson #-}
+
+instance ToJSON Void where
+    toJson = absurd
+    {-# INLINE toJson #-}
+
+instance ToJSON CTime where
+    toJson (CTime i) = toJson i
     {-# INLINE toJson #-}
 
 instance (ToJSON a) => ToJSON [a] where
     toJson xs = array $ fmap toJson xs
+    {-# INLINE toJson #-}
+
+instance (ToJSON a) => ToJSON (NonEmpty a) where
+    toJson xs = array $ fmap toJson xs
+    {-# INLINE toJson #-}
+
+instance (ToJSON a) => ToJSON (Seq.Seq a) where
+    toJson xs = array $ fmap toJson xs
+    {-# INLINE toJson #-}
+
+instance (ToJSON a) => ToJSON (Set.Set a) where
+    toJson xs = array $ fmap toJson (Set.toList xs)
+    {-# INLINE toJson #-}
+
+instance (ToJSON a) => ToJSON (A.Array i a) where
+    toJson xs = array $ fmap toJson xs
+    {-# INLINE toJson #-}
+
+instance (ToJSON a) => ToJSON (V.Vector a) where
+    toJson xs = array $ V.map toJson xs
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, U.Unbox a) => ToJSON (U.Vector a) where
+    toJson xs = array $ V.map toJson (U.convert xs)
+    {-# INLINE toJson #-}
+
+instance ToJSON Day where
+    toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . day
+    {-# INLINE toJson #-}
+
+instance ToJSON LocalTime where
+    toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . localTime
+    {-# INLINE toJson #-}
+
+instance ToJSON ZonedTime where
+    toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . zonedTime
+    {-# INLINE toJson #-}
+
+instance ToJSON UTCTime where
+    toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . utcTime
+    {-# INLINE toJson #-}
+
+instance ToJSON TimeOfDay where
+    toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . timeOfDay
+    {-# INLINE toJson #-}
+
+instance ToJSON SystemTime where
+    toJson (MkSystemTime secs nsecs) = toJson (fromIntegral secs + fromIntegral nsecs / 1000000000 :: Nano)
+    {-# INLINE toJson #-}
+
+instance HasResolution a => ToJSON (Fixed a) where
+    toJson = doubleNumber . realToFrac
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, Integral a) => ToJSON (Ratio a) where
+    toJson r = object [ "numerator"   &= numerator   r
+                      , "denominator" &= denominator r
+                      ]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b) => ToJSON (These a b) where
+    toJson (This a)    = object [ "This" &= a ]
+    toJson (That b)    = object [ "That" &= b ]
+    toJson (These a b) = object [ "This" &= a, "That" &= b ]
+    {-# INLINE toJson #-}
+
+
+instance ToJSON () where
+    toJson _ = array []
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b) => ToJSON (a, b) where
+    toJson (a, b) = array [toJson a, toJson b]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b, ToJSON c) => ToJSON (a, b, c) where
+    toJson (a, b, c) = array [toJson a, toJson b, toJson c]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b, ToJSON c, ToJSON d) => ToJSON (a, b, c, d) where
+    toJson (a, b, c, d) = array [toJson a, toJson b, toJson c, toJson d]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b, ToJSON c, ToJSON d, ToJSON e) => ToJSON (a, b, c, d, e) where
+    toJson (a, b, c, d, e) = array [toJson a, toJson b, toJson c, toJson d, toJson e]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b, ToJSON c, ToJSON d, ToJSON e, ToJSON f) => ToJSON (a, b, c, d, e, f) where
+    toJson (a, b, c, d, e, f) = array [toJson a, toJson b, toJson c, toJson d, toJson e, toJson f]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b, ToJSON c, ToJSON d, ToJSON e, ToJSON f, ToJSON g) => ToJSON (a, b, c, d, e, f, g) where
+    toJson (a, b, c, d, e, f, g) = array [toJson a, toJson b, toJson c, toJson d, toJson e, toJson f, toJson g]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b, ToJSON c, ToJSON d, ToJSON e, ToJSON f, ToJSON g, ToJSON h) => ToJSON (a, b, c, d, e, f, g, h) where
+    toJson (a, b, c, d, e, f, g, h) = array [toJson a, toJson b, toJson c, toJson d, toJson e, toJson f, toJson g, toJson h]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b, ToJSON c, ToJSON d, ToJSON e, ToJSON f, ToJSON g, ToJSON h, ToJSON i) => ToJSON (a, b, c, d, e, f, g, h, i) where
+    toJson (a, b, c, d, e, f, g, h, i) = array [toJson a, toJson b, toJson c, toJson d, toJson e, toJson f, toJson g, toJson h, toJson i]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b, ToJSON c, ToJSON d, ToJSON e, ToJSON f, ToJSON g, ToJSON h, ToJSON i, ToJSON j) => ToJSON (a, b, c, d, e, f, g, h, i, j) where
+    toJson (a, b, c, d, e, f, g, h, i, j) = array [toJson a, toJson b, toJson c, toJson d, toJson e, toJson f, toJson g, toJson h, toJson i, toJson j]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b, ToJSON c, ToJSON d, ToJSON e, ToJSON f, ToJSON g, ToJSON h, ToJSON i, ToJSON j, ToJSON k) => ToJSON (a, b, c, d, e, f, g, h, i, j, k) where
+    toJson (a, b, c, d, e, f, g, h, i, j, k) = array [toJson a, toJson b, toJson c, toJson d, toJson e, toJson f, toJson g, toJson h, toJson i, toJson j, toJson k]
     {-# INLINE toJson #-}

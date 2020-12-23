@@ -18,6 +18,7 @@ module Jsonifier.Basic
   scientificNumber,
   -- ** Strings
   textString,
+  utf8ByteString,
   scientificString,
   -- ** Composites
   array,
@@ -26,7 +27,7 @@ module Jsonifier.Basic
 where
 
 import Jsonifier.Prelude hiding (null, bool)
-import PtrPoker.Poke (Poke)
+import PtrPoker.Poke (Poke, byteString)
 import PtrPoker.Write (Write)
 import qualified Jsonifier.Size as Size
 import qualified Jsonifier.Poke as Poke
@@ -133,6 +134,20 @@ textString text =
       2 + Size.stringBody text
     poke =
       Poke.string text
+    in write size poke
+
+{-|
+JSON String literal from @ByteString@.
+Use it only with utf-8 encoded byte string.
+-}
+{-# INLINE utf8ByteString #-}
+utf8ByteString :: ByteString -> Json
+utf8ByteString bs =
+  let
+    size =
+      2 + ByteString.length bs
+    poke =
+      Poke.byteString bs
     in write size poke
 
 {-|

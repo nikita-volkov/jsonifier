@@ -2,7 +2,7 @@ module Jsonifier.Poke
 where
 
 import Jsonifier.Prelude
-import PtrPoker.Poke
+import PtrPoker.Poke ( byteString, word8, Poke(Poke) )
 import qualified Data.Text.Internal as Text
 import qualified Data.Text.Array as TextArray
 import qualified Jsonifier.Ffi as Ffi
