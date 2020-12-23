@@ -1,3 +1,5 @@
+{-# LANGUAGE  IncoherentInstances #-}
+
 module Jsonifier.Class (
     ToJSON(..)
   , (&=)
@@ -78,23 +80,23 @@ instance ToJSON Word64 where
     {-# INLINE toJson #-}
 
 instance ToJSON Int8 where
-    toJson = wordNumber . fromIntegral
+    toJson = intNumber . fromIntegral
     {-# INLINE toJson #-}
 
 instance ToJSON Int16 where
-    toJson = wordNumber . fromIntegral
+    toJson = intNumber . fromIntegral
     {-# INLINE toJson #-}
 
 instance ToJSON Int32 where
-    toJson = wordNumber . fromIntegral
+    toJson = intNumber . fromIntegral
     {-# INLINE toJson #-}
 
 instance ToJSON Int64 where
-    toJson = wordNumber . fromIntegral
+    toJson = intNumber . fromIntegral
     {-# INLINE toJson #-}
 
 instance ToJSON Integer where
-    toJson = wordNumber . fromInteger
+    toJson = intNumber . fromInteger
     {-# INLINE toJson #-}
 
 instance ToJSON Float where
@@ -130,15 +132,15 @@ instance ToJSON Version where
     toJson = toJson . showVersion
     {-# INLINE toJson #-}
 
-instance (Foldable f) => ToJSON (f Json) where
+instance {-# OVERLAPPABLE #-} (Foldable f) => ToJSON (f Json) where
     toJson = array
     {-# INLINE toJson #-}
 
-instance (Foldable f) => ToJSON (f (Text, Json)) where
+instance {-# OVERLAPPABLE #-} (Foldable f) => ToJSON (f (Text, Json)) where
     toJson = object
     {-# INLINE toJson #-}
 
-instance (ToJSON a) => ToJSON (Maybe a) where
+instance {-# OVERLAPPING #-} (ToJSON a) => ToJSON (Maybe a) where
     toJson (Just a) = toJson a
     toJson _        = null
     {-# INLINE toJson #-}
