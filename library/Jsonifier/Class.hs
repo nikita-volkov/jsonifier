@@ -20,17 +20,12 @@ import Jsonifier.Basic
 import Data.ByteString ( ByteString )
 import Jsonifier.Prelude hiding (null, bool)
 
-import Data.Word
-import Data.Int
-import Data.Void
-import Data.Version
-import Data.These
+import Data.These ( These(..) )
 
-import Data.Coerce
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as LT
 import Foreign.C.Types (CTime (..))
-import Data.Time
+import Data.Time ( Day, UTCTime, LocalTime, TimeOfDay, ZonedTime )
 import qualified Data.ByteString.Builder as B
 import qualified Data.ByteString.Lazy as LB (toStrict)
 import Data.Time.Clock.System (SystemTime (..))
@@ -185,8 +180,6 @@ instance (ToJSON a, U.Unbox a) => ToJSON (U.Vector a) where
 instance HasResolution a => ToJSON (Fixed a) where
     toJson = doubleNumber . realToFrac
     {-# INLINE toJson #-}
-
----------------------------------------
 
 instance {-# OVERLAPPABLE #-} (Foldable f) => ToJSON (f Json) where
     toJson = array
