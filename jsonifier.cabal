@@ -72,7 +72,7 @@ test-suite test
   other-modules:
     Main.Util.HedgehogGens
   build-depends:
-    aeson >=1.4.7.1 && <2,
+    aeson >= 1.5 && <2,
     hedgehog >=1.0.3 && <2,
     jsonifier,
     numeric-limits >=0.1 && <0.2,
@@ -85,13 +85,15 @@ test-suite regression
   default-language: Haskell2010
   main-is: Main.hs
   build-depends:
-    aeson >=1.4.7.1 && <2,
+    aeson >=1.5 && <2,
     hedgehog >=1.0.3 && <2,
     jsonifier,
     numeric-limits >=0.1 && <0.2,
     rerebase >=1.10.0.1 && <2,
     tasty >= 1.4,
-    tasty-hunit >= 0.10
+    tasty-hunit >= 0.10,
+    these >= 1.1,
+    array >= 0.5
 
 benchmark bench
   type: exitcode-stdio-1.0

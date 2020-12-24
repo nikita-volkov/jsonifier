@@ -128,18 +128,6 @@ instance ToJSON LT.Text where
     toJson = textString . LT.toStrict
     {-# INLINE toJson #-}
 
-instance ToJSON Version where
-    toJson = toJson . showVersion
-    {-# INLINE toJson #-}
-
-instance {-# OVERLAPPABLE #-} (Foldable f) => ToJSON (f Json) where
-    toJson = array
-    {-# INLINE toJson #-}
-
-instance {-# OVERLAPPABLE #-} (Foldable f) => ToJSON (f (Text, Json)) where
-    toJson = object
-    {-# INLINE toJson #-}
-
 instance {-# OVERLAPPING #-} (ToJSON a) => ToJSON (Maybe a) where
     toJson (Just a) = toJson a
     toJson _        = null
@@ -150,12 +138,12 @@ instance (ToJSON a, ToJSON b) => ToJSON (Either a b) where
     toJson (Right x) = object [ "Right" &=  x]
     {-# INLINE toJson #-}
 
-instance ToJSON Void where
-    toJson = absurd
+instance ToJSON Version where
+    toJson = toJson . showVersion
     {-# INLINE toJson #-}
 
-instance ToJSON CTime where
-    toJson (CTime i) = toJson i
+instance ToJSON Void where
+    toJson = absurd
     {-# INLINE toJson #-}
 
 instance (ToJSON a) => ToJSON [a] where
@@ -166,6 +154,18 @@ instance (ToJSON a) => ToJSON (NonEmpty a) where
     toJson xs = array $ fmap toJson xs
     {-# INLINE toJson #-}
 
+instance (ToJSON a, ToJSON b) => ToJSON (These a b) where
+    toJson (This a)    = object [ "This" &= a ]
+    toJson (That b)    = object [ "That" &= b ]
+    toJson (These a b) = object [ "This" &= a, "That" &= b ]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, Integral a) => ToJSON (Ratio a) where
+    toJson r = object [ "numerator"   &= numerator   r
+                      , "denominator" &= denominator r
+                      ]
+    {-# INLINE toJson #-}
+
 instance (ToJSON a) => ToJSON (Seq.Seq a) where
     toJson xs = array $ fmap toJson xs
     {-# INLINE toJson #-}
@@ -174,16 +174,26 @@ instance (ToJSON a) => ToJSON (Set.Set a) where
     toJson xs = array $ fmap toJson (Set.toList xs)
     {-# INLINE toJson #-}
 
-instance (ToJSON a) => ToJSON (A.Array i a) where
-    toJson xs = array $ fmap toJson xs
-    {-# INLINE toJson #-}
-
 instance (ToJSON a) => ToJSON (V.Vector a) where
     toJson xs = array $ V.map toJson xs
     {-# INLINE toJson #-}
 
 instance (ToJSON a, U.Unbox a) => ToJSON (U.Vector a) where
     toJson xs = array $ V.map toJson (U.convert xs)
+    {-# INLINE toJson #-}
+
+instance HasResolution a => ToJSON (Fixed a) where
+    toJson = doubleNumber . realToFrac
+    {-# INLINE toJson #-}
+
+---------------------------------------
+
+instance {-# OVERLAPPABLE #-} (Foldable f) => ToJSON (f Json) where
+    toJson = array
+    {-# INLINE toJson #-}
+
+instance {-# OVERLAPPABLE #-} (Foldable f) => ToJSON (f (Text, Json)) where
+    toJson = object
     {-# INLINE toJson #-}
 
 instance ToJSON Day where
@@ -209,23 +219,6 @@ instance ToJSON TimeOfDay where
 instance ToJSON SystemTime where
     toJson (MkSystemTime secs nsecs) = toJson (fromIntegral secs + fromIntegral nsecs / 1000000000 :: Nano)
     {-# INLINE toJson #-}
-
-instance HasResolution a => ToJSON (Fixed a) where
-    toJson = doubleNumber . realToFrac
-    {-# INLINE toJson #-}
-
-instance (ToJSON a, Integral a) => ToJSON (Ratio a) where
-    toJson r = object [ "numerator"   &= numerator   r
-                      , "denominator" &= denominator r
-                      ]
-    {-# INLINE toJson #-}
-
-instance (ToJSON a, ToJSON b) => ToJSON (These a b) where
-    toJson (This a)    = object [ "This" &= a ]
-    toJson (That b)    = object [ "That" &= b ]
-    toJson (These a b) = object [ "This" &= a, "That" &= b ]
-    {-# INLINE toJson #-}
-
 
 instance ToJSON () where
     toJson _ = array []

@@ -1,4 +1,5 @@
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TupleSections #-}
 
 
 module Main where
@@ -14,6 +15,14 @@ import Data.Word
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as LT
 import Debug.Trace
+import Data.These
+import Data.Ratio
+import Data.Fixed
+import qualified Data.Sequence as Seq
+import qualified Data.Set as Set
+import qualified Data.Array as Arr
+import qualified Data.Vector as V
+import qualified Data.Vector.Unboxed as U
 
 import qualified Data.List.NonEmpty as NE
 
@@ -26,78 +35,75 @@ tests = testGroup "jsonifier" [ regression ]
 
 encodeStrict = LB.toStrict . A.encode
 
-boundedTest :: (Bounded a, A.ToJSON a, J.ToJSON a, Typeable a) => a -> [TestTree]
-boundedTest x =
+aesonTest :: (Show a, A.ToJSON a, J.ToJSON a, Typeable a) => a -> [TestTree]
+aesonTest x =
   [
-      testCase (show (typeOf x)) $  ((J.toByteString . J.toJson)  x) @?= encodeStrict x
-  ]
-
-integralTest :: (Integral a, A.ToJSON a, J.ToJSON a, Typeable a) => a -> [TestTree]
-integralTest x =
-  [
-      testCase (show (typeOf x)) $  ((J.toByteString . J.toJson)  x) @?= encodeStrict x
-  ]
-
-floatingTest :: (Floating a, A.ToJSON a, J.ToJSON a, Typeable a) => a -> [TestTree]
-floatingTest x =
-  [
-      testCase (show (typeOf x)) $ ((J.toByteString . J.toJson) x) @?= encodeStrict x
-  ]
-
-stringTest :: (IsString a, A.ToJSON a, J.ToJSON a, Typeable a) => a -> [TestTree]
-stringTest x =
-  [
-      testCase (show (typeOf x)) $ ((J.toByteString . J.toJson) x) @?= encodeStrict x
-  ]
-
-jsonTest :: (A.ToJSON a, J.ToJSON a, Typeable a) => a -> [TestTree]
-jsonTest x =
-  [
-      testCase (show (typeOf x)) $ ((J.toByteString . J.toJson) x) @?= encodeStrict x
+      testCase (show (typeOf x) <> " -> (" <> show x <> ")") $ ((J.toByteString . J.toJson) x) @?= encodeStrict x
   ]
 
 regression :: TestTree
 regression = testGroup "aeson" $
-  boundedTest (minBound :: Word)    <>
-  boundedTest (maxBound :: Word)    <>
-  boundedTest (minBound :: Word8)   <>
-  boundedTest (maxBound :: Word8)   <>
-  boundedTest (minBound :: Word16)  <>
-  boundedTest (maxBound :: Word16)  <>
-  boundedTest (minBound :: Word32)  <>
-  boundedTest (maxBound :: Word32)  <>
-  boundedTest (minBound :: Word64)  <>
-  boundedTest (maxBound :: Word64)  <>
-  boundedTest (minBound :: Int)     <>
-  boundedTest (maxBound :: Int)     <>
-  boundedTest (minBound :: Int8)    <>
-  boundedTest (maxBound :: Int8)    <>
-  boundedTest (minBound :: Int16)   <>
-  boundedTest (maxBound :: Int16)   <>
-  boundedTest (minBound :: Int32)   <>
-  boundedTest (maxBound :: Int32)   <>
-  boundedTest (minBound :: Int64)   <>
-  boundedTest (maxBound :: Int64)   <>
-  integralTest (0    :: Integer)    <>
-  integralTest (42   :: Integer)    <>
-  -- floatingTest (0.1  :: Float)      <>
-  -- floatingTest (42.1 :: Float)      <>
-  -- floatingTest (0.1  :: Double)     <>
-  --- floatingTest (42.1 :: Double)    <>
+  aesonTest (minBound :: Word)    <>
+  aesonTest (maxBound :: Word)    <>
+  aesonTest (minBound :: Word8)   <>
+  aesonTest (maxBound :: Word8)   <>
+  aesonTest (minBound :: Word16)  <>
+  aesonTest (maxBound :: Word16)  <>
+  aesonTest (minBound :: Word32)  <>
+  aesonTest (maxBound :: Word32)  <>
+  aesonTest (minBound :: Word64)  <>
+  aesonTest (maxBound :: Word64)  <>
+  aesonTest (minBound :: Int)     <>
+  aesonTest (maxBound :: Int)     <>
+  aesonTest (minBound :: Int8)    <>
+  aesonTest (maxBound :: Int8)    <>
+  aesonTest (minBound :: Int16)   <>
+  aesonTest (maxBound :: Int16)   <>
+  aesonTest (minBound :: Int32)   <>
+  aesonTest (maxBound :: Int32)   <>
+  aesonTest (minBound :: Int64)   <>
+  aesonTest (maxBound :: Int64)   <>
+  aesonTest (0    :: Integer)     <>
+  aesonTest (42   :: Integer)     <>
+  -- aesonTest (0.1  :: Float)      <>
+  -- aesonTest (42.1 :: Float)      <>
+  -- aesonTest (0.1  :: Double)     <>
+  -- aesonTest (42.1 :: Double)     <>
   [ testCase "Char" $  ((J.toByteString . J.toJson) 'l') @?= encodeStrict 'l' ] <>
-  stringTest ("HelloWorld" :: String)  <>
-  stringTest ("HelloWorld" :: T.Text)  <>
-  stringTest ("HelloWorld" :: LT.Text) <>
 
-  jsonTest (Nothing @ Int)              <>
-  jsonTest (Just @ Int 1)               <>
+  aesonTest ("HelloWorld" :: String)      <>
+  aesonTest ("HelloWorld" :: T.Text)      <>
+  aesonTest ("HelloWorld" :: LT.Text)     <>
 
-  jsonTest ([] :: [Int])                <>
-  jsonTest ([1,2,3] :: [Int])           <>
-  jsonTest ( NE.fromList @ Int [1,2,3]) <>
+  aesonTest (Nothing @ Int)               <>
+  aesonTest (Just @ Int 1)                <>
 
-  jsonTest (Left 'c' :: Either Char Int) <>
-  jsonTest (Right 1  :: Either Char Int) <>
+  aesonTest ([] :: [Int])                 <>
+  aesonTest ([1,2,3] :: [Int])            <>
+  aesonTest ( NE.fromList @ Int [1,2,3])  <>
 
-  boundedTest (True)                    <>
-  boundedTest (False)
+  aesonTest (Left 'c' :: Either Char Int) <>
+  aesonTest (Right 1  :: Either Char Int) <>
+
+  aesonTest (makeVersion [1,2,3])         <>
+
+  -- aesonTest (This 'c'    :: These Char Int) <>
+  -- aesonTest (That 1      :: These Char Int) <>
+  -- aesonTest (These 'c' 1 :: These Char Int) <>
+
+  aesonTest (1 % 3 :: Ratio Int)          <>
+
+  aesonTest (Seq.fromList @ Int [1,2,3] ) <>
+  aesonTest (Set.fromList @ Int [1,2,3] ) <>
+  aesonTest (V.fromList @ Int [1,2,3] )   <>
+  aesonTest (U.fromList @ Int [1,2,3] )   <>
+
+  aesonTest (1 :: Micro)                  <>
+
+  aesonTest (())                                <>
+  aesonTest ((1,2) :: (Int,Int))                <>
+  aesonTest ((1,2,3) :: (Int,Int,Int))          <>
+  aesonTest ((1,2,3,'a') :: (Int,Int,Int,Char)) <>
+
+  aesonTest (True)                        <>
+  aesonTest (False)
