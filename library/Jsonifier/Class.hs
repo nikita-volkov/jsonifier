@@ -216,9 +216,9 @@ instance ToJSON TimeOfDay where
     toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . timeOfDay
     {-# INLINE toJson #-}
 
-instance ToJSON SystemTime where
-    toJson (MkSystemTime secs nsecs) = toJson (fromIntegral secs + fromIntegral nsecs / 1000000000 :: Nano)
-    {-# INLINE toJson #-}
+-- instance ToJSON SystemTime where
+--     toJson (MkSystemTime secs nsecs) = toJson (fromIntegral secs + fromIntegral nsecs / 1000000000 :: Nano)
+--     {-# INLINE toJson #-}
 
 instance ToJSON () where
     toJson _ = array []
