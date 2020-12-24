@@ -25,6 +25,10 @@ import qualified Data.Vector as V
 import qualified Data.Vector.Unboxed as U
 
 import qualified Data.List.NonEmpty as NE
+import Data.Time.Calendar
+import Data.Time.LocalTime
+import Data.Time.Clock
+-- import Data.Time.Clock.System
 
 
 main :: IO ()
@@ -69,7 +73,8 @@ regression = testGroup "aeson" $
   -- aesonTest (42.1 :: Float)      <>
   -- aesonTest (0.1  :: Double)     <>
   -- aesonTest (42.1 :: Double)     <>
-  [ testCase "Char" $  ((J.toByteString . J.toJson) 'l') @?= encodeStrict 'l' ] <>
+
+  aesonTest ('l' :: Char)                 <>
 
   aesonTest ("HelloWorld" :: String)      <>
   aesonTest ("HelloWorld" :: T.Text)      <>
@@ -91,19 +96,24 @@ regression = testGroup "aeson" $
   -- aesonTest (That 1      :: These Char Int) <>
   -- aesonTest (These 'c' 1 :: These Char Int) <>
 
-  aesonTest (1 % 3 :: Ratio Int)          <>
+  aesonTest (1 % 3 :: Ratio Int)                <>
 
-  aesonTest (Seq.fromList @ Int [1,2,3] ) <>
-  aesonTest (Set.fromList @ Int [1,2,3] ) <>
-  aesonTest (V.fromList @ Int [1,2,3] )   <>
-  aesonTest (U.fromList @ Int [1,2,3] )   <>
+  aesonTest (Seq.fromList @ Int [1,2,3] )       <>
+  aesonTest (Set.fromList @ Int [1,2,3] )       <>
+  aesonTest (V.fromList @ Int [1,2,3] )         <>
+  aesonTest (U.fromList @ Int [1,2,3] )         <>
+  aesonTest (1 :: Micro)                        <>
 
-  aesonTest (1 :: Micro)                  <>
-
-  aesonTest (())                                <>
+  aesonTest ()                                  <>
   aesonTest ((1,2) :: (Int,Int))                <>
   aesonTest ((1,2,3) :: (Int,Int,Int))          <>
   aesonTest ((1,2,3,'a') :: (Int,Int,Int,Char)) <>
+  aesonTest ((1,2,3,'a') :: (Int,Int,Int,Char)) <>
 
-  aesonTest (True)                        <>
-  aesonTest (False)
+  aesonTest (ModifiedJulianDay 10425)                                                                <>
+  aesonTest (LocalTime (ModifiedJulianDay 0) (TimeOfDay 0 0 0 ))                                     <>
+  aesonTest (ZonedTime (LocalTime (ModifiedJulianDay 42) (TimeOfDay 0 0 0 )) (TimeZone 0 True "us")) <>
+  aesonTest (UTCTime (ModifiedJulianDay 42) (secondsToDiffTime 123))                                 <>
+  aesonTest (TimeOfDay 19 03 45)        <>
+  aesonTest True                        <>
+  aesonTest False
