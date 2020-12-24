@@ -144,10 +144,9 @@ Use it only with utf-8 encoded byte string.
 utf8ByteString :: ByteString -> Json
 utf8ByteString bs =
   let
-    size =
-      2 + ByteString.length bs
+    size = 2 + ByteString.length bs
     poke =
-      Poke.byteString bs
+      Poke.word8 34 <> Poke.byteString bs <> Poke.word8 34
     in write size poke
 
 {-|
