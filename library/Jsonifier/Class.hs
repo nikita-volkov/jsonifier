@@ -31,9 +31,16 @@ import qualified Data.ByteString.Lazy as LB (toStrict)
 import Data.Time.Clock.System (SystemTime (..))
 import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
+import qualified Data.HashSet as HashSet
+import qualified Data.Map as M
+import qualified Data.HashMap.Strict as HM
+import qualified Data.IntSet as IntSet
 import qualified Data.Array as A
 import qualified Data.Vector as V
 import qualified Data.Vector.Unboxed as U
+import qualified Data.UUID as UUID
+
+import Data.Tagged
 
 import Jsonifier.Time (timeOfDay, zonedTime, localTime, utcTime,  day )
 
@@ -41,6 +48,38 @@ import Jsonifier.Time (timeOfDay, zonedTime, localTime, utcTime,  day )
 name &= value = (name, toJson value)
 {-# INLINE (&=) #-}
 
+class (Show a) => ToJSONKey a where
+    toJKey :: a -> T.Text
+    toJKey  = T.pack . show
+
+instance ToJSONKey Int
+instance ToJSONKey Int8
+instance ToJSONKey Int16
+instance ToJSONKey Int32
+instance ToJSONKey Int64
+instance ToJSONKey Word
+instance ToJSONKey Word8
+instance ToJSONKey Word16
+instance ToJSONKey Word32
+instance ToJSONKey Word64
+instance ToJSONKey Integer
+instance ToJSONKey Double
+instance ToJSONKey Float
+instance ToJSONKey Bool
+instance ToJSONKey Day
+instance ToJSONKey TimeOfDay
+instance ToJSONKey LocalTime
+instance ToJSONKey ZonedTime
+instance ToJSONKey UTCTime
+
+instance ToJSONKey Char where
+    toJKey = T.singleton
+instance ToJSONKey String where
+    toJKey = T.pack
+instance ToJSONKey T.Text where
+    toJKey = id
+instance ToJSONKey LT.Text where
+    toJKey = LT.toStrict
 
 class ToJSON a where
     toJson :: a -> Json
@@ -106,6 +145,14 @@ instance ToJSON Scientific where
     toJson = scientificNumber
     {-# INLINE toJson #-}
 
+instance ToJSON Ordering where
+    toJson o = case o of
+                LT -> utf8ByteString "LT"
+                EQ -> utf8ByteString "EQ"
+                GT -> utf8ByteString "GT"
+
+    {-# INLINE toJson #-}
+
 instance ToJSON Char where
     toJson c = textString (T.singleton c)
     {-# INLINE toJson #-}
@@ -161,12 +208,36 @@ instance (ToJSON a, Integral a) => ToJSON (Ratio a) where
                       ]
     {-# INLINE toJson #-}
 
+instance (ToJSON a) => ToJSON (Tagged t a) where
+    toJson = toJson . untag
+    {-# INLINE toJson #-}
+
+instance ToJSON UUID.UUID where
+    toJson = toJson . UUID.toText
+    {-# INLINE toJson #-}
+
 instance (ToJSON a) => ToJSON (Seq.Seq a) where
     toJson xs = array $ fmap toJson xs
     {-# INLINE toJson #-}
 
 instance (ToJSON a) => ToJSON (Set.Set a) where
     toJson xs = array $ fmap toJson (Set.toList xs)
+    {-# INLINE toJson #-}
+
+instance (ToJSON a) => ToJSON (HashSet.HashSet a) where
+    toJson xs = array $ fmap toJson (HashSet.toList xs)
+    {-# INLINE toJson #-}
+
+instance (ToJSONKey k, ToJSON v) => ToJSON (M.Map k v) where
+    toJson xs = object $ map (\(k, v) -> (toJKey k, toJson v)) (M.toList xs)
+    {-# INLINE toJson #-}
+
+instance (ToJSONKey k, ToJSON v) => ToJSON (HM.HashMap k v) where
+    toJson xs = object $ map (\(k, v) -> (toJKey k, toJson v)) (HM.toList xs)
+    {-# INLINE toJson #-}
+
+instance ToJSON IntSet.IntSet where
+    toJson xs = array $ fmap toJson (IntSet.toList xs)
     {-# INLINE toJson #-}
 
 instance (ToJSON a) => ToJSON (V.Vector a) where
