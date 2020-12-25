@@ -6,7 +6,7 @@ module Jsonifier.Class (
 )where
 
 import Jsonifier.Basic
-    (utf8ByteString,  Json,
+    (char8ByteString,  Json,
       null,
       bool,
       intNumber,
@@ -158,9 +158,9 @@ instance ToJSON Scientific where
 
 instance ToJSON Ordering where
     toJson o = case o of
-                LT -> utf8ByteString "LT"
-                EQ -> utf8ByteString "EQ"
-                GT -> utf8ByteString "GT"
+                LT -> char8ByteString "LT"
+                EQ -> char8ByteString "EQ"
+                GT -> char8ByteString "GT"
 
     {-# INLINE toJson #-}
 
@@ -282,23 +282,23 @@ instance {-# OVERLAPPABLE #-} (Foldable f) => ToJSON (f (Text, Json)) where
     {-# INLINE toJson #-}
 
 instance ToJSON Day where
-    toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . day
+    toJson = char8ByteString . LB.toStrict . B.toLazyByteString . day
     {-# INLINE toJson #-}
 
 instance ToJSON LocalTime where
-    toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . localTime
+    toJson = char8ByteString . LB.toStrict . B.toLazyByteString . localTime
     {-# INLINE toJson #-}
 
 instance ToJSON ZonedTime where
-    toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . zonedTime
+    toJson = char8ByteString . LB.toStrict . B.toLazyByteString . zonedTime
     {-# INLINE toJson #-}
 
 instance ToJSON UTCTime where
-    toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . utcTime
+    toJson = char8ByteString . LB.toStrict . B.toLazyByteString . utcTime
     {-# INLINE toJson #-}
 
 instance ToJSON TimeOfDay where
-    toJson = utf8ByteString . LB.toStrict . B.toLazyByteString . timeOfDay
+    toJson = char8ByteString . LB.toStrict . B.toLazyByteString . timeOfDay
     {-# INLINE toJson #-}
 
 -- instance ToJSON SystemTime where

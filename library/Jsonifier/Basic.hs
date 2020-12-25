@@ -18,7 +18,7 @@ module Jsonifier.Basic
   scientificNumber,
   -- ** Strings
   textString,
-  utf8ByteString,
+  char8ByteString,
   scientificString,
   -- ** Composites
   array,
@@ -140,9 +140,9 @@ textString text =
 JSON String literal from @ByteString@.
 Use it only with utf-8 encoded byte string.
 -}
-{-# INLINE utf8ByteString #-}
-utf8ByteString :: ByteString -> Json
-utf8ByteString bs =
+{-# INLINE char8ByteString #-}
+char8ByteString :: ByteString -> Json
+char8ByteString bs =
   let
     size = 2 + ByteString.length bs
     poke =
