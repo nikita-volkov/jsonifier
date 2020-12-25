@@ -93,9 +93,16 @@ instance ToJSONKey LT.Text where
     toJKey = LT.toStrict
     {-# INLINE toJKey #-}
 
+{-|
+JSON Class for Haskell types compliant with Aeson encoding
+-}
+
 class ToJSON a where
     toJson :: a -> Json
 
+instance ToJSON Json where
+    toJson = id
+    {-# INLINE toJson #-}
 
 instance ToJSON Int where
     toJson = intNumber
@@ -165,9 +172,6 @@ instance ToJSON Ordering where
 
     {-# INLINE toJson #-}
 
-{-|
-JSON Class for Haskell types compliant with Aeson encoding
--}
 instance ToJSON Char where
     toJson c = textString (T.singleton c)
     {-# INLINE toJson #-}
