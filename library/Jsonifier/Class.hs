@@ -39,6 +39,9 @@ import qualified Data.Array as A
 import qualified Data.Vector as V
 import qualified Data.Vector.Unboxed as U
 import qualified Data.UUID as UUID
+import Data.Strict.Tuple
+import qualified Data.Strict.Maybe as Strict
+import qualified Data.Strict.Either as Strict
 
 import Data.Tagged
 
@@ -51,6 +54,7 @@ name &= value = (name, toJson value)
 class (Show a) => ToJSONKey a where
     toJKey :: a -> T.Text
     toJKey  = T.pack . show
+    {-# INLINE toJKey #-}
 
 instance ToJSONKey Int
 instance ToJSONKey Int8
@@ -74,12 +78,19 @@ instance ToJSONKey UTCTime
 
 instance ToJSONKey Char where
     toJKey = T.singleton
+    {-# INLINE toJKey #-}
+
 instance ToJSONKey String where
     toJKey = T.pack
+    {-# INLINE toJKey #-}
+
 instance ToJSONKey T.Text where
     toJKey = id
+    {-# INLINE toJKey #-}
+
 instance ToJSONKey LT.Text where
     toJKey = LT.toStrict
+    {-# INLINE toJKey #-}
 
 class ToJSON a where
     toJson :: a -> Json
@@ -175,9 +186,19 @@ instance {-# OVERLAPPING #-} (ToJSON a) => ToJSON (Maybe a) where
     toJson _        = null
     {-# INLINE toJson #-}
 
+instance {-# OVERLAPPING #-} (ToJSON a) => ToJSON (Strict.Maybe a) where
+    toJson (Strict.Just a) = toJson a
+    toJson _               = null
+    {-# INLINE toJson #-}
+
 instance (ToJSON a, ToJSON b) => ToJSON (Either a b) where
     toJson (Left x)  = object [ "Left" &=  x]
     toJson (Right x) = object [ "Right" &=  x]
+    {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b) => ToJSON (Strict.Either a b) where
+    toJson (Strict.Left x)  = object [ "Left" &=  x]
+    toJson (Strict.Right x) = object [ "Right" &=  x]
     {-# INLINE toJson #-}
 
 instance ToJSON Version where
@@ -283,6 +304,10 @@ instance ToJSON TimeOfDay where
 -- instance ToJSON SystemTime where
 --     toJson (MkSystemTime secs nsecs) = toJson (fromIntegral secs + fromIntegral nsecs / 1000000000 :: Nano)
 --     {-# INLINE toJson #-}
+
+instance (ToJSON a, ToJSON b) => ToJSON (Pair a b) where
+    toJson (a :!: b) = array [toJson a, toJson b]
+    {-# INLINE toJson #-}
 
 instance ToJSON () where
     toJson _ = array []
