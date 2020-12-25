@@ -19,9 +19,8 @@ import qualified Data.Map as M
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Vector.Unboxed as U
 import qualified Data.List.NonEmpty as NE
-import Data.Tagged
-import Data.UUID.V4
-import System.IO.Unsafe
+import Data.Tagged ( tagSelf )
+import Data.UUID.V4 ( nextRandom )
 
 main :: IO ()
 main = defaultMain tests

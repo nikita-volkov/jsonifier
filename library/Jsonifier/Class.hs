@@ -1,5 +1,3 @@
-{-# LANGUAGE  IncoherentInstances #-}
-
 module Jsonifier.Class (
     ToJSON(..)
   , (&=)
@@ -39,7 +37,7 @@ import qualified Data.Array as A
 import qualified Data.Vector as V
 import qualified Data.Vector.Unboxed as U
 import qualified Data.UUID as UUID
-import Data.Strict.Tuple
+import Data.Strict.Tuple ( Pair(..) )
 import qualified Data.Strict.Maybe as Strict
 import qualified Data.Strict.Either as Strict
 
@@ -51,6 +49,9 @@ import Jsonifier.Time (timeOfDay, zonedTime, localTime, utcTime,  day )
 name &= value = (name, toJson value)
 {-# INLINE (&=) #-}
 
+{-|
+JSON Key class for types that used as the key of a map-like container
+-}
 class (Show a) => ToJSONKey a where
     toJKey :: a -> T.Text
     toJKey  = T.pack . show
@@ -164,6 +165,9 @@ instance ToJSON Ordering where
 
     {-# INLINE toJson #-}
 
+{-|
+JSON Class for Haskell types compliant with Aeson encoding
+-}
 instance ToJSON Char where
     toJson c = textString (T.singleton c)
     {-# INLINE toJson #-}
