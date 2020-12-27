@@ -1,5 +1,6 @@
 module Jsonifier.Class (
     ToJSON(..)
+  , Omittable(..)
   , (&=)
   , (&=?)
 )where
