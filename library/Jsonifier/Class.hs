@@ -1,6 +1,7 @@
 module Jsonifier.Class (
     ToJSON(..)
   , (&=)
+  , (&=?)
 )where
 
 import Jsonifier.Basic
@@ -49,6 +50,10 @@ import Jsonifier.Time (timeOfDay, zonedTime, localTime, utcTime,  day )
 name &= value = (name, toJson value)
 {-# INLINE (&=) #-}
 
+(&=?) :: (ToJSON a, Omittable a) => Text -> a -> [(Text, Json)]
+name &=? value = omittable name value
+{-# INLINE (&=?) #-}
+
 {-|
 JSON Key class for types that used as the key of a map-like container
 -}
@@ -92,6 +97,59 @@ instance ToJSONKey T.Text where
 instance ToJSONKey LT.Text where
     toJKey = LT.toStrict
     {-# INLINE toJKey #-}
+
+
+class (ToJSON a) => Omittable a where
+    omittable :: (ToJSON a) => Text -> a -> [(Text, Json)]
+    omittable name k = [(name, toJson k)]
+    {-# INLINE omittable #-}
+
+instance Omittable Int
+
+instance (ToJSON a) => Omittable (Maybe a) where
+    omittable _ Nothing  = []
+    omittable key x      = [(key, toJson x)]
+    {-# INLINE omittable #-}
+
+instance (ToJSON a) => Omittable (Strict.Maybe a) where
+    omittable _ Strict.Nothing  = []
+    omittable key x             = [(key, toJson x)]
+    {-# INLINE omittable #-}
+
+instance (ToJSON a) => Omittable [a] where
+    omittable _ []   = []
+    omittable key xs = [(key, toJson xs)]
+    {-# INLINE omittable #-}
+
+instance (ToJSON a) => Omittable (Seq.Seq a) where
+    omittable _ Seq.Empty = []
+    omittable key xs = [(key, toJson xs)]
+    {-# INLINE omittable #-}
+
+instance (ToJSON a) => Omittable (Set.Set a) where
+    omittable key xs | Set.null xs = []
+                     | otherwise   = [(key, toJson xs)]
+    {-# INLINE omittable #-}
+
+instance (ToJSON a) => Omittable (HashSet.HashSet a) where
+    omittable key xs | HashSet.null xs = []
+                     | otherwise       = [(key, toJson xs)]
+    {-# INLINE omittable #-}
+
+instance (ToJSON a) => Omittable (V.Vector a) where
+    omittable key xs | V.null xs = []
+                     | otherwise = [(key, toJson xs)]
+    {-# INLINE omittable #-}
+
+instance (U.Unbox a, ToJSON a) => Omittable (U.Vector a) where
+    omittable key xs | U.null xs = []
+                     | otherwise = [(key, toJson xs)]
+    {-# INLINE omittable #-}
+
+instance Omittable IntSet.IntSet where
+    omittable key xs | IntSet.null xs = []
+                     | otherwise      = [(key, toJson xs)]
+    {-# INLINE omittable #-}
 
 {-|
 JSON Class for Haskell types compliant with Aeson encoding
