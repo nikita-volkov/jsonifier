@@ -105,8 +105,6 @@ class (ToJSON a) => Omittable a where
     omittable name k = [(name, toJson k)]
     {-# INLINE omittable #-}
 
-instance Omittable Int
-
 instance (ToJSON a) => Omittable (Maybe a) where
     omittable _ Nothing  = []
     omittable key x      = [(key, toJson x)]
