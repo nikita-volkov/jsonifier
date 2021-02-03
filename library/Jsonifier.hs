@@ -19,6 +19,7 @@ module Jsonifier
   -- ** Strings
   textString,
   scientificString,
+  preencodedString,
   -- ** Composites
   array,
   object,
@@ -145,6 +146,25 @@ cannot handle large number literals.
 scientificString :: Scientific -> Json
 scientificString =
   Json . Write.scientificString
+
+{-|
+JSON String literal from @ByteString@,
+which is already encoded in UTF-8 and has JSON String escaping applied.
+The value is expected to be the contents of the string,
+i.e., what is to be between the surrounding double quotes.
+
+This is a low-level function allowing to avoid unnecessary processing
+in cases where you already have a prepared value at hand.
+
+__Warning:__
+
+It is your responsibility to ensure that the content is correct,
+otherwise you may produce invalid JSON.
+-}
+{-# INLINE preencodedString #-}
+preencodedString :: ByteString -> Json
+preencodedString =
+  Json . Write.stringBody . Write.byteString
 
 {-|
 JSON Array literal from a foldable over element literals.
