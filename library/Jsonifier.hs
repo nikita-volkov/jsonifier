@@ -22,6 +22,8 @@ module Jsonifier
   -- ** Composites
   array,
   object,
+  -- ** Low-level
+  writeJson,
 )
 where
 
@@ -212,3 +214,22 @@ object f =
           Size.object count contentsSize
         poke =
           Poke.openingCurlyBracket <> bodyPoke <> Poke.closingCurlyBracket
+
+{-|
+Any JSON literal manually rendered as Write.
+
+This is a low-level function allowing to avoid unnecessary processing
+in cases where you already have a rendered JSON at hand.
+
+You can think of Write as a specialized version of ByteString builder.
+You can efficiently convert a ByteString to Write using 'PtrPoker.Write.byteString',
+making it possible to have parts of the JSON value tree rendered using other libraries.
+You can as well manually implement encoders for your custom types.
+
+__Warning:__
+
+It is your responsibility to ensure that the content is correct,
+otherwise you may produce invalid JSON.
+-}
+writeJson :: Write.Write -> Json
+writeJson = coerce
