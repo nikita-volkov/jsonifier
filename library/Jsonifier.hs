@@ -6,6 +6,7 @@ module Jsonifier
 (
   -- * ByteString
   toByteString,
+  toWrite,
   -- * Json
   Json,
   -- ** Primitives
@@ -46,6 +47,14 @@ Render a JSON value into strict bytestring.
 toByteString :: Json -> ByteString
 toByteString =
   Write.writeToByteString . coerce
+
+{-|
+Render a JSON value into Write.
+-}
+{-# INLINE toWrite #-}
+toWrite :: Json -> Write
+toWrite =
+  coerce
 
 
 -- * Json
