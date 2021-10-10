@@ -1,1 +1,3 @@
-resolver: https://raw.githubusercontent.com/nikita-volkov/stack-snapshot/4163770ee93e3c3813a7289c843565d1b9ab98f0/snapshot.yaml
+resolver: nightly-2021-10-07
+extra-deps:
+  - aeson-2.0.1.0
