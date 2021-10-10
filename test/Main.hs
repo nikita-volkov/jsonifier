@@ -5,7 +5,8 @@ import Hedgehog
 import Hedgehog.Main
 import qualified Data.Aeson as A
 import qualified Jsonifier as J
-import qualified Data.HashMap.Strict as HashMap
+import qualified Data.Aeson.Key as AesonKey
+import qualified Data.Aeson.KeyMap as AesonKeyMap
 import qualified Hedgehog.Gen as Gen
 import qualified Hedgehog.Range as Range
 import qualified Data.ByteString.Char8 as Char8ByteString
@@ -40,7 +41,7 @@ prop_sample =
         A.Array a ->
           J.array (fmap aesonJson a)
         A.Object a ->
-          J.object (HashMap.foldMapWithKey (\ k -> (: []) . (,) k . aesonJson) a)
+          J.object (AesonKeyMap.foldMapWithKey (\ k -> (: []) . (,) (AesonKey.toText k) . aesonJson) a)
 
 prop_aesonRoundtrip =
   withTests 9999 $
@@ -142,7 +143,7 @@ sampleAeson =
         ScientificStringSample a -> A.String (fromString (show a))
         TextStringSample a -> A.String a
         ArraySample a -> A.Array (fromList (fmap sample a))
-        ObjectSample a -> A.Object (fromList (fmap (fmap sample) a))
+        ObjectSample a -> A.Object (AesonKeyMap.fromList (fmap (bimap AesonKey.fromText sample) a))
       where
         realNumber a =
           A.Number $
@@ -204,7 +205,7 @@ detectMismatchInSampleAndAeson =
       \ case
         A.Object b ->
           a & foldMap (\ (ak, av) ->
-                case HashMap.lookup ak b of
+                case AesonKeyMap.lookup (AesonKey.fromText ak) b of
                   Just bv -> fmap First (detectMismatchInSampleAndAeson av bv)
                   Nothing -> Just (First (ObjectSample a, A.Object b))
                 )
