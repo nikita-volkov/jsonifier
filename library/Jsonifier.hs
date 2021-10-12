@@ -160,7 +160,7 @@ scientificString =
 {-|
 JSON Array literal from a foldable over element literals.
 
-Don\'t be afraid to use 'fmap' to map the elements of the input datastructure,
+Don\'t worry about using 'fmap' to map the elements of the input datastructure,
 it will all be optimized away.
 -}
 {-# INLINE array #-}
@@ -195,7 +195,7 @@ array foldable =
 {-|
 JSON Object literal from a foldable over pairs of key to value literal.
 
-Don\'t be afraid to use 'fmap' to map the elements of the input datastructure,
+Don\'t worry about using 'fmap' to map the elements of the input datastructure,
 it will all be optimized away.
 -}
 {-# INLINE object #-}
