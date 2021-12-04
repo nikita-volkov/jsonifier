@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE UnliftedFFITypes #-}
 module Jsonifier.Size
 where
@@ -37,8 +38,12 @@ commas rowsAmount =
 Amount of bytes required for an escaped JSON string value without quotes.
 -}
 stringBody :: Text -> Int
-stringBody (Text.Text arr off len) =
+#if MIN_VERSION_text(2,0,0)
+stringBody (Text.Text (TextArray.ByteArray arr) off len) =
+#else
+stringBody (Text.Text (TextArray.aBA -> arr) off len) =
+#endif
   Ffi.countStringAllocationSize
-    (TextArray.aBA arr) (fromIntegral off) (fromIntegral len)
+    arr (fromIntegral off) (fromIntegral len)
     & unsafeDupablePerformIO
     & fromIntegral
