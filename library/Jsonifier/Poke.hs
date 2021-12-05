@@ -1,12 +1,10 @@
-{-# LANGUAGE CPP #-}
 module Jsonifier.Poke
 where
 
 import Jsonifier.Prelude
 import PtrPoker.Poke
-import qualified Data.Text.Internal as Text
-import qualified Data.Text.Array as TextArray
 import qualified Jsonifier.Ffi as Ffi
+import qualified Jsonifier.Text as Text
 
 
 null :: Poke
@@ -28,13 +26,10 @@ false =
 
 {-# INLINE string #-}
 string :: Text -> Poke
-#if MIN_VERSION_text(2,0,0)
-string (Text.Text (TextArray.ByteArray arr) off len) =
-#else
-string (Text.Text (TextArray.aBA -> arr) off len) =
-#endif
-  Poke $ \ ptr ->
-    Ffi.encodeString ptr arr (fromIntegral off) (fromIntegral len)
+string =
+  Text.destruct $ \ arr off len ->
+    Poke $ \ ptr ->
+      Ffi.encodeString ptr arr (fromIntegral off) (fromIntegral len)
 
 {-|
 > "key":value

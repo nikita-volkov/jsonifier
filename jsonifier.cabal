@@ -35,6 +35,7 @@ library
     Jsonifier.Ffi
     Jsonifier.Poke
     Jsonifier.Prelude
+    Jsonifier.Text
     Jsonifier.Write
   c-sources:
     cbits/json_allocation.c

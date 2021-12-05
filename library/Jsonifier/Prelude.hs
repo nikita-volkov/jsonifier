@@ -56,7 +56,7 @@ import Foreign.Ptr as Exports
 import Foreign.StablePtr as Exports
 import Foreign.Storable as Exports
 import GHC.Conc as Exports hiding (orElse, withMVar, threadWaitWriteSTM, threadWaitWrite, threadWaitReadSTM, threadWaitRead)
-import GHC.Exts as Exports (IsList(..), lazy, inline, sortWith, groupWith)
+import GHC.Exts as Exports (IsList(..), lazy, inline, sortWith, groupWith, ByteArray#)
 import GHC.Generics as Exports (Generic)
 import GHC.IO.Exception as Exports
 import GHC.OverloadedLabels as Exports

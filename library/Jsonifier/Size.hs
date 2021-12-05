@@ -1,11 +1,9 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE UnliftedFFITypes #-}
 module Jsonifier.Size
 where
 
 import Jsonifier.Prelude
-import qualified Data.Text.Internal as Text
-import qualified Data.Text.Array as TextArray
+import qualified Jsonifier.Text as Text
 import qualified Jsonifier.Ffi as Ffi
 
 
@@ -38,12 +36,9 @@ commas rowsAmount =
 Amount of bytes required for an escaped JSON string value without quotes.
 -}
 stringBody :: Text -> Int
-#if MIN_VERSION_text(2,0,0)
-stringBody (Text.Text (TextArray.ByteArray arr) off len) =
-#else
-stringBody (Text.Text (TextArray.aBA -> arr) off len) =
-#endif
-  Ffi.countStringAllocationSize
-    arr (fromIntegral off) (fromIntegral len)
-    & unsafeDupablePerformIO
-    & fromIntegral
+stringBody =
+  Text.destruct $ \ arr off len ->
+    Ffi.countStringAllocationSize
+      arr (fromIntegral off) (fromIntegral len)
+      & unsafeDupablePerformIO
+      & fromIntegral
