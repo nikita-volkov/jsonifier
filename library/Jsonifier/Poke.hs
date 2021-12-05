@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Jsonifier.Poke
 where
 
@@ -27,9 +28,13 @@ false =
 
 {-# INLINE string #-}
 string :: Text -> Poke
-string (Text.Text arr off len) =
+#if MIN_VERSION_text(2,0,0)
+string (Text.Text (TextArray.ByteArray arr) off len) =
+#else
+string (Text.Text (TextArray.aBA -> arr) off len) =
+#endif
   Poke $ \ ptr ->
-    Ffi.encodeString ptr (TextArray.aBA arr) (fromIntegral off) (fromIntegral len)
+    Ffi.encodeString ptr arr (fromIntegral off) (fromIntegral len)
 
 {-|
 > "key":value
