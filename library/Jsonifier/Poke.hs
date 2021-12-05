@@ -1,11 +1,9 @@
-module Jsonifier.Poke
-where
+module Jsonifier.Poke where
 
-import Jsonifier.Prelude
-import PtrPoker.Poke
 import qualified Jsonifier.Ffi as Ffi
+import Jsonifier.Prelude
 import qualified Jsonifier.Text as Text
-
+import PtrPoker.Poke
 
 null :: Poke
 null =
@@ -27,13 +25,12 @@ false =
 {-# INLINE string #-}
 string :: Text -> Poke
 string =
-  Text.destruct $ \ arr off len ->
-    Poke $ \ ptr ->
+  Text.destruct $ \arr off len ->
+    Poke $ \ptr ->
       Ffi.encodeString ptr arr (fromIntegral off) (fromIntegral len)
 
-{-|
-> "key":value
--}
+-- |
+-- > "key":value
 {-# INLINE objectRow #-}
 objectRow :: Text -> Poke -> Poke
 objectRow keyBody valuePoke =
@@ -42,9 +39,13 @@ objectRow keyBody valuePoke =
 {-# INLINE array #-}
 array :: Foldable f => f Poke -> Poke
 array f =
-  snd (foldl' (\ (first, acc) p -> (False, acc <> if first then p else comma <> p))
-      (True, openingSquareBracket) f) <>
-  closingSquareBracket
+  snd
+    ( foldl'
+        (\(first, acc) p -> (False, acc <> if first then p else comma <> p))
+        (True, openingSquareBracket)
+        f
+    )
+    <> closingSquareBracket
 
 {-# INLINE object #-}
 object :: Poke -> Poke
@@ -55,7 +56,7 @@ object body =
 objectBody :: Foldable f => f Poke -> Poke
 objectBody =
   foldl'
-    (\ (first, acc) p -> (False, acc <> if first then p else comma <> p))
+    (\(first, acc) p -> (False, acc <> if first then p else comma <> p))
     (True, mempty)
     >>> snd
 

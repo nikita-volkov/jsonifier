@@ -1,11 +1,10 @@
 {-# LANGUAGE UnliftedFFITypes #-}
-module Jsonifier.Ffi
-where
 
-import Jsonifier.Prelude
+module Jsonifier.Ffi where
+
 import Foreign.C
 import GHC.Base (ByteArray#, MutableByteArray#)
-
+import Jsonifier.Prelude
 
 foreign import ccall unsafe "static count_string_allocation_off_len"
   countStringAllocationSize :: ByteArray# -> CSize -> CSize -> IO CInt

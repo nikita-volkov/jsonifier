@@ -1,11 +1,10 @@
 {-# LANGUAGE CPP #-}
-module Jsonifier.Text
-where
 
-import Jsonifier.Prelude
-import qualified Data.Text.Internal as Text
+module Jsonifier.Text where
+
 import qualified Data.Text.Array as TextArray
-
+import qualified Data.Text.Internal as Text
+import Jsonifier.Prelude
 
 {-# INLINE destruct #-}
 destruct :: (ByteArray# -> Int -> Int -> x) -> Text -> x

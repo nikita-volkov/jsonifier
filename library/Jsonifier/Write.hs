@@ -1,10 +1,8 @@
-module Jsonifier.Write
-where
+module Jsonifier.Write where
 
+import qualified Jsonifier.Poke as Poke
 import Jsonifier.Prelude
 import PtrPoker.Write
-import qualified Jsonifier.Poke as Poke
-
 
 {-# INLINE scientificString #-}
 scientificString :: Scientific -> Write

@@ -1,11 +1,10 @@
 {-# LANGUAGE UnliftedFFITypes #-}
-module Jsonifier.Size
-where
 
+module Jsonifier.Size where
+
+import qualified Jsonifier.Ffi as Ffi
 import Jsonifier.Prelude
 import qualified Jsonifier.Text as Text
-import qualified Jsonifier.Ffi as Ffi
-
 
 {-# INLINE object #-}
 object :: Int -> Int -> Int
@@ -32,13 +31,14 @@ commas rowsAmount =
     then 0
     else pred rowsAmount
 
-{-|
-Amount of bytes required for an escaped JSON string value without quotes.
--}
+-- |
+-- Amount of bytes required for an escaped JSON string value without quotes.
 stringBody :: Text -> Int
 stringBody =
-  Text.destruct $ \ arr off len ->
+  Text.destruct $ \arr off len ->
     Ffi.countStringAllocationSize
-      arr (fromIntegral off) (fromIntegral len)
+      arr
+      (fromIntegral off)
+      (fromIntegral len)
       & unsafeDupablePerformIO
       & fromIntegral
