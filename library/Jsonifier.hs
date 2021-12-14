@@ -28,7 +28,8 @@ module Jsonifier
     object,
 
     -- ** Low-level
-    writeJson,
+    fromByteString,
+    fromWrite,
   )
 where
 
@@ -216,6 +217,18 @@ object f =
           Poke.openingCurlyBracket <> bodyPoke <> Poke.closingCurlyBracket
 
 -- |
+-- Any JSON literal manually rendered as ByteString.
+--
+-- This is a low-level function allowing to avoid unnecessary processing
+-- in cases where you already have a rendered JSON at hand.
+--
+-- __Warning:__
+--
+-- It is your responsibility to ensure that the content is correct JSON.
+fromByteString :: ByteString.ByteString -> Json
+fromByteString = Json . Write.byteString
+
+-- |
 -- Any JSON literal manually rendered as Write.
 --
 -- This is a low-level function allowing to avoid unnecessary processing
@@ -230,5 +243,5 @@ object f =
 --
 -- It is your responsibility to ensure that the content is correct,
 -- otherwise you may produce invalid JSON.
-writeJson :: Write.Write -> Json
-writeJson = coerce
+fromWrite :: Write.Write -> Json
+fromWrite = Json
