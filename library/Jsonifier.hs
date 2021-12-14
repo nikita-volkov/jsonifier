@@ -60,8 +60,6 @@ toWrite =
 
 -- * Json
 
--------------------------
-
 -- |
 -- Specification of how to render a JSON value to 'ByteString'.
 -- Sort of a JSON-specialized 'ByteString' builder.
