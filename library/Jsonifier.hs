@@ -2,7 +2,7 @@
 -- Simple DSL for mapping Haskell values into JSON representation and
 -- rendering it into 'ByteString'.
 module Jsonifier
-  ( -- * ByteString
+  ( -- * Execution
     toByteString,
     toWrite,
 
