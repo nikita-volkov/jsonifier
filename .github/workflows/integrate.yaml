@@ -1,0 +1,49 @@
+on:
+  push:
+    branches:
+      - master
+      - dev
+
+jobs:
+
+  check-formatting:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: mrkkrp/ormolu-action@v4
+
+  build:
+
+    strategy:
+      matrix:
+        ghc: ['8.4.2', '9.0.1']
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Setup Haskell
+        uses: haskell/actions/setup@v1.2.1
+        with:
+          ghc-version: ${{ matrix.ghc }}
+          cabal-version: 3.4
+      
+      - run: cabal v2-update --enable-tests --enable-benchmarks
+      - run: cabal v2-freeze --enable-tests --enable-benchmarks
+
+      - uses: actions/cache@v2.1.6
+        with:
+          path: |
+            ~/.cabal/store
+            dist-newstyle
+          key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('cabal.project.freeze') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.ghc }}-
+
+      - run: cabal v2-build --enable-tests --enable-benchmarks
+      - run: cabal v2-test --enable-tests --enable-benchmarks
+      - run: cabal v2-haddock --enable-tests --enable-benchmarks
+
