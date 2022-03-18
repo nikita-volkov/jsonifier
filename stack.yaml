@@ -1,3 +1,1 @@
-resolver: nightly-2021-11-19
-extra-deps:
-  - aeson-2.0.2.0
+resolver: nightly-2022-03-17
