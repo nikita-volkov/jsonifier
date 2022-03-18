@@ -149,9 +149,6 @@ scientificString =
 
 -- |
 -- JSON Array literal from a foldable over element literals.
---
--- Don\'t worry about using 'fmap' to map the elements of the input datastructure,
--- it will all be optimized away.
 {-# INLINE array #-}
 array :: Foldable f => f Json -> Json
 array foldable =
@@ -183,9 +180,6 @@ array foldable =
 
 -- |
 -- JSON Object literal from a foldable over pairs of key to value literal.
---
--- Don\'t worry about using 'fmap' to map the elements of the input datastructure,
--- it will all be optimized away.
 {-# INLINE object #-}
 object :: Foldable f => f (Text, Json) -> Json
 object f =
