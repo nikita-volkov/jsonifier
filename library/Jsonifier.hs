@@ -11,6 +11,8 @@ module Jsonifier
 
     -- ** Primitives
     null,
+    true,
+    false,
     bool,
 
     -- ** Numbers
@@ -85,15 +87,27 @@ null =
   write 4 Poke.null
 
 -- |
+-- JSON @true@ Boolean literal.
+{-# INLINE true #-}
+true :: Bool -> Json
+true =
+  write 4 Poke.true
+
+-- |
+-- JSON @false@ Boolean literal.
+{-# INLINE false #-}
+false :: Bool -> Json
+false =
+  write 5 Poke.false
+
+-- |
 -- JSON Boolean literal.
 {-# INLINE bool #-}
 bool :: Bool -> Json
 bool =
   \case
-    True ->
-      write 4 Poke.true
-    False ->
-      write 5 Poke.false
+    True -> true
+    False -> false
 
 -- |
 -- JSON Number literal from @Int@.
