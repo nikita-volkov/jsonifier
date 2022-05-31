@@ -89,14 +89,14 @@ null =
 -- |
 -- JSON @true@ Boolean literal.
 {-# INLINE true #-}
-true :: Bool -> Json
+true :: Json
 true =
   write 4 Poke.true
 
 -- |
 -- JSON @false@ Boolean literal.
 {-# INLINE false #-}
-false :: Bool -> Json
+false :: Json
 false =
   write 5 Poke.false
 
