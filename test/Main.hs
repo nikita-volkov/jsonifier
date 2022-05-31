@@ -198,10 +198,10 @@ detectMismatchInSampleAndAeson =
       \case
         A.Array b
           | Vector.length b == length a ->
-            toList b
-              & zip a
-              & foldMap (\(aa, bb) -> fmap First (detectMismatchInSampleAndAeson aa bb))
-              & fmap getFirst
+              toList b
+                & zip a
+                & foldMap (\(aa, bb) -> fmap First (detectMismatchInSampleAndAeson aa bb))
+                & fmap getFirst
         b -> Just (ArraySample a, b)
     ObjectSample a ->
       \case
