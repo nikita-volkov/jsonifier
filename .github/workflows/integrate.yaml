@@ -11,13 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: mrkkrp/ormolu-action@v4
+      - uses: mrkkrp/ormolu-action@v7
 
   build:
 
     strategy:
       matrix:
-        ghc: ['8.4.2', '9.0.1']
+        include:
+          - ghc: 8.4.2
+            text: 1.2.5.0
+          - ghc: 9.4.2
+            text: 2.0.1
 
     runs-on: ubuntu-latest
 
@@ -26,15 +30,19 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Haskell
-        uses: haskell/actions/setup@v1.2.1
+        uses: haskell/actions/setup@v2
         with:
           ghc-version: ${{ matrix.ghc }}
-          cabal-version: 3.4
+          cabal-version: 3.8
       
-      - run: cabal v2-update --enable-tests --enable-benchmarks
-      - run: cabal v2-freeze --enable-tests --enable-benchmarks
+      - run: |
+          echo "packages: ." > cabal.project
+          echo "constraints:" >> cabal.project
+          echo "  text == ${{ matrix.text }}" >> cabal.project
+      - run: cabal update --enable-tests --enable-benchmarks
+      - run: cabal freeze --enable-tests --enable-benchmarks
 
-      - uses: actions/cache@v2.1.6
+      - uses: actions/cache@v2
         with:
           path: |
             ~/.cabal/store
@@ -43,7 +51,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-${{ matrix.ghc }}-
 
-      - run: cabal v2-build --enable-tests --enable-benchmarks
-      - run: cabal v2-test --enable-tests --enable-benchmarks
-      - run: cabal v2-haddock --enable-tests --enable-benchmarks
+      - run: cabal build --enable-tests --enable-benchmarks
+      - run: cabal test --enable-tests --enable-benchmarks
 
+      - run: cabal haddock --enable-tests --enable-benchmarks

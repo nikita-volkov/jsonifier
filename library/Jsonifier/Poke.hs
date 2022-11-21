@@ -27,7 +27,7 @@ string :: Text -> Poke
 string =
   Text.destruct $ \arr off len ->
     Poke $ \ptr ->
-      Ffi.encodeString ptr arr (fromIntegral off) (fromIntegral len)
+      Ffi.encodeText ptr arr (fromIntegral off) (fromIntegral len)
 
 -- |
 -- > "key":value

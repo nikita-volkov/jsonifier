@@ -33,8 +33,7 @@ main =
               . Char8ByteString.length
               . encodeWithJsonifier
           sample sampleName sampleData =
-            "- " <> TextBuilder.text sampleName <> ": "
-              <> sampleDataSize sampleData
+            "- " <> TextBuilder.text sampleName <> ": " <> sampleDataSize sampleData
        in "Input data sizes report:\n"
             <> sample "twitter with 1 objects" twitter1Data
             <> "\n"

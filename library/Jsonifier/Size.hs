@@ -36,7 +36,7 @@ commas rowsAmount =
 stringBody :: Text -> Int
 stringBody =
   Text.destruct $ \arr off len ->
-    Ffi.countStringAllocationSize
+    Ffi.countTextEncoding
       arr
       (fromIntegral off)
       (fromIntegral len)

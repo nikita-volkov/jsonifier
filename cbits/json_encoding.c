@@ -31,7 +31,7 @@ static const bool pass_through_by_septet[128] =
 static const uint16_t two_byte_seq_by_septet[128] =
   {0,0,0,0,0,0,0,0,0,slash_t_seq_def,slash_n_seq_def,0,0,slash_r_seq_def,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_doublequote_seq_def,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,slash_slash_seq_def};
 
-uint8_t* encode_utf16_as_string
+uint8_t* encode_utf16_text
 (
   uint8_t *dest,
   const uint16_t *src,
@@ -86,6 +86,72 @@ uint8_t* encode_utf16_as_string
       *dest++ = ((c >> 12) & 0x3F) | 0x80;
       *dest++ = ((c >> 6) & 0x3F) | 0x80;
       *dest++ = (c & 0x3F) | 0x80;
+    }
+  }
+
+  *dest++ = 34;
+
+  return dest;
+}
+
+uint8_t* encode_utf8_text
+(
+  uint8_t *dest,
+  const uint8_t *src,
+  size_t src_offset,
+  size_t src_length
+)
+{
+
+  src += src_offset;
+  
+  const uint8_t *src_end = src + src_length;
+
+  // Write double quote
+  *dest++ = 34;
+
+  while (src < src_end) {
+    uint8_t x = *src;
+
+    if (x < 0x80) {
+      if (pass_through_by_septet[x]) {
+        *dest++ = x;
+      } else {
+        uint16_t two_byte_seq = two_byte_seq_by_septet[x];
+        if (two_byte_seq) {
+          *((uint16_t*) dest) = two_byte_seq;
+          dest += 2;
+        } else {
+          // \u
+          *((uint16_t*) dest) = slash_u_seq;
+
+          // hex encoding of 4 nibbles
+          *(dest + 2) = digits[x >> 12 & 0xF];
+          *(dest + 3) = digits[x >> 8 & 0xF];
+          *(dest + 4) = digits[x >> 4 & 0xF];
+          *(dest + 5) = digits[x & 0xF];
+          dest += 6;
+        }
+      }
+      src++;
+    } else if (x < 0xE0) {
+      *dest = x;
+      *(dest + 1) = *(src + 1);
+      dest += 2;
+      src += 2;
+    } else if (x < 0xF0) {
+      *dest = x;
+      *(dest + 1) = *(src + 1);
+      *(dest + 2) = *(src + 2);
+      dest += 3;
+      src += 3;
+    } else {
+      *dest = x;
+      *(dest + 1) = *(src + 1);
+      *(dest + 2) = *(src + 2);
+      *(dest + 3) = *(src + 3);
+      dest += 4;
+      src += 4;
     }
   }
 
