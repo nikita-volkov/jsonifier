@@ -1,6 +1,6 @@
 cabal-version:      3.0
 name:               jsonifier
-version:            0.2.1.2
+version:            0.2.1.3
 synopsis:           Fast and simple JSON encoding toolkit
 description:
   Minimalistic library for encoding JSON directly to strict bytestring,
