@@ -36,12 +36,10 @@ module Jsonifier
 where
 
 import qualified Data.ByteString as ByteString
-import qualified Data.ByteString.Internal as ByteString
 import qualified Jsonifier.Poke as Poke
 import Jsonifier.Prelude hiding (bool, null)
 import qualified Jsonifier.Size as Size
 import qualified Jsonifier.Write as Write
-import PtrPoker.Poke (Poke)
 import qualified PtrPoker.Poke as Poke
 import PtrPoker.Write (Write)
 import qualified PtrPoker.Write as Write
@@ -164,7 +162,7 @@ scientificString =
 -- |
 -- JSON Array literal from a foldable over element literals.
 {-# INLINE array #-}
-array :: Foldable f => f Json -> Json
+array :: (Foldable f) => f Json -> Json
 array foldable =
   write size poke
   where
@@ -176,9 +174,9 @@ array foldable =
         finalize count size =
           Size.array count size
     poke =
-      Poke.Poke $
-        Poke.pokePtr Poke.openingSquareBracket
-          >=> foldr step finalize foldable True
+      Poke.Poke
+        $ Poke.pokePtr Poke.openingSquareBracket
+        >=> foldr step finalize foldable True
       where
         step (Json (Write.Write _ poke)) next first =
           if first
@@ -195,7 +193,7 @@ array foldable =
 -- |
 -- JSON Object literal from a foldable over pairs of key to value literal.
 {-# INLINE object #-}
-object :: Foldable f => f (Text, Json) -> Json
+object :: (Foldable f) => f (Text, Json) -> Json
 object f =
   foldr step finalize f True 0 0 mempty
   where

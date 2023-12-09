@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE UnliftedFFITypes #-}
+{-# OPTIONS_GHC -Wno-unused-imports #-}
 
 module Jsonifier.Ffi where
 
