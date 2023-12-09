@@ -13,12 +13,15 @@ import qualified Jsonifier as J
 import qualified Main.Util.HedgehogGens as GenExtras
 import Prelude hiding (bool, null)
 
+main :: IO ()
 main =
   defaultMain $ pure $ checkParallel $ $$(discover)
 
+prop_sample :: Property
 prop_sample =
-  withTests 1 $
-    property $ do
+  withTests 1
+    $ property
+    $ do
       sample <- liftIO $ load "samples/twitter100.json"
       A.eitherDecodeStrict' (J.toByteString (aesonJson sample)) === Right sample
   where
@@ -42,9 +45,11 @@ prop_sample =
         A.Object a ->
           J.object (AesonKeyMap.foldMapWithKey (\k -> (: []) . (,) (AesonKey.toText k) . aesonJson) a)
 
+prop_aesonRoundtrip :: Property
 prop_aesonRoundtrip =
-  withTests 9999 $
-    property $ do
+  withTests 9999
+    $ property
+    $ do
       sample <- forAll sampleGen
       let encoding = sampleJsonifier sample
       annotate (Char8ByteString.unpack encoding)
@@ -148,8 +153,8 @@ sampleAeson =
         ObjectSample a -> A.Object (AesonKeyMap.fromList (fmap (bimap AesonKey.fromText sample) a))
       where
         realNumber a =
-          A.Number $
-            if isNaN a || isInfinite a then 0 else (read . show) a
+          A.Number
+            $ if isNaN a || isInfinite a then 0 else (read . show) a
 
 -- |
 -- We have to come down to this trickery due to small differences in

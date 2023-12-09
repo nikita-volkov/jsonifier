@@ -9,6 +9,7 @@ import Prelude
 -- Outputs the following:
 --
 -- > {"name":"Metallica","genres":[{"name":"Metal"},{"name":"Rock"},{"name":"Blues"}]}
+main :: IO ()
 main =
   Data.ByteString.Char8.putStrLn (J.toByteString (artistJson metallica))
 

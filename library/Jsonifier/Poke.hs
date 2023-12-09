@@ -37,7 +37,7 @@ objectRow keyBody valuePoke =
   string keyBody <> colon <> valuePoke
 
 {-# INLINE array #-}
-array :: Foldable f => f Poke -> Poke
+array :: (Foldable f) => f Poke -> Poke
 array f =
   snd
     ( foldl'
@@ -53,7 +53,7 @@ object body =
   openingCurlyBracket <> body <> closingCurlyBracket
 
 {-# INLINE objectBody #-}
-objectBody :: Foldable f => f Poke -> Poke
+objectBody :: (Foldable f) => f Poke -> Poke
 objectBody =
   foldl'
     (\(first, acc) p -> (False, acc <> if first then p else comma <> p))
